@@ -3,7 +3,7 @@ object Versions {
   val slf4j = "1.7.25"
   val asyncHttpClient = "2.4.4"
   val reactor = "3.1.4.RELEASE"
-  val cats = "1.0.1"
+  val cats = "1.1.0"
   val jackson = "2.9.4"
   val scalatest = "3.0.4"
   val scalacheck = "1.13.5"
