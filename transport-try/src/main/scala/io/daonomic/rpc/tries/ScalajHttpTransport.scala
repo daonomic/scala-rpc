@@ -1,4 +1,4 @@
-package io.daonomic.rpc.scalaj
+package io.daonomic.rpc.tries
 
 import io.daonomic.rpc.transport.{RpcResponse, RpcTransport}
 import scalaj.http.{Http, HttpRequest}

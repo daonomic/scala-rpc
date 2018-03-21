@@ -1,0 +1,1 @@
+bintrayPackage := "scala-rpc-domain"

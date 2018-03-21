@@ -41,7 +41,7 @@ class RpcHttpClient[F[_]](jsonConverter: JsonConverter, transport: RpcTransport[
     }
     transport.execute(requestJson).flatMap(response => {
       if (logger.isDebugEnabled()) {
-        println(s"response=response")
+        logger.debug(s"response=${response.body}")
       }
       try {
         me.pure(jsonConverter.fromJson[Response[T]](response.body))
