@@ -5,9 +5,10 @@ import scalaj.http.{Http, HttpRequest}
 
 import scala.util.Try
 
-class ScalajHttpTransport(rpcUrl: String, connTimeoutMs: Int = 10000, readTimeoutMs: Int = 10000, template: HttpRequest => HttpRequest = t => t) extends RpcTransport[Try] {
+class ScalajHttpTransport(rpcUrl: String, connTimeoutMs: Int = 10000, readTimeoutMs: Int = 10000, f: HttpRequest => HttpRequest = t => t)
+  extends RpcTransport[Try] {
 
-  private val requestTemplate = template(Http(rpcUrl)
+  private val requestTemplate = f(Http(rpcUrl)
     .timeout(connTimeoutMs, readTimeoutMs)
     .header("Content-Type", "application/json"))
 
@@ -17,4 +18,9 @@ class ScalajHttpTransport(rpcUrl: String, connTimeoutMs: Int = 10000, readTimeou
       .asString
     RpcResponse(response.code, response.body)
   }
+}
+
+object ScalajHttpTransport {
+  def apply(rpcUrl: String, user: String, password: String, connTimeoutMs: Int = 10000, readTimeoutMs: Int = 10000) =
+    new ScalajHttpTransport(rpcUrl, f = t => t.auth(user, password))
 }
