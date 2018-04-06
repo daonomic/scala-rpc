@@ -1,4 +1,5 @@
 bintrayPackage := "scala-rpc-transport-mono"
 
-libraryDependencies += "org.asynchttpclient" % "async-http-client" % Versions.asyncHttpClient
 libraryDependencies += "io.projectreactor" % "reactor-core" % Versions.reactor
+libraryDependencies += "io.projectreactor.ipc" % "reactor-netty" % Versions.reactorNetty
+libraryDependencies += "org.springframework" % "spring-webflux" % Versions.spring

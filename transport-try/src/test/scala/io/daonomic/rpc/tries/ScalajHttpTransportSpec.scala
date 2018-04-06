@@ -8,6 +8,7 @@ class ScalajHttpTransportSpec extends FlatSpec {
 
   "ScalajHttpTransport" should "execute req with basic auth" taggedAs ManualTag in {
     val resp = transport.execute("{\"id\":1,\"method\":\"getblockchaininfo\",\"params\":[],\"jsonrpc\":\"2.0\"}").get
+    println(resp)
     assert(resp.code == 200)
   }
 }
