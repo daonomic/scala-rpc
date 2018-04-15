@@ -3,8 +3,6 @@ package io.daonomic.rpc
 import cats.MonadError
 import cats.implicits._
 import io.daonomic.rpc.domain.{Error, Request, Response}
-import io.daonomic.rpc.json.JsonConverter
-import io.daonomic.rpc.transport.RpcTransport
 import org.slf4j.{Logger, LoggerFactory}
 
 import scala.language.higherKinds

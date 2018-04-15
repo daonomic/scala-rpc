@@ -4,7 +4,8 @@ import java.nio.charset.StandardCharsets
 import java.util.Base64
 import java.util.concurrent.TimeUnit
 
-import io.daonomic.rpc.transport.{RpcResponse, RpcTransport}
+import io.daonomic.rpc.RpcTransport
+import io.daonomic.rpc.domain.RpcResponse
 import io.netty.channel.ChannelOption
 import io.netty.handler.timeout.ReadTimeoutHandler
 import org.springframework.http.ResponseEntity

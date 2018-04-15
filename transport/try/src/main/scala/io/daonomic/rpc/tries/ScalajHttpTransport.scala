@@ -1,6 +1,7 @@
 package io.daonomic.rpc.tries
 
-import io.daonomic.rpc.transport.{RpcResponse, RpcTransport}
+import io.daonomic.rpc.RpcTransport
+import io.daonomic.rpc.domain.RpcResponse
 import scalaj.http.{Http, HttpRequest}
 
 import scala.util.Try

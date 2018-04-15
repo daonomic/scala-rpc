@@ -1,4 +1,4 @@
-package io.daonomic.rpc.json
+package io.daonomic.rpc
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include
 import com.fasterxml.jackson.databind.module.SimpleModule
