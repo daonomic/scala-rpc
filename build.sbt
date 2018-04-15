@@ -5,6 +5,7 @@ def base(project: Project): Project = project.settings(
   organization := "io.daonomic.rpc",
   bintrayOrganization := Some("daonomic"),
   bintrayPackageLabels := Seq("daonomic", "rpc", "scala"),
+  bintrayPackage := s"scala-rpc-${name.value}",
   licenses += ("MIT", url("http://opensource.org/licenses/MIT")),
   version := "1.0-SNAPSHOT",
   scalaVersion := Versions.scala
@@ -16,6 +17,8 @@ def common(project: Project): Project = base(project)
 lazy val `test-common` = base(project)
 
 lazy val domain = base(project)
+
+lazy val cats = base(project)
 
 lazy val core = common(project)
   .dependsOn(domain)
