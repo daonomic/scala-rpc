@@ -1,5 +1,5 @@
 name := "scala-rpc"
-scalaVersion := Versions.scala
+scalaVersion := Dependencies.scalaVersion
 
 def base(project: Project): Project = project.settings(
   organization := "io.daonomic.rpc",
@@ -8,7 +8,7 @@ def base(project: Project): Project = project.settings(
   bintrayPackage := s"scala-rpc-${name.value}",
   licenses += ("MIT", url("http://opensource.org/licenses/MIT")),
   version := "1.0-SNAPSHOT",
-  scalaVersion := Versions.scala
+  scalaVersion := Dependencies.scalaVersion
 )
 
 def common(project: Project): Project = base(project)
