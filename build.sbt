@@ -14,6 +14,10 @@ def base(project: Project): Project = project.settings(
 def common(project: Project): Project = base(project)
   .dependsOn(domain, `test-common` % "test")
 
+def transport(project: Project): Project = common(project).settings(
+  bintrayPackage := s"scala-rpc-transport-${name.value}"
+)
+
 lazy val `test-common` = base(project)
 
 lazy val domain = base(project)
@@ -23,10 +27,10 @@ lazy val cats = base(project)
 lazy val core = common(project)
   .dependsOn(domain)
 
-lazy val `transport-try` = common(project in file("transport/try"))
+lazy val `transport-try` = transport(project in file("transport/try"))
   .dependsOn(core)
 
-lazy val `transport-mono` = common(project in file("transport/mono"))
+lazy val `transport-mono` = transport(project in file("transport/mono"))
   .dependsOn(core)
 
 lazy val root = base(project in file("."))
