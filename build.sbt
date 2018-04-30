@@ -25,6 +25,16 @@ lazy val `transport-mono` = (project in file("transport/mono"))
   .transport
   .dependsOn(core, `test-common`)
 
+//blockchain common
+lazy val `blockchain-poller` = (project in file("blockchain/poller"))
+  .blockchain
+  .dependsOn(cats)
+
+lazy val `blockchain-listener` = (project in file("blockchain/listener"))
+  .blockchain
+  .tests("test")
+  .dependsOn(`blockchain-poller`)
+
 //scalether
 lazy val `scalether-util` = (project in file("scalether/util"))
   .scalether
@@ -46,4 +56,9 @@ lazy val `scalether-abi` = (project in file("scalether/abi"))
 lazy val root = (project in file("."))
   .common
   .settings(publish := {})
-  .aggregate(domain, core, `transport-try`, `transport-mono`, `scalether-util`, `scalether-domain`, `scalether-core`, `scalether-abi`)
+  .aggregate(
+    domain, core,
+    `blockchain-poller`,
+    `transport-try`, `transport-mono`,
+    `scalether-util`, `scalether-domain`, `scalether-core`, `scalether-abi`
+  )

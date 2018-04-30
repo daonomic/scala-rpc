@@ -30,6 +30,11 @@ object implicits {
       bintrayPackage := s"scalether-${name.value}",
       bintrayPackageLabels := Seq("daonomic", "rpc", "scala", "scalether", "ethereum")
     )
-  }
 
+    def blockchain: Project = common.settings(
+      organization := "io.daonomic.blockchain",
+      bintrayPackage := s"blockchain-${name.value}",
+      bintrayPackageLabels := Seq("daonomic", "blockchain", "listener", "bitcoin", "ethereum")
+    )
+  }
 }
