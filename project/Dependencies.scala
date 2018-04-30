@@ -21,4 +21,7 @@ object Dependencies {
 
   val bouncyCastle = "org.bouncycastle" % "bcprov-jdk15on" % "1.58"
   val junit = "junit" % "junit" % "4.11"
+
+  val freemarker = "org.freemarker" % "freemarker" % "2.3.23"
+  val beanutils = "commons-beanutils" % "commons-beanutils" % "1.9.3"
 }
