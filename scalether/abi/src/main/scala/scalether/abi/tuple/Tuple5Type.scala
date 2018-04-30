@@ -1,0 +1,88 @@
+package scalether.abi.tuple
+
+import java.math.BigInteger
+
+import scalether.abi.{Decoded, Type, Uint256Type}
+
+import scala.collection.mutable.ListBuffer
+
+class Tuple5Type[T1, T2, T3, T4, T5](val type1: Type[T1], val type2: Type[T2], val type3: Type[T3], val type4: Type[T4], val type5: Type[T5]) extends TupleType[(T1, T2, T3, T4, T5)] {
+  def string = s"(${type1.string},${type2.string},${type3.string},${type4.string},${type5.string})"
+
+  def types = List(type1, type2, type3, type4, type5)
+
+  def encode(value: (T1, T2, T3, T4, T5)): Array[Byte] = {
+    val head = ListBuffer[Byte]()
+    val tail = ListBuffer[Byte]()
+    if (type1.dynamic) {
+      head ++= Uint256Type.encode(BigInteger.valueOf(headSize + tail.size))
+      tail ++= type1.encode(value._1)
+    } else {
+      head ++= type1.encode(value._1)
+    } 
+    if (type2.dynamic) {
+      head ++= Uint256Type.encode(BigInteger.valueOf(headSize + tail.size))
+      tail ++= type2.encode(value._2)
+    } else {
+      head ++= type2.encode(value._2)
+    } 
+    if (type3.dynamic) {
+      head ++= Uint256Type.encode(BigInteger.valueOf(headSize + tail.size))
+      tail ++= type3.encode(value._3)
+    } else {
+      head ++= type3.encode(value._3)
+    } 
+    if (type4.dynamic) {
+      head ++= Uint256Type.encode(BigInteger.valueOf(headSize + tail.size))
+      tail ++= type4.encode(value._4)
+    } else {
+      head ++= type4.encode(value._4)
+    } 
+    if (type5.dynamic) {
+      head ++= Uint256Type.encode(BigInteger.valueOf(headSize + tail.size))
+      tail ++= type5.encode(value._5)
+    } else {
+      head ++= type5.encode(value._5)
+    } 
+    (head ++ tail).toArray
+  }
+
+  def decode(bytes: Array[Byte], offset: Int): Decoded[(T1, T2, T3, T4, T5)] = {
+    val v1 = if (type1.dynamic) {
+      val bytesOffset = Uint256Type.decode(bytes, offset + headOffset(0)).value.intValue()
+      type1.decode(bytes, offset + bytesOffset)
+    } else {
+      type1.decode(bytes, offset + headOffset(0))
+    } 
+    val v2 = if (type2.dynamic) {
+      val bytesOffset = Uint256Type.decode(bytes, offset + headOffset(1)).value.intValue()
+      type2.decode(bytes, offset + bytesOffset)
+    } else {
+      type2.decode(bytes, offset + headOffset(1))
+    } 
+    val v3 = if (type3.dynamic) {
+      val bytesOffset = Uint256Type.decode(bytes, offset + headOffset(2)).value.intValue()
+      type3.decode(bytes, offset + bytesOffset)
+    } else {
+      type3.decode(bytes, offset + headOffset(2))
+    } 
+    val v4 = if (type4.dynamic) {
+      val bytesOffset = Uint256Type.decode(bytes, offset + headOffset(3)).value.intValue()
+      type4.decode(bytes, offset + bytesOffset)
+    } else {
+      type4.decode(bytes, offset + headOffset(3))
+    } 
+    val v5 = if (type5.dynamic) {
+      val bytesOffset = Uint256Type.decode(bytes, offset + headOffset(4)).value.intValue()
+      type5.decode(bytes, offset + bytesOffset)
+    } else {
+      type5.decode(bytes, offset + headOffset(4))
+    } 
+    Decoded((v1.value, v2.value, v3.value, v4.value, v5.value), v5.offset)
+  }
+}
+
+object Tuple5Type {
+  def apply[T1, T2, T3, T4, T5](type1: Type[T1], type2: Type[T2], type3: Type[T3], type4: Type[T4], type5: Type[T5]): Tuple5Type[T1, T2, T3, T4, T5] = 
+    new Tuple5Type(type1, type2, type3, type4, type5)
+}
