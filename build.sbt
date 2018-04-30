@@ -42,4 +42,4 @@ lazy val `scalether-core` = (project in file("scalether/core"))
 lazy val root = (project in file("."))
   .common
   .settings(publish := {})
-  .aggregate(domain, core, `transport-try`, `transport-mono`, `scalether-util`, `scalether-domain`)
+  .aggregate(domain, core, `transport-try`, `transport-mono`, `scalether-util`, `scalether-domain`, `scalether-core`)
