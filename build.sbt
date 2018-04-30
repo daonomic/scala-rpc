@@ -8,6 +8,7 @@ parallelExecution in ThisBuild := false
 
 //common rpc
 lazy val `test-common` = project.common.tests("compile")
+  .dependsOn(`scalether-domain`)
 
 lazy val domain = project.common
 
@@ -33,6 +34,10 @@ lazy val `scalether-domain` = (project in file("scalether/domain"))
   .scalether
   .tests("test")
   .dependsOn(`scalether-util`)
+
+lazy val `scalether-core` = (project in file("scalether/core"))
+  .scalether
+  .dependsOn(core, `scalether-util`, `scalether-domain`, cats, `test-common` % "test")
 
 lazy val root = (project in file("."))
   .common

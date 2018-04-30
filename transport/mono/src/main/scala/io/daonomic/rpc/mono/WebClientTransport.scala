@@ -4,7 +4,7 @@ import java.nio.charset.StandardCharsets
 import java.util.Base64
 import java.util.concurrent.TimeUnit
 
-import io.daonomic.rpc.RpcTransport
+import io.daonomic.rpc.MonoRpcTransport
 import io.daonomic.rpc.domain.RpcResponse
 import io.netty.channel.ChannelOption
 import io.netty.handler.timeout.ReadTimeoutHandler
@@ -14,9 +14,9 @@ import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
 import reactor.core.publisher.Mono
 
-class MonoTransport(rpcUrl: String, requestTimeoutMs: Int = 10000, readTimeoutMs: Int = 10000,
-                    f: WebClient.RequestBodySpec => WebClient.RequestBodySpec = t => t)
-  extends RpcTransport[Mono] {
+class WebClientTransport(rpcUrl: String, requestTimeoutMs: Int = 10000, readTimeoutMs: Int = 10000,
+                         f: WebClient.RequestBodySpec => WebClient.RequestBodySpec = t => t)
+  extends MonoRpcTransport {
 
   private val connector = new ReactorClientHttpConnector(options => {
     options.option[Integer](ChannelOption.CONNECT_TIMEOUT_MILLIS, requestTimeoutMs)
@@ -39,11 +39,11 @@ class MonoTransport(rpcUrl: String, requestTimeoutMs: Int = 10000, readTimeoutMs
   }
 }
 
-object MonoTransport {
+object WebClientTransport {
   def getBasicHeaderValue(username: String, password: String): String =
     Base64.getEncoder.encodeToString((username + ':' + password).getBytes(StandardCharsets.UTF_8))
 
-  def apply(rpcUrl: String, user: String, password: String, requestTimeoutMs: Int = 10000, readTimeoutMs: Int = 10000): MonoTransport = {
-    new MonoTransport(rpcUrl, f = t => t.header("Authorization", s"Basic ${MonoTransport.getBasicHeaderValue(user, password)}"))
+  def apply(rpcUrl: String, user: String, password: String, requestTimeoutMs: Int = 10000, readTimeoutMs: Int = 10000): WebClientTransport = {
+    new WebClientTransport(rpcUrl, f = t => t.header("Authorization", s"Basic ${WebClientTransport.getBasicHeaderValue(user, password)}"))
   }
 }
