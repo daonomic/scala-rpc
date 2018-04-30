@@ -53,6 +53,10 @@ lazy val `scalether-abi` = (project in file("scalether/abi"))
   .scalether
   .dependsOn(`scalether-core`, `test-common` % "test")
 
+lazy val `scalether-transaction` = (project in file("scalether/transaction"))
+  .scalether
+  .dependsOn(`blockchain-poller`, `scalether-core`, `test-common` % "test")
+
 lazy val root = (project in file("."))
   .common
   .settings(publish := {})
