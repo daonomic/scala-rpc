@@ -69,6 +69,11 @@ lazy val `scalether-generator` = (project in file("scalether/generator"))
   .scalether
   .dependsOn(`test-common` % "test")
 
+lazy val `scalether-test` = (project in file("scalether/test"))
+  .scalether
+  .dependsOn(`scalether-contract`, `scalether-listener`, `transport-try`, `test-common` % "test")
+  .settings(publish := {})
+
 lazy val root = (project in file("."))
   .common
   .settings(publish := {})
@@ -77,5 +82,5 @@ lazy val root = (project in file("."))
     `blockchain-poller`, `blockchain-listener`,
     `transport-try`, `transport-mono`,
     `scalether-util`, `scalether-domain`, `scalether-core`, `scalether-abi`, `scalether-transaction`,
-    `scalether-listener`, `scalether-contract`, `scalether-generator`
+    `scalether-listener`, `scalether-contract`, `scalether-generator`, `scalether-test`
   )
