@@ -72,11 +72,11 @@ lazy val `scalether-generator` = (project in file("scalether/generator"))
 lazy val `scalether-test` = (project in file("scalether/test"))
   .scalether
   .dependsOn(`scalether-contract`, `scalether-listener`, `transport-try`, `test-common` % "test")
-  .settings(publish := {})
+  .settings(skip in publish := true)
 
 lazy val root = (project in file("."))
   .common
-  .settings(publish := {})
+  .settings(skip in publish := true)
   .aggregate(
     domain, core,
     `blockchain-poller`, `blockchain-listener`,
