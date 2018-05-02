@@ -35,6 +35,11 @@ lazy val `blockchain-listener` = (project in file("blockchain/listener"))
   .tests("test")
   .dependsOn(`blockchain-poller`)
 
+//bitcoin
+lazy val `bitcoin-domain` = (project in file("bitcoin/domain"))
+  .bitcoin
+  .tests("test")
+
 //scalether
 lazy val `scalether-util` = (project in file("scalether/util"))
   .scalether
@@ -82,5 +87,6 @@ lazy val root = (project in file("."))
     `blockchain-poller`, `blockchain-listener`,
     `transport-try`, `transport-mono`,
     `scalether-util`, `scalether-domain`, `scalether-core`, `scalether-abi`, `scalether-transaction`,
-    `scalether-listener`, `scalether-contract`, `scalether-generator`, `scalether-test`
+    `scalether-listener`, `scalether-contract`, `scalether-generator`, `scalether-test`,
+    `bitcoin-domain`
   )

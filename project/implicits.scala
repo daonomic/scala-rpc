@@ -54,6 +54,11 @@ object implicits {
       bintrayPackage := s"scalether-${name.value}"
     )
 
+    def bitcoin: Project = common.settings(
+      organization := "io.daonomic.bitcoin.rpc",
+      bintrayPackage := s"bitcoin-${name.value}"
+    )
+
     def blockchain: Project = common.settings(
       organization := "io.daonomic.blockchain",
       bintrayPackage := s"blockchain-${name.value}"
