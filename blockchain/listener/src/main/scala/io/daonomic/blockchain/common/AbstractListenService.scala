@@ -27,7 +27,10 @@ abstract class AbstractListenService[F[_]](confidence: Int, state: State[BigInte
     val numbers = blockNumbers(start, blockNumber)
     logger.info(s"will fetchAndNotify blocks: $numbers")
     n.notify(numbers) { num =>
-      fetchAndNotify(blockNumber)(num.bigInteger).flatMap(_ => state.set(num.bigInteger))
+      fetchAndNotify(blockNumber)(num.bigInteger).flatMap(_ => saved match {
+        case Some(value) => if (num > value) state.set(num.bigInteger) else m.unit
+        case None => state.set(num.bigInteger)
+      })
     }
   }
 
