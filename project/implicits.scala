@@ -42,12 +42,12 @@ object implicits {
       organization := "io.daonomic.rpc",
       bintrayPackage := s"scala-rpc-${name.value}",
       licenses += ("MIT", url("http://opensource.org/licenses/MIT")),
-      version := "0.1.6",
+      version := "0.1.7",
       scalaVersion := Dependencies.fullScalaVersion
     )
 
     def transport: Project = common
-      .settings(bintrayPackage := s"scala-rpc-transport-${name.value}")
+      .settings(bintrayPackage := s"scala-rpc-${name.value}")
 
     def scalether: Project = common.settings(
       organization := "io.daonomic.scalether",
