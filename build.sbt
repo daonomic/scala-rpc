@@ -21,11 +21,11 @@ lazy val core = project.common
 
 lazy val `transport-try` = (project in file("transport/try"))
   .transport
-  .dependsOn(core, `test-common`)
+  .dependsOn(core, `test-common` % "test")
 
 lazy val `transport-mono` = (project in file("transport/mono"))
   .transport
-  .dependsOn(core, `test-common`)
+  .dependsOn(core, `test-common` % "test")
 
 //blockchain common
 lazy val `blockchain-poller` = (project in file("blockchain/poller"))
@@ -103,5 +103,5 @@ lazy val root = (project in file("."))
     `blockchain-poller`, `blockchain-listener`,
     `scalether-util`, `scalether-domain`, `scalether-core`, `scalether-abi`, `scalether-transaction`,
     `scalether-listener`, `scalether-contract`, `scalether-generator`, `scalether-test`,
-    `bitcoin-domain`, `bitcoin-core`
+    `bitcoin-domain`, `bitcoin-core`, `bitcoin-listener`
   )
