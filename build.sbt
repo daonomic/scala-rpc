@@ -13,6 +13,8 @@ lazy val `test-common` = project.common.tests("compile")
 lazy val domain = project.common
 
 lazy val cats = project.common
+  .settings(organization := "io.daonomic.cats")
+  .settings(bintrayPackage := "mono-cats")
 
 lazy val core = project.common
   .dependsOn(domain)
@@ -96,9 +98,9 @@ lazy val root = (project in file("."))
   .common
   .settings(skip in publish := true)
   .aggregate(
-    domain, core,
-    `blockchain-poller`, `blockchain-listener`,
+    domain, cats, core,
     `transport-try`, `transport-mono`,
+    `blockchain-poller`, `blockchain-listener`,
     `scalether-util`, `scalether-domain`, `scalether-core`, `scalether-abi`, `scalether-transaction`,
     `scalether-listener`, `scalether-contract`, `scalether-generator`, `scalether-test`,
     `bitcoin-domain`, `bitcoin-core`
