@@ -1,3 +1,4 @@
+Scalether is part of scala-rpc project
 See https://github.com/daonomic/scala-rpc for basic info
 
 ### Basic operations
