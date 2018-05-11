@@ -11,7 +11,7 @@ import org.slf4j.{Logger, LoggerFactory}
 import scala.language.higherKinds
 
 abstract class AbstractListenService[F[_]](confidence: Int, state: State[BigInteger, F])
-                                          (implicit m: Monad[F], n: Notifier[F]) {
+                                          (implicit m: Monad[F], n: Notifier[F]) extends ListenService[F]{
 
   protected val logger: Logger = LoggerFactory.getLogger(getClass)
 

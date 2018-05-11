@@ -4,6 +4,7 @@ import java.math.BigInteger
 
 import cats.Monad
 import cats.implicits._
+import io.daonomic.blockchain.common.ListenService
 import io.daonomic.blockchain.state.State
 import org.slf4j.{Logger, LoggerFactory}
 import scalether.core.Ethereum
@@ -16,11 +17,14 @@ class LogListenService[F[_]](ethereum: Ethereum[F],
                              confidence: Int,
                              listener: LogListener[F],
                              state: State[BigInteger, F])
-                            (implicit m: Monad[F]) {
+                            (implicit m: Monad[F]) extends ListenService[F] {
 
   val logger: Logger = LoggerFactory.getLogger(getClass)
 
-  def check(blockNumber: BigInteger): F[List[Log]] = if (listener.enabled) {
+  override def check(blockNumber: BigInteger): F[Unit] =
+    checkAndGet(blockNumber).flatMap(_ => m.unit)
+
+  def checkAndGet(blockNumber: BigInteger): F[List[Log]] = if (listener.enabled) {
     checkInternal(blockNumber)
   } else {
     if (logger.isDebugEnabled()) {

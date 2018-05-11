@@ -14,6 +14,6 @@ import scala.collection.JavaConverters._
 class MonoLogListenService(ethereum: MonoEthereum, confidence: Int, listener: MonoLogListener, monoState: MonoState[BigInteger]) {
   private val scala = new LogListenService[Mono](ethereum, confidence, new MonoLogListenerAdapter(listener), new MonoStateAdapter[BigInteger](monoState))
 
-  def check(blockNumber: BigInteger): Mono[util.List[Log]] =
-    scala.check(blockNumber).map(scalaList => scalaList.asJava)
+  def checkAndGetJava(blockNumber: BigInteger): Mono[util.List[Log]] =
+    scala.checkAndGet(blockNumber).map(scalaList => scalaList.asJava)
 }
