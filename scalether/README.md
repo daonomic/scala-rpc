@@ -1,5 +1,4 @@
-Scalether is part of scala-rpc project
-See https://github.com/daonomic/scala-rpc for basic info
+Scalether is part of scala-rpc project. See https://github.com/daonomic/scala-rpc for basic info
 
 ### Basic operations
 
@@ -36,3 +35,42 @@ There are some objects needed for SigningTransactionSender to work properly:
 - privateKey - your account's private key
 - gas - max gas for transaction (it can be specified in transaction, then this value won't be used)
 - GasPriceProvider should return gasPrice for the transaction (see [NodeGasPriceProvider](https://github.com/daonomic/scala-rpc/blob/master/scalether/transaction/src/main/scala/scalether/transaction/NodeGasPriceProvider.scala) and [ValGasPriceProvider](https://github.com/daonomic/scala-rpc/blob/master/scalether/transaction/src/main/scala/scalether/transaction/ValGasPriceProvider.scala))
+
+### Blockchain listener
+
+Currently supported events are:
+- new block listener
+- transaction listener 
+- transfer listener (is supported only for parity node)
+- log listener
+
+Ethereum JSON RPC has methods for listening some of these events using eth_getFilterChanges, but we can't rely on this method because it doesn't store filters on disk, all information is lost on restart of the node according to [this issue](https://github.com/ethereum/go-ethereum/issues/2989)
+
+We developed state-persisting filters with the same functionality. Even if node is restarted or your app is restarted, you will get new events and you won't lose any event.
+For this to work you should implement [State](https://github.com/daonomic/scala-rpc/blob/master/blockchain/listener/src/main/scala/io/daonomic/blockchain/state/State.scala) for getting and setting state of the filter. 
+
+Listening for new blocks:
+```scala
+val transport = new ScalajHttpTransport("http://localhost:8545")
+val ethereum = new Ethereum(transport)
+val parity = new Parity(transport)
+val blockchain = new EthereumBlockchain(ethereum, parity)
+
+val blockListenService = new BlockListenService(blockchain, <your block listener>, new VarState[BigInteger, Try](None))
+blockListenService.check() //invoke check periodically to check for new block
+```
+
+Listening for new transfers:
+```scala
+val transferListenService = new TransferListenService(blockchain, 2, TestTransferListener, new VarState[BigInteger, Try](None))
+val blockListenService = new BlockListenService(blockchain, new BlockListenerImpl(transferListenService), new VarState[BigInteger, Try](None))
+
+//listen for new blocks periodically
+for (_ <- 1 to 100) {
+  blockListenService.check() match {
+    case Failure(th) => th.printStackTrace()
+    case _ =>
+  }
+  Thread.sleep(1000)
+}
+```
