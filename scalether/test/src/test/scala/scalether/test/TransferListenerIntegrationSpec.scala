@@ -18,14 +18,14 @@ import scala.util.{Failure, Try}
 
 class TransferListenerIntegrationSpec extends FlatSpec {
   val transport = new ScalajHttpTransport("http://ether-dev:8545")
-  val ethereum = new Ethereum[Try](transport)
-  val parity = new Parity[Try](transport)
+  val ethereum = new Ethereum(transport)
+  val parity = new Parity(transport)
   val blockchain = new EthereumBlockchain(ethereum, parity)
 
   "TranferListenService" should "listen for transfers" taggedAs ManualTag in {
 
-    val transferListenService = new TransferListenService[Try](blockchain, 2, TestTransferListener, new VarState[BigInteger, Try](None))
-    val blockListenService = new BlockListenService[Try](blockchain, new BlockListenerImpl[Try](transferListenService), new VarState[BigInteger, Try](None))
+    val transferListenService = new TransferListenService(blockchain, 2, TestTransferListener, new VarState[BigInteger, Try](None))
+    val blockListenService = new BlockListenService(blockchain, new BlockListenerImpl(transferListenService), new VarState[BigInteger, Try](None))
 
     for (_ <- 1 to 100) {
       blockListenService.check() match {
@@ -37,7 +37,7 @@ class TransferListenerIntegrationSpec extends FlatSpec {
   }
 
   it should "notify about transfers in selected block" taggedAs ManualTag in {
-    val transferListenService = new TransferListenService[Try](blockchain, 1, TestTransferListener, new VarState[BigInteger, Try](None))
+    val transferListenService = new TransferListenService(blockchain, 1, TestTransferListener, new VarState[BigInteger, Try](None))
 
     val start = System.currentTimeMillis()
     transferListenService.fetchAndNotify(BigInteger.valueOf(5000099))(BigInteger.valueOf(5000099))
