@@ -1,38 +1,107 @@
+import implicits._
+import Dependencies._
+
 name := "scala-rpc"
-scalaVersion := Dependencies.scalaVersion
+scalaVersion := fullScalaVersion
 
-def base(project: Project): Project = project.settings(
-  organization := "io.daonomic.rpc",
-  bintrayOrganization := Some("daonomic"),
-  bintrayPackageLabels := Seq("daonomic", "rpc", "scala"),
-  bintrayPackage := s"scala-rpc-${name.value}",
-  licenses += ("MIT", url("http://opensource.org/licenses/MIT")),
-  version := "1.0-SNAPSHOT",
-  scalaVersion := Dependencies.scalaVersion
-)
+parallelExecution in ThisBuild := false
 
-def common(project: Project): Project = base(project)
-  .dependsOn(domain, `test-common` % "test")
+//common rpc
+lazy val `test-common` = project.common.tests("compile")
+  .dependsOn(`scalether-domain`)
 
-def transport(project: Project): Project = common(project).settings(
-  bintrayPackage := s"scala-rpc-transport-${name.value}"
-)
+lazy val domain = project.common
 
-lazy val `test-common` = base(project)
+lazy val cats = project.common
+  .settings(organization := "io.daonomic.cats")
+  .settings(bintrayPackage := "mono-cats")
 
-lazy val domain = base(project)
-
-lazy val cats = base(project)
-
-lazy val core = common(project)
+lazy val core = project.common
   .dependsOn(domain)
 
-lazy val `transport-try` = transport(project in file("transport/try"))
-  .dependsOn(core)
+lazy val `transport-try` = (project in file("transport/try"))
+  .transport
+  .dependsOn(core, `test-common` % "test")
 
-lazy val `transport-mono` = transport(project in file("transport/mono"))
-  .dependsOn(core)
+lazy val `transport-mono` = (project in file("transport/mono"))
+  .transport
+  .dependsOn(core, `test-common` % "test")
 
-lazy val root = base(project in file("."))
-  .settings(publish := {})
-  .aggregate(domain, core, `transport-try`, `transport-mono`)
+//blockchain common
+lazy val `blockchain-poller` = (project in file("blockchain/poller"))
+  .blockchain
+  .dependsOn(cats)
+
+lazy val `blockchain-listener` = (project in file("blockchain/listener"))
+  .blockchain
+  .tests("test")
+  .dependsOn(`blockchain-poller`)
+
+//bitcoin
+lazy val `bitcoin-domain` = (project in file("bitcoin/domain"))
+  .bitcoin
+  .tests("test")
+
+lazy val `bitcoin-core` = (project in file("bitcoin/core"))
+  .bitcoin
+  .dependsOn(core, `bitcoin-domain`, cats, `test-common` % "test")
+
+lazy val `bitcoin-listener` = (project in file("bitcoin/listener"))
+  .bitcoin
+  .dependsOn(`blockchain-listener`, `bitcoin-core`, `test-common` % "test")
+
+lazy val `bitcoin-test` = (project in file("bitcoin/test"))
+  .bitcoin
+  .dependsOn(`bitcoin-listener`, `transport-try`, `transport-mono`, `test-common` % "test")
+  .settings(skip in publish := true)
+
+//scalether
+lazy val `scalether-util` = (project in file("scalether/util"))
+  .scalether
+  .tests("test")
+
+lazy val `scalether-domain` = (project in file("scalether/domain"))
+  .scalether
+  .tests("test")
+  .dependsOn(`scalether-util`)
+
+lazy val `scalether-core` = (project in file("scalether/core"))
+  .scalether
+  .dependsOn(core, `scalether-util`, `scalether-domain`, cats, `test-common` % "test")
+
+lazy val `scalether-abi` = (project in file("scalether/abi"))
+  .scalether
+  .dependsOn(`scalether-core`, `test-common` % "test")
+
+lazy val `scalether-transaction` = (project in file("scalether/transaction"))
+  .scalether
+  .dependsOn(`blockchain-poller`, `scalether-core`, `test-common` % "test")
+
+lazy val `scalether-listener` = (project in file("scalether/listener"))
+  .scalether
+  .dependsOn(`blockchain-listener`, `scalether-core`, `test-common` % "test")
+
+lazy val `scalether-contract` = (project in file("scalether/contract"))
+  .scalether
+  .dependsOn(`scalether-abi`, `scalether-transaction`, `test-common` % "test")
+
+lazy val `scalether-generator` = (project in file("scalether/generator"))
+  .scalether
+  .dependsOn(`test-common` % "test")
+
+lazy val `scalether-test` = (project in file("scalether/test"))
+  .scalether
+  .dependsOn(`scalether-contract`, `scalether-listener`, `transport-try`, `test-common` % "test")
+  .settings(skip in publish := true)
+
+lazy val root = (project in file("."))
+  .common
+  .settings(skip in publish := true)
+  .aggregate(
+    domain, cats, core,
+    `transport-try`, `transport-mono`,
+    `blockchain-poller`, `blockchain-listener`,
+    `scalether-util`, `scalether-domain`, `scalether-core`, `scalether-abi`, `scalether-transaction`,
+    `scalether-listener`, `scalether-contract`, `scalether-generator`, `scalether-test`,
+    `bitcoin-domain`, `bitcoin-core`, `bitcoin-listener`
+  )
