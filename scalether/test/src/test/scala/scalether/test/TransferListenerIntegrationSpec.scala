@@ -3,16 +3,16 @@ package scalether.test
 import java.math.BigInteger
 
 import cats.implicits._
-import io.daonomic.blockchain.block.{BlockListenService, BlockListener}
+import io.daonomic.blockchain.block.{BlockListenService, BlockListenerImpl}
+import io.daonomic.blockchain.poller.tries.implicits._
 import io.daonomic.blockchain.state.VarState
 import io.daonomic.blockchain.transfer
 import io.daonomic.blockchain.transfer.{TransferListenService, TransferListener}
+import io.daonomic.rpc.ManualTag
 import io.daonomic.rpc.tries.ScalajHttpTransport
 import org.scalatest.FlatSpec
 import scalether.core.{Ethereum, Parity}
 import scalether.listener.EthereumBlockchain
-import io.daonomic.blockchain.poller.tries.implicits._
-import io.daonomic.rpc.ManualTag
 
 import scala.util.{Failure, Try}
 
@@ -25,7 +25,7 @@ class TransferListenerIntegrationSpec extends FlatSpec {
   "TranferListenService" should "listen for transfers" taggedAs ManualTag in {
 
     val transferListenService = new TransferListenService[Try](blockchain, 2, TestTransferListener, new VarState[BigInteger, Try](None))
-    val blockListenService = new BlockListenService[Try](blockchain, new TestBlockListener(transferListenService), new VarState[BigInteger, Try](None))
+    val blockListenService = new BlockListenService[Try](blockchain, new BlockListenerImpl[Try](transferListenService), new VarState[BigInteger, Try](None))
 
     for (_ <- 1 to 100) {
       blockListenService.check() match {
@@ -42,15 +42,6 @@ class TransferListenerIntegrationSpec extends FlatSpec {
     val start = System.currentTimeMillis()
     transferListenService.fetchAndNotify(BigInteger.valueOf(5000099))(BigInteger.valueOf(5000099))
     println(s"took: ${System.currentTimeMillis() - start}ms")
-  }
-}
-
-class TestBlockListener(service: TransferListenService[Try]) extends BlockListener[Try] {
-  override def onBlock(block: BigInteger): Try[Unit] = {
-    val start = System.currentTimeMillis()
-    val result = service.check(block)
-    println(s"block: $block took: ${System.currentTimeMillis() - start}ms")
-    result
   }
 }
 
