@@ -74,3 +74,7 @@ for (_ <- 1 to 100) {
   Thread.sleep(1000)
 }
 ```
+
+### Contract wrapper generation
+
+You can generate contract wrappers using https://github.com/daonomic/scalether-maven-plugin
