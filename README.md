@@ -52,4 +52,10 @@ resolvers += Resolver.bintrayRepo("daonomic", "maven")
 libraryDependencies += "io.daonomic.scalether" %% "contract" % scaletherVersion
 ```
 
-## Writing some code (WIP)
+## Writing some code
+
+see https://github.com/daonomic/scala-rpc/tree/master/scalether for Ethereum examples
+
+and https://github.com/daonomic/scala-rpc/tree/master/bitcoin for Bitcoin examples
+
+For information about smart contract wrappers generator see https://github.com/daonomic/scalether-maven-plugin
