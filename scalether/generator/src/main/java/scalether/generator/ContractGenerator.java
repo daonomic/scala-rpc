@@ -19,9 +19,10 @@ public class ContractGenerator {
     public final ObjectMapper mapper = createMapper();
     private final Configuration configuration = new Configuration(Configuration.VERSION_2_3_23);
 
-    public ContractGenerator() {
+    public ContractGenerator() throws TemplateException {
         configuration.setTemplateLoader(new ResourceTemplateLoader("templates"));
         configuration.setDefaultEncoding(StandardCharsets.UTF_8.displayName());
+        configuration.setSetting("api_builtin_enabled", "true");
     }
 
     public static ObjectMapper createMapper() {
@@ -50,6 +51,8 @@ public class ContractGenerator {
             model.put("imports", Arrays.asList(type.getImports()));
             model.put("preparedTransaction", type.getPreparedTransaction());
             model.put("truffle", contract);
+            model.put("signatures", new MyMap());
+            model.put("events", new MyMap());
             model.put("package", packageName);
             model.put("abi", escape(mapper.writeValueAsString(contract.getAbi())));
             generate(model, writer);
