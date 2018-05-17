@@ -161,7 +161,6 @@ import scalether.util.Hex
 
 import scala.language.higherKinds
 
-import ${truffle.name}._
 <#function get_name map name>
   <#if (map.getValue(name)??)>
     <#local result="${name}${map.getValue(name)}"/>
@@ -175,6 +174,8 @@ import ${truffle.name}._
 
 class ${truffle.name}<@monad_param/>(address: Address, sender: <@sender/>)<@implicit>(implicit f: MonadError[<@monad/>, Throwable])</@>
   extends Contract[<@monad/>](address, sender) {
+
+  import ${truffle.name}._
 
   <#list truffle.abi as item>
     <#if item.type != 'event' && item.name??>
