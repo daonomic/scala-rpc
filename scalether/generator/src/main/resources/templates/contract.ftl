@@ -161,6 +161,7 @@ import scalether.util.Hex
 
 import scala.language.higherKinds
 
+import ${truffle.name}._
 <#function get_name map name>
   <#if (map.getValue(name)??)>
     <#local result="${name}${map.getValue(name)}"/>
@@ -178,7 +179,6 @@ class ${truffle.name}<@monad_param/>(address: Address, sender: <@sender/>)<@impl
   <#list truffle.abi as item>
     <#if item.type != 'event' && item.name??>
       <#assign signatureName="${get_name(signatures, item.name)}Signature"/>
-  val ${signatureName} = <@signature item/>
             <#if item.constant>
   def ${item.name}<@args item.inputs/>: <@monad/>[<@tuple_type item.outputs/>] =
     <#if preparedTransaction?has_content>${preparedTransaction}<#else>PreparedTransaction</#if>(address, ${signatureName}, <@args_tuple item.inputs/>, sender).call()
@@ -212,6 +212,14 @@ object ${truffle.name} extends ContractObject {
       poller.waitForTransaction(deploy(sender)<@args_params constructor_args/>)
       .map(receipt => new ${truffle.name}<#if !(F?has_content)>[F]</#if>(receipt.contractAddress, sender))
   </#if>
+
+  <#assign ignore=signatures.clear()/>
+  <#list truffle.abi as item>
+    <#if item.type != 'event' && item.name??>
+      <#assign signatureName="${get_name(signatures, item.name)}Signature"/>
+  val ${signatureName} = <@signature item/>
+    </#if>
+  </#list>
 }
 
 <#list truffle.abi as item>
