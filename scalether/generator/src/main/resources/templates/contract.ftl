@@ -42,6 +42,9 @@
         Array[Byte]
     <#elseif abiType?ends_with("[]")>
         Array[<@single_scala_type abiType?substring(0, abiType?length - 2) components/>]
+    <#elseif abiType?ends_with("]")>
+        <#local start=abiType?index_of("[")/>
+        Array[<@single_scala_type abiType?substring(0, start) components/>]
     <#elseif abiType == "tuple">
         (<#list components as component><@single_scala_type component.type component.components/><#if component?has_next>, </#if></#list>)
     <#else>
@@ -72,6 +75,10 @@
         Bytes${abiType?substring(5)}Type
     <#elseif abiType?ends_with("[]")>
         VarArrayType(<@single_type abiType?substring(0, abiType?length - 2) components/>)
+    <#elseif abiType?ends_with("]")>
+        <#local start=abiType?index_of("[")/>
+        <#local num=abiType?substring(start + 1, abiType?length - 1)/>
+        FixArrayType(${num}, <@single_type abiType?substring(0, start) components/>)
     <#elseif abiType == "tuple">
         Tuple${components?size}Type(<#list components as component><@single_type component.type component.components/><#if component?has_next>, </#if></#list>)
     <#else>
@@ -154,17 +161,30 @@ import scalether.util.Hex
 
 import scala.language.higherKinds
 
+<#function get_name map name>
+  <#if (map.getValue(name)??)>
+    <#local result="${name}${map.getValue(name)}"/>
+    <#local ignore = map.setValue(name, 1 + map.getValue(name))>
+    <#return result/>
+  <#else>
+    <#local ignore = map.setValue(name, 1)>
+    <#return name/>
+  </#if>
+</#function>
+
 class ${truffle.name}<@monad_param/>(address: Address, sender: <@sender/>)<@implicit>(implicit f: MonadError[<@monad/>, Throwable])</@>
   extends Contract[<@monad/>](address, sender) {
 
   <#list truffle.abi as item>
-        <#if item.type != 'event' && item.name??>
+    <#if item.type != 'event' && item.name??>
+      <#assign signatureName="${get_name(signatures, item.name)}Signature"/>
+  val ${signatureName} = <@signature item/>
             <#if item.constant>
   def ${item.name}<@args item.inputs/>: <@monad/>[<@tuple_type item.outputs/>] =
-    <#if preparedTransaction?has_content>${preparedTransaction}<#else>PreparedTransaction</#if>(address, <@signature item/>, <@args_tuple item.inputs/>, sender).call()
+    <#if preparedTransaction?has_content>${preparedTransaction}<#else>PreparedTransaction</#if>(address, ${signatureName}, <@args_tuple item.inputs/>, sender).call()
             <#else>
   def ${item.name}<@args item.inputs/>: <#if preparedTransaction?has_content>${preparedTransaction}<#else>PreparedTransaction</#if>[<#if !(preparedTransaction?has_content)><@monad/>, </#if><@tuple_type item.outputs/>] =
-    <#if preparedTransaction?has_content>${preparedTransaction}<#else>PreparedTransaction</#if>(address, <@signature item/>, <@args_tuple item.inputs/>, sender)
+    <#if preparedTransaction?has_content>${preparedTransaction}<#else>PreparedTransaction</#if>(address, ${signatureName}, <@args_tuple item.inputs/>, sender)
             </#if>
 
         </#if>
@@ -194,21 +214,13 @@ object ${truffle.name} extends ContractObject {
   </#if>
 }
 
-<#assign map={}/>
 <#list truffle.abi as item>
   <#if item.type == "event">
     <#assign simpleName=item.name/>
     <#if simpleName?ends_with('Event')>
         <#assign simpleName=simpleName[0..*(simpleName?length-5)]/>
     </#if>
-    <#if (map[simpleName]??)>
-      <#assign eventName="${simpleName}${map[simpleName]}"/>
-      <#assign map=map + {simpleName: 1 + map[simpleName]}/>
-    <#else>
-      <#assign eventName=simpleName/>
-      <#assign map=map + {simpleName: 1}/>
-    </#if>
-    <#assign eventName="${eventName}Event"/>
+    <#assign eventName="${get_name(events, simpleName)}Event"/>
 case class ${eventName}(<#list item.all as arg>${arg.name}: <@event_arg_type arg/><#if arg?has_next>, </#if></#list>)
 
 object ${eventName} {

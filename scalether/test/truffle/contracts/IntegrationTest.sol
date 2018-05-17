@@ -63,6 +63,10 @@ contract IntegrationTest {
         return rate;
     }
 
+    function getRate(uint256 test) public returns (Rate) {
+        return rate;
+    }
+
     function emitSimpleEvent(string topic, string value) public {
         emit SimpleEvent(topic, value);
     }
