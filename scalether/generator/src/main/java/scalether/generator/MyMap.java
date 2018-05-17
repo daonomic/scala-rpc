@@ -14,4 +14,9 @@ public class MyMap {
         map.put(key, value);
         return this;
     }
+
+    public MyMap clear() {
+        map.clear();
+        return this;
+    }
 }

@@ -15,55 +15,44 @@ import scalether.util.Hex
 
 import scala.language.higherKinds
 
+import IntegrationTest._
 
 class IntegrationTest[F[_]](address: Address, sender: TransactionSender[F])(implicit f: MonadError[F, Throwable])
   extends Contract[F](address, sender) {
 
-  val stateSignature = Signature("state", UnitType, Tuple1Type(Uint256Type))
   def state: F[BigInteger] =
     PreparedTransaction(address, stateSignature, (), sender).call()
 
-  val setStateSignature = Signature("setState", Tuple1Type(Uint256Type), UnitType)
   def setState(_state: BigInteger): PreparedTransaction[F, Unit] =
     PreparedTransaction(address, setStateSignature, _state, sender)
 
-  val checkStructsWithStringSignature = Signature("checkStructsWithString", Tuple1Type(VarArrayType(Tuple2Type(StringType, Uint256Type))), UnitType)
   def checkStructsWithString(structs: Array[(String, BigInteger)]): PreparedTransaction[F, Unit] =
     PreparedTransaction(address, checkStructsWithStringSignature, structs, sender)
 
-  val getStructWithStringSignature = Signature("getStructWithString", UnitType, Tuple1Type(Tuple2Type(StringType, Uint256Type)))
   def getStructWithString: F[(String, BigInteger)] =
     PreparedTransaction(address, getStructWithStringSignature, (), sender).call()
 
-  val getStructsWithStringSignature = Signature("getStructsWithString", UnitType, Tuple1Type(FixArrayType(1, Tuple2Type(StringType, Uint256Type))))
   def getStructsWithString: F[Array[(String, BigInteger)]] =
     PreparedTransaction(address, getStructsWithStringSignature, (), sender).call()
 
-  val setRatesSignature = Signature("setRates", Tuple1Type(VarArrayType(Tuple2Type(AddressType, Uint256Type))), UnitType)
   def setRates(rates: Array[(Address, BigInteger)]): PreparedTransaction[F, Unit] =
     PreparedTransaction(address, setRatesSignature, rates, sender)
 
-  val setRateSignature = Signature("setRate", Tuple1Type(Tuple2Type(AddressType, Uint256Type)), UnitType)
   def setRate(_rate: (Address, BigInteger)): PreparedTransaction[F, Unit] =
     PreparedTransaction(address, setRateSignature, _rate, sender)
 
-  val getRateSignature = Signature("getRate", Tuple1Type(Uint256Type), Tuple1Type(Tuple2Type(AddressType, Uint256Type)))
   def getRate(test: BigInteger): PreparedTransaction[F, (Address, BigInteger)] =
     PreparedTransaction(address, getRateSignature, test, sender)
 
-  val getRate1Signature = Signature("getRate", UnitType, Tuple1Type(Tuple2Type(AddressType, Uint256Type)))
   def getRate: PreparedTransaction[F, (Address, BigInteger)] =
     PreparedTransaction(address, getRate1Signature, (), sender)
 
-  val emitSimpleEventSignature = Signature("emitSimpleEvent", Tuple2Type(StringType, StringType), UnitType)
   def emitSimpleEvent(topic: String, value: String): PreparedTransaction[F, Unit] =
     PreparedTransaction(address, emitSimpleEventSignature, (topic, value), sender)
 
-  val emitAddressEventSignature = Signature("emitAddressEvent", Tuple2Type(AddressType, StringType), UnitType)
   def emitAddressEvent(topic: Address, value: String): PreparedTransaction[F, Unit] =
     PreparedTransaction(address, emitAddressEventSignature, (topic, value), sender)
 
-  val emitMixedEventSignature = Signature("emitMixedEvent", Tuple3Type(AddressType, StringType, AddressType), UnitType)
   def emitMixedEvent(topic: Address, value: String, test: Address): PreparedTransaction[F, Unit] =
     PreparedTransaction(address, emitMixedEventSignature, (topic, value, test), sender)
 
@@ -88,6 +77,19 @@ object IntegrationTest extends ContractObject {
   def deployAndWait[F[_]](sender: TransactionSender[F], poller: TransactionPoller[F])(implicit m: MonadError[F, Throwable]): F[IntegrationTest[F]] =
       poller.waitForTransaction(deploy(sender))
       .map(receipt => new IntegrationTest[F](receipt.contractAddress, sender))
+
+  val stateSignature = Signature("state", UnitType, Tuple1Type(Uint256Type))
+  val setStateSignature = Signature("setState", Tuple1Type(Uint256Type), UnitType)
+  val checkStructsWithStringSignature = Signature("checkStructsWithString", Tuple1Type(VarArrayType(Tuple2Type(StringType, Uint256Type))), UnitType)
+  val getStructWithStringSignature = Signature("getStructWithString", UnitType, Tuple1Type(Tuple2Type(StringType, Uint256Type)))
+  val getStructsWithStringSignature = Signature("getStructsWithString", UnitType, Tuple1Type(FixArrayType(1, Tuple2Type(StringType, Uint256Type))))
+  val setRatesSignature = Signature("setRates", Tuple1Type(VarArrayType(Tuple2Type(AddressType, Uint256Type))), UnitType)
+  val setRateSignature = Signature("setRate", Tuple1Type(Tuple2Type(AddressType, Uint256Type)), UnitType)
+  val getRateSignature = Signature("getRate", Tuple1Type(Uint256Type), Tuple1Type(Tuple2Type(AddressType, Uint256Type)))
+  val getRate1Signature = Signature("getRate", UnitType, Tuple1Type(Tuple2Type(AddressType, Uint256Type)))
+  val emitSimpleEventSignature = Signature("emitSimpleEvent", Tuple2Type(StringType, StringType), UnitType)
+  val emitAddressEventSignature = Signature("emitAddressEvent", Tuple2Type(AddressType, StringType), UnitType)
+  val emitMixedEventSignature = Signature("emitMixedEvent", Tuple3Type(AddressType, StringType, AddressType), UnitType)
 }
 
 case class SimpleEvent(topic: Word, value: String)
