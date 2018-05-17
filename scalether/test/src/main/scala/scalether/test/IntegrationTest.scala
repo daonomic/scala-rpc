@@ -15,10 +15,11 @@ import scalether.util.Hex
 
 import scala.language.higherKinds
 
-import IntegrationTest._
 
 class IntegrationTest[F[_]](address: Address, sender: TransactionSender[F])(implicit f: MonadError[F, Throwable])
   extends Contract[F](address, sender) {
+
+  import IntegrationTest._
 
   def state: F[BigInteger] =
     PreparedTransaction(address, stateSignature, (), sender).call()
