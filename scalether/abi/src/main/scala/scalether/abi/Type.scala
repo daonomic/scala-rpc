@@ -16,12 +16,12 @@ trait Type[T] {
 }
 
 object Type {
-  def apply(`type`: String): Type[_] = `type`.trim match {
-    case s if s.endsWith("[]") => VarArrayType(Type(s.substring(0, s.length - 2)))
+  def fromString(`type`: String): Type[_] = `type`.trim match {
+    case s if s.endsWith("[]") => VarArrayType(Type.fromString(s.substring(0, s.length - 2)))
     case s if s.endsWith("]") =>
       val idx = s.indexOf("[")
       val size = s.substring(idx + 1, s.length - 1).toInt
-      FixArrayType(size, Type(s.substring(0, idx)))
+      FixArrayType(size, Type.fromString(s.substring(0, idx)))
     case s if s.startsWith("(") && s.endsWith(")") =>
       val inner = s.substring(1, s.length - 1)
       if (inner.trim.isEmpty) {
@@ -29,7 +29,7 @@ object Type {
       } else {
         val types = inner.split(",")
           .toList
-          .map(one => Type(one))
+          .map(one => Type.fromString(one))
         TupleType(types)
       }
     case "string" => StringType
