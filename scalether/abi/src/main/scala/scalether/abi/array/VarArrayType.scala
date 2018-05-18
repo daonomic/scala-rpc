@@ -6,7 +6,7 @@ import scalether.abi.{Decoded, Type, Uint256Type}
 
 import scala.reflect.ClassTag
 
-class VarArrayType[T](`type`: Type[T])
+class VarArrayType[T](val `type`: Type[T])
                      (implicit classTag: ClassTag[T])
   extends ArrayType[T](`type`) {
 

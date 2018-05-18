@@ -5,7 +5,7 @@ import java.math.BigInteger
 import scalether.util.Padding.padLeft
 import scalether.util.Bytes
 
-class IntType(bits: Int) extends Type[BigInteger] {
+case class IntType(bits: Short) extends Type[BigInteger] {
   def string = s"int$bits"
 
   def encode(t: BigInteger): Array[Byte] =
