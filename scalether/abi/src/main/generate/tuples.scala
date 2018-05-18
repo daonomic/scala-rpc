@@ -1,5 +1,7 @@
 import java.io.{File, FileOutputStream, PrintWriter}
 
+import scala.collection.immutable
+
 def generate(arity: Int, writer: PrintWriter): Unit = {
   val range = 1 to arity
 
@@ -58,4 +60,9 @@ for (i <- 2 to 22) {
   writer.flush()
   writer.close()
   out.close()
+}
+
+for (i <- 3 to 22) {
+  val args = for(j <- 1 until i) yield s"types($j)"
+  println(s"case $i => Tuple${i}Type(types.head, ${args.mkString(", ")})")
 }

@@ -4,7 +4,7 @@ import scalether.abi.{Decoded, Type}
 
 import scala.reflect.ClassTag
 
-class FixArrayType[T](length: Int, `type`: Type[T])
+class FixArrayType[T](val length: Int, val `type`: Type[T])
                      (implicit classTag: ClassTag[T])
   extends ArrayType[T](`type`) {
 

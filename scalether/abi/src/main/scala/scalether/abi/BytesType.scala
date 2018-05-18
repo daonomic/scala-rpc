@@ -19,7 +19,7 @@ object BytesType extends Type[Array[Byte]] {
   }
 }
 
-class FixedBytesType(bits: Int) extends Type[Array[Byte]] {
+case class FixedBytesType(bits: Short) extends Type[Array[Byte]] {
   def string = s"bytes$bits"
 
   def encode(t: Array[Byte]): Array[Byte] =
