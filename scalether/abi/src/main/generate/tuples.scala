@@ -61,8 +61,3 @@ for (i <- 2 to 22) {
   writer.close()
   out.close()
 }
-
-for (i <- 3 to 22) {
-  val args = for(j <- 1 until i) yield s"types($j)"
-  println(s"case $i => Tuple${i}Type(types.head, ${args.mkString(", ")})")
-}
