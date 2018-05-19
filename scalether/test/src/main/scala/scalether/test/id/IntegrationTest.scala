@@ -1,10 +1,9 @@
-package scalether.test
+package scalether.test.id
 
 import java.math.BigInteger
 
-import cats.Functor
-import io.daonomic.cats.MonadThrowable
-import cats.implicits._
+import cats.Id
+import io.daonomic.cats.implicits._
 import scalether.abi._
 import scalether.abi.array._
 import scalether.abi.tuple._
@@ -17,46 +16,46 @@ import scalether.util.Hex
 import scala.language.higherKinds
 
 
-class IntegrationTest[F[_]](address: Address, sender: TransactionSender[F])(implicit f: MonadThrowable[F])
-  extends Contract[F](address, sender) {
+class IntegrationTest(address: Address, sender: IdTransactionSender)
+  extends Contract[Id](address, sender) {
 
   import IntegrationTest._
 
-  def state: F[BigInteger] =
-    PreparedTransaction(address, stateSignature, (), sender).call()
+  def state: BigInteger =
+    IdPreparedTransaction(address, stateSignature, (), sender).call()
 
-  def setState(_state: BigInteger): PreparedTransaction[F, Unit] =
-    PreparedTransaction(address, setStateSignature, _state, sender)
+  def setState(_state: BigInteger): IdPreparedTransaction[Unit] =
+    IdPreparedTransaction(address, setStateSignature, _state, sender)
 
-  def checkStructsWithString(structs: Array[(String, BigInteger)]): PreparedTransaction[F, Unit] =
-    PreparedTransaction(address, checkStructsWithStringSignature, structs, sender)
+  def checkStructsWithString(structs: Array[(String, BigInteger)]): IdPreparedTransaction[Unit] =
+    IdPreparedTransaction(address, checkStructsWithStringSignature, structs, sender)
 
-  def getStructWithString: F[(String, BigInteger)] =
-    PreparedTransaction(address, getStructWithStringSignature, (), sender).call()
+  def getStructWithString: (String, BigInteger) =
+    IdPreparedTransaction(address, getStructWithStringSignature, (), sender).call()
 
-  def getStructsWithString: F[Array[(String, BigInteger)]] =
-    PreparedTransaction(address, getStructsWithStringSignature, (), sender).call()
+  def getStructsWithString: Array[(String, BigInteger)] =
+    IdPreparedTransaction(address, getStructsWithStringSignature, (), sender).call()
 
-  def setRates(rates: Array[(Address, BigInteger)]): PreparedTransaction[F, Unit] =
-    PreparedTransaction(address, setRatesSignature, rates, sender)
+  def setRates(rates: Array[(Address, BigInteger)]): IdPreparedTransaction[Unit] =
+    IdPreparedTransaction(address, setRatesSignature, rates, sender)
 
-  def setRate(_rate: (Address, BigInteger)): PreparedTransaction[F, Unit] =
-    PreparedTransaction(address, setRateSignature, _rate, sender)
+  def setRate(_rate: (Address, BigInteger)): IdPreparedTransaction[Unit] =
+    IdPreparedTransaction(address, setRateSignature, _rate, sender)
 
-  def getRate(test: BigInteger): PreparedTransaction[F, (Address, BigInteger)] =
-    PreparedTransaction(address, getRateSignature, test, sender)
+  def getRate(test: BigInteger): IdPreparedTransaction[(Address, BigInteger)] =
+    IdPreparedTransaction(address, getRateSignature, test, sender)
 
-  def getRate: PreparedTransaction[F, (Address, BigInteger)] =
-    PreparedTransaction(address, getRate1Signature, (), sender)
+  def getRate: IdPreparedTransaction[(Address, BigInteger)] =
+    IdPreparedTransaction(address, getRate1Signature, (), sender)
 
-  def emitSimpleEvent(topic: String, value: String): PreparedTransaction[F, Unit] =
-    PreparedTransaction(address, emitSimpleEventSignature, (topic, value), sender)
+  def emitSimpleEvent(topic: String, value: String): IdPreparedTransaction[Unit] =
+    IdPreparedTransaction(address, emitSimpleEventSignature, (topic, value), sender)
 
-  def emitAddressEvent(topic: Address, value: String): PreparedTransaction[F, Unit] =
-    PreparedTransaction(address, emitAddressEventSignature, (topic, value), sender)
+  def emitAddressEvent(topic: Address, value: String): IdPreparedTransaction[Unit] =
+    IdPreparedTransaction(address, emitAddressEventSignature, (topic, value), sender)
 
-  def emitMixedEvent(topic: Address, value: String, test: Address): PreparedTransaction[F, Unit] =
-    PreparedTransaction(address, emitMixedEventSignature, (topic, value, test), sender)
+  def emitMixedEvent(topic: Address, value: String, test: Address): IdPreparedTransaction[Unit] =
+    IdPreparedTransaction(address, emitMixedEventSignature, (topic, value, test), sender)
 
 }
 
@@ -73,12 +72,13 @@ object IntegrationTest extends ContractObject {
   def deployTransactionData: Binary =
     Binary(Hex.toBytes(bin) ++ encodeArgs)
 
-  def deploy[F[_]](sender: TransactionSender[F])(implicit f: Functor[F]): F[Word] =
+  def deploy(sender: IdTransactionSender): Word =
     sender.sendTransaction(request.Transaction(data = deployTransactionData))
 
-  def deployAndWait[F[_]](sender: TransactionSender[F], poller: TransactionPoller[F])(implicit m: MonadThrowable[F]): F[IntegrationTest[F]] =
-      poller.waitForTransaction(deploy(sender))
-      .map(receipt => new IntegrationTest[F](receipt.contractAddress, sender))
+  def deployAndWait(sender: IdTransactionSender, poller: IdTransactionPoller): IntegrationTest = {
+    val receipt = poller.waitForTransaction(deploy(sender))
+    new IntegrationTest(receipt.contractAddress, sender)
+  }
 
   val stateSignature = Signature("state", UnitType, Tuple1Type(Uint256Type))
   val setStateSignature = Signature("setState", Tuple1Type(Uint256Type), UnitType)

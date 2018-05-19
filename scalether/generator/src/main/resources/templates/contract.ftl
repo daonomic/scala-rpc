@@ -1,3 +1,12 @@
+<#macro monadic><#compress>
+    <#if F?has_content && F == "Id">
+        <#nested/>
+    <#elseif F?has_content>
+        ${F}[<#nested/>]
+    <#else>
+        F[<#nested/>]
+    </#if>
+</#compress></#macro>
 <#macro monad><#compress>
     <#if F?has_content>
         ${F}
@@ -181,7 +190,7 @@ class ${truffle.name}<@monad_param/>(address: Address, sender: <@sender/>)<@impl
     <#if item.type != 'event' && item.name??>
       <#assign signatureName="${get_name(signatures, item.name)}Signature"/>
             <#if item.constant>
-  def ${item.name}<@args item.inputs/>: <@monad/>[<@tuple_type item.outputs/>] =
+  def ${item.name}<@args item.inputs/>: <@monadic><@tuple_type item.outputs/></@> =
     <#if preparedTransaction?has_content>${preparedTransaction}<#else>PreparedTransaction</#if>(address, ${signatureName}, <@args_tuple item.inputs/>, sender).call()
             <#else>
   def ${item.name}<@args item.inputs/>: <#if preparedTransaction?has_content>${preparedTransaction}<#else>PreparedTransaction</#if>[<#if !(preparedTransaction?has_content)><@monad/>, </#if><@tuple_type item.outputs/>] =
@@ -206,12 +215,19 @@ object ${truffle.name} extends ContractObject {
   def deployTransactionData<@args constructor_args/>: Binary =
     Binary(Hex.toBytes(bin) ++ encodeArgs<@args_params constructor_args/>)
 
-  def deploy<@monad_param/>(sender: <@sender/>)<@args constructor_args/><@implicit>(implicit f: Functor[<@monad/>])</@>: <@monad/>[Word] =
+  def deploy<@monad_param/>(sender: <@sender/>)<@args constructor_args/><@implicit>(implicit f: Functor[<@monad/>])</@>: <@monadic>Word</@> =
     sender.sendTransaction(request.Transaction(data = deployTransactionData<@args_params constructor_args/>))
 
+  <#if F?has_content && F == "Id">
+  def deployAndWait<@monad_param/>(sender: <@sender/>, poller: <@poller/>)<@args constructor_args/><@implicit>(implicit m: MonadThrowable[<@monad/>])</@>: <@monadic>${truffle.name}<#if !(F?has_content)>[F]</#if></@> = {
+    val receipt = poller.waitForTransaction(deploy(sender)<@args_params constructor_args/>)
+    new ${truffle.name}<#if !(F?has_content)>[F]</#if>(receipt.contractAddress, sender)
+  }
+  <#else>
   def deployAndWait<@monad_param/>(sender: <@sender/>, poller: <@poller/>)<@args constructor_args/><@implicit>(implicit m: MonadThrowable[<@monad/>])</@>: <@monad/>[${truffle.name}<#if !(F?has_content)>[F]</#if>] =
       poller.waitForTransaction(deploy(sender)<@args_params constructor_args/>)
       .map(receipt => new ${truffle.name}<#if !(F?has_content)>[F]</#if>(receipt.contractAddress, sender))
+  </#if>
   </#if>
 
   <#assign ignore=signatures.clear()/>

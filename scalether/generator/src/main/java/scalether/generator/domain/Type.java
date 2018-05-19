@@ -2,7 +2,8 @@ package scalether.generator.domain;
 
 public enum Type {
     SCALA("", "", "", "", "", "", "cats.Functor", "io.daonomic.cats.MonadThrowable", "cats.implicits._"),
-    MONO("Mono", "reactor.core.publisher.Mono", "io.daonomic.cats.implicits._", "MonoTransactionSender", "MonoTransactionPoller", "MonoPreparedTransaction");
+    MONO("Mono", "reactor.core.publisher.Mono", "io.daonomic.cats.implicits._", "MonoTransactionSender", "MonoTransactionPoller", "MonoPreparedTransaction"),
+    ID("Id", "cats.Id", "io.daonomic.cats.implicits._", "IdTransactionSender", "IdTransactionPoller", "IdPreparedTransaction");
 
     private final String f;
     private final String monadType;
