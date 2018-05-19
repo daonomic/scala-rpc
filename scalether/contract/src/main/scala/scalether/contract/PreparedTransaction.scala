@@ -2,11 +2,11 @@ package scalether.contract
 
 import java.math.BigInteger
 
-import cats.MonadError
 import cats.implicits._
+import io.daonomic.cats.MonadThrowable
 import scalether.abi.Signature
-import scalether.domain.{Address, Binary, Word}
 import scalether.domain.request.Transaction
+import scalether.domain.{Address, Binary, Word}
 import scalether.transaction.TransactionSender
 
 import scala.language.higherKinds
@@ -18,7 +18,7 @@ class PreparedTransaction[F[_], O](val address: Address,
                                    val value: BigInteger,
                                    val gas: BigInteger,
                                    val gasPrice: BigInteger)
-                                  (implicit m: MonadError[F, Throwable]) {
+                                  (implicit m: MonadThrowable[F]) {
 
   def withGas(newGas: BigInteger): PreparedTransaction[F, O] =
     new PreparedTransaction[F, O](address, signature, data, sender, value, newGas, gasPrice)
@@ -51,6 +51,6 @@ object PreparedTransaction {
                         value: BigInteger = null,
                         gas: BigInteger = null,
                         gasPrice: BigInteger = null)
-                       (implicit m: MonadError[F, Throwable]): PreparedTransaction[F, O] =
+                       (implicit m: MonadThrowable[F]): PreparedTransaction[F, O] =
     new PreparedTransaction[F, O](address, signature, Binary(signature.encode(in)), sender, value, gas, gasPrice)
 }

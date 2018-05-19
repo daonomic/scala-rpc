@@ -2,14 +2,14 @@ package scalether.core
 
 import java.math.BigInteger
 
-import cats.MonadError
+import io.daonomic.cats.MonadThrowable
 import io.daonomic.rpc.RpcTransport
 import scalether.domain.response.parity.Trace
 
 import scala.language.higherKinds
 
 class Parity[F[_]](transport: RpcTransport[F])
-                  (implicit me: MonadError[F, Throwable])
+                  (implicit me: MonadThrowable[F])
   extends EthereumRpcClient[F](transport) {
 
   def traceTransaction(txHash: String): F[List[Trace]] = {

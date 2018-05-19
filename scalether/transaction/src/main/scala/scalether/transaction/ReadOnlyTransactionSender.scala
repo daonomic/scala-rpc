@@ -2,15 +2,15 @@ package scalether.transaction
 
 import java.math.BigInteger
 
-import cats.MonadError
+import io.daonomic.cats.MonadThrowable
 import scalether.core.Ethereum
-import scalether.domain.{Address, Binary, Word}
 import scalether.domain.request.Transaction
+import scalether.domain.{Address, Binary, Word}
 
 import scala.language.higherKinds
 
 class ReadOnlyTransactionSender[F[_]](val ethereum: Ethereum[F], val from: Address)
-                                     (implicit m: MonadError[F, Throwable])
+                                     (implicit m: MonadThrowable[F])
   extends TransactionSender[F] {
 
   override def call(transaction: Transaction): F[Binary] =

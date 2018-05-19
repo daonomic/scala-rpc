@@ -3,16 +3,14 @@ package io.daonomic.bitcoin.rpc.core
 import java.math.BigInteger
 
 import cats.implicits._
-import cats.MonadError
 import io.daonomic.bitcoin.rpc.domain.{Block, Transaction}
-import io.daonomic.rpc.RpcHttpClient
-import io.daonomic.rpc.JsonConverter
-import io.daonomic.rpc.RpcTransport
+import io.daonomic.cats.MonadThrowable
+import io.daonomic.rpc.{JsonConverter, RpcHttpClient, RpcTransport}
 
 import scala.language.higherKinds
 
 class Bitcoind[F[_]](transport: RpcTransport[F])
-                    (implicit me: MonadError[F, Throwable])
+                    (implicit me: MonadThrowable[F])
   extends RpcHttpClient[F](new JsonConverter(), transport) {
 
   def getBlockCount: F[BigInteger] =

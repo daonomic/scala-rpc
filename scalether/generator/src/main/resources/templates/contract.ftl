@@ -172,7 +172,7 @@ import scala.language.higherKinds
   </#if>
 </#function>
 
-class ${truffle.name}<@monad_param/>(address: Address, sender: <@sender/>)<@implicit>(implicit f: MonadError[<@monad/>, Throwable])</@>
+class ${truffle.name}<@monad_param/>(address: Address, sender: <@sender/>)<@implicit>(implicit f: MonadThrowable[<@monad/>])</@>
   extends Contract[<@monad/>](address, sender) {
 
   import ${truffle.name}._
@@ -209,7 +209,7 @@ object ${truffle.name} extends ContractObject {
   def deploy<@monad_param/>(sender: <@sender/>)<@args constructor_args/><@implicit>(implicit f: Functor[<@monad/>])</@>: <@monad/>[Word] =
     sender.sendTransaction(request.Transaction(data = deployTransactionData<@args_params constructor_args/>))
 
-  def deployAndWait<@monad_param/>(sender: <@sender/>, poller: <@poller/>)<@args constructor_args/><@implicit>(implicit m: MonadError[<@monad/>, Throwable])</@>: <@monad/>[${truffle.name}<#if !(F?has_content)>[F]</#if>] =
+  def deployAndWait<@monad_param/>(sender: <@sender/>, poller: <@poller/>)<@args constructor_args/><@implicit>(implicit m: MonadThrowable[<@monad/>])</@>: <@monad/>[${truffle.name}<#if !(F?has_content)>[F]</#if>] =
       poller.waitForTransaction(deploy(sender)<@args_params constructor_args/>)
       .map(receipt => new ${truffle.name}<#if !(F?has_content)>[F]</#if>(receipt.contractAddress, sender))
   </#if>

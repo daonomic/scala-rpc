@@ -2,7 +2,7 @@ package scalether.test
 
 import java.math.BigInteger
 
-import cats.implicits._
+import io.daonomic.cats.implicits._
 import org.scalacheck.Gen
 import org.scalatest.FlatSpec
 import org.scalatest.prop.PropertyChecks

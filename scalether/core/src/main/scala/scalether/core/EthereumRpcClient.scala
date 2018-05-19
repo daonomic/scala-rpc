@@ -1,15 +1,13 @@
 package scalether.core
 
-import cats.MonadError
-import io.daonomic.rpc.RpcHttpClient
-import io.daonomic.rpc.JsonConverter
-import io.daonomic.rpc.RpcTransport
+import io.daonomic.cats.MonadThrowable
+import io.daonomic.rpc.{JsonConverter, RpcHttpClient, RpcTransport}
 import scalether.core.json.EthereumJacksonModule
 
 import scala.language.higherKinds
 
 class EthereumRpcClient[F[_]](transport: RpcTransport[F])
-                          (implicit me: MonadError[F, Throwable])
+                          (implicit me: MonadThrowable[F])
   extends RpcHttpClient[F](EthereumRpcClient.jsonConverter, transport) {
 
 }

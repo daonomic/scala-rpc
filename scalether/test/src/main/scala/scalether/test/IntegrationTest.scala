@@ -2,8 +2,9 @@ package scalether.test
 
 import java.math.BigInteger
 
-import cats.{Functor, MonadError}
 import cats.implicits._
+import cats.{Functor}
+import io.daonomic.cats.MonadThrowable
 import scalether.abi._
 import scalether.abi.array._
 import scalether.abi.tuple._
@@ -16,7 +17,7 @@ import scalether.util.Hex
 import scala.language.higherKinds
 
 
-class IntegrationTest[F[_]](address: Address, sender: TransactionSender[F])(implicit f: MonadError[F, Throwable])
+class IntegrationTest[F[_]](address: Address, sender: TransactionSender[F])(implicit f: MonadThrowable[F])
   extends Contract[F](address, sender) {
 
   import IntegrationTest._
@@ -75,7 +76,7 @@ object IntegrationTest extends ContractObject {
   def deploy[F[_]](sender: TransactionSender[F])(implicit f: Functor[F]): F[Word] =
     sender.sendTransaction(request.Transaction(data = deployTransactionData))
 
-  def deployAndWait[F[_]](sender: TransactionSender[F], poller: TransactionPoller[F])(implicit m: MonadError[F, Throwable]): F[IntegrationTest[F]] =
+  def deployAndWait[F[_]](sender: TransactionSender[F], poller: TransactionPoller[F])(implicit m: MonadThrowable[F]): F[IntegrationTest[F]] =
       poller.waitForTransaction(deploy(sender))
       .map(receipt => new IntegrationTest[F](receipt.contractAddress, sender))
 
