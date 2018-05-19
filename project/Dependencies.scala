@@ -1,7 +1,7 @@
 import sbt._
 
 object Dependencies {
-  val fullScalaVersion = "2.12.5"
+  val fullScalaVersion = "2.12.6"
   val jacksonVersion = "2.9.4"
 
   val slf4jApi = "org.slf4j" % "slf4j-api" % "1.7.25"
