@@ -2,17 +2,17 @@ package io.daonomic.blockchain.transfer
 
 import java.math.BigInteger
 
-import cats.MonadError
 import cats.implicits._
 import io.daonomic.blockchain._
 import io.daonomic.blockchain.common.AbstractListenService
 import io.daonomic.blockchain.poller.Notifier
 import io.daonomic.blockchain.state.State
+import io.daonomic.cats.MonadThrowable
 
 import scala.language.higherKinds
 
 class TransferListenService[F[_]](blockchain: Blockchain[F], confidence: Int, listener: TransferListener[F], state: State[BigInteger, F])
-                                 (implicit m: MonadError[F, Throwable], n: Notifier[F])
+                                 (implicit m: MonadThrowable[F], n: Notifier[F])
   extends AbstractListenService[F](confidence, state) {
 
   def fetchAndNotify(latestBlock: BigInteger)(block: BigInteger): F[Unit] =

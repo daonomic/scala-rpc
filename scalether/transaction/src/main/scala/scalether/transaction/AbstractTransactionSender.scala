@@ -3,15 +3,15 @@ package scalether.transaction
 import java.math.BigInteger
 
 import cats.implicits._
-import cats.MonadError
+import io.daonomic.cats.MonadThrowable
 import scalether.core.Ethereum
-import scalether.domain.{Address, Binary}
 import scalether.domain.request.Transaction
+import scalether.domain.{Address, Binary}
 
 import scala.language.higherKinds
 
 abstract class AbstractTransactionSender[F[_]](val ethereum: Ethereum[F], val from: Address, val gas: BigInteger, val gasPriceProvider: GasPriceProvider[F])
-                                              (implicit me: MonadError[F, Throwable])
+                                              (implicit me: MonadThrowable[F])
   extends TransactionSender[F] {
 
   def call(transaction: Transaction): F[Binary] =

@@ -1,9 +1,8 @@
 package io.daonomic.cats
 
-import cats.MonadError
 import reactor.core.publisher.Mono
 
-class MonoInstance extends MonadError[Mono, Throwable] {
+class MonoInstance extends MonadThrowable[Mono] {
   def flatMap[A, B](fa: Mono[A])(f: A => Mono[B]): Mono[B] =
     fa.flatMap(a => f(a))
 

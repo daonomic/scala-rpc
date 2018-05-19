@@ -1,7 +1,7 @@
 package io.daonomic.rpc
 
-import cats.MonadError
 import cats.implicits._
+import io.daonomic.cats.MonadThrowable
 import io.daonomic.rpc.domain.{Error, Request, Response}
 import org.slf4j.{Logger, LoggerFactory}
 
@@ -9,7 +9,7 @@ import scala.language.higherKinds
 import scala.reflect.Manifest
 
 class RpcHttpClient[F[_]](jsonConverter: JsonConverter, transport: RpcTransport[F])
-                         (implicit me: MonadError[F, Throwable]) {
+                         (implicit me: MonadThrowable[F]) {
 
   private val logger: Logger = LoggerFactory.getLogger(getClass)
 
@@ -17,7 +17,7 @@ class RpcHttpClient[F[_]](jsonConverter: JsonConverter, transport: RpcTransport[
              (implicit mf: Manifest[T]): F[T] = {
     execOption[T](method, params: _*).flatMap {
       case Some(v) => me.pure(v)
-      case None => me.raiseError(new RpcException(Error.default))
+      case None => me.raiseError(new RpcCodeException(Error.default))
     }
   }
 
@@ -26,7 +26,7 @@ class RpcHttpClient[F[_]](jsonConverter: JsonConverter, transport: RpcTransport[
     execute[T](Request(1, method, params: _*)).flatMap {
       response =>
         response.error match {
-          case Some(r) => me.raiseError(new RpcException(r))
+          case Some(r) => me.raiseError(new RpcCodeException(r))
           case None => me.pure(response.result)
         }
     }

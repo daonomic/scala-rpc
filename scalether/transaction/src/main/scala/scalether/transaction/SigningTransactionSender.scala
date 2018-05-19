@@ -2,13 +2,12 @@ package scalether.transaction
 
 import java.math.BigInteger
 
-import cats.{Monad, MonadError}
 import cats.implicits._
+import io.daonomic.cats.MonadThrowable
 import org.web3j.crypto.Keys
 import scalether.core.Ethereum
-import scalether.domain.{Address, Binary, Word}
 import scalether.domain.request.Transaction
-import scalether.util.Hex
+import scalether.domain.{Address, Binary, Word}
 
 import scala.language.higherKinds
 
@@ -17,7 +16,7 @@ class SigningTransactionSender[F[_]](ethereum: Ethereum[F],
                                      privateKey: BigInteger,
                                      gas: BigInteger,
                                      gasPrice: GasPriceProvider[F])
-                                    (implicit m: MonadError[F, Throwable])
+                                    (implicit m: MonadThrowable[F])
   extends AbstractTransactionSender[F](ethereum, Address.apply(Keys.getAddressFromPrivateKey(privateKey)), gas, gasPrice) {
 
   private val signer = new TransactionSigner(privateKey)

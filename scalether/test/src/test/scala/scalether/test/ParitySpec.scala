@@ -1,6 +1,6 @@
 package scalether.test
 
-import cats.implicits._
+import io.daonomic.cats.implicits._
 import io.daonomic.rpc.ManualTag
 import io.daonomic.rpc.tries.ScalajHttpTransport
 import org.scalatest.FlatSpec

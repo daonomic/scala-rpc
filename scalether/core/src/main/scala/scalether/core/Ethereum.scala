@@ -2,7 +2,7 @@ package scalether.core
 
 import java.math.BigInteger
 
-import cats.MonadError
+import io.daonomic.cats.MonadThrowable
 import io.daonomic.rpc.RpcTransport
 import scalether.domain.request.{LogFilter, Transaction}
 import scalether.domain.response.{Block, Log, TransactionReceipt}
@@ -11,7 +11,7 @@ import scalether.domain.{Address, Binary, Word, response}
 import scala.language.higherKinds
 
 class Ethereum[F[_]](transport: RpcTransport[F])
-                    (implicit me: MonadError[F, Throwable])
+                    (implicit me: MonadThrowable[F])
   extends EthereumRpcClient[F](transport) {
 
   def web3ClientVersion(): F[String] =

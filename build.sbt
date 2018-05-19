@@ -17,9 +17,13 @@ lazy val cats = project.common
   .settings(bintrayPackage := "mono-cats")
 
 lazy val core = project.common
-  .dependsOn(domain)
+  .dependsOn(domain, cats)
 
 lazy val `transport-try` = (project in file("transport/try"))
+  .transport
+  .dependsOn(core, `test-common` % "test")
+
+lazy val `transport-id` = (project in file("transport/id"))
   .transport
   .dependsOn(core, `test-common` % "test")
 
@@ -99,7 +103,7 @@ lazy val root = (project in file("."))
   .settings(skip in publish := true)
   .aggregate(
     domain, cats, core,
-    `transport-try`, `transport-mono`,
+    `transport-try`, `transport-mono`, `transport-id`,
     `blockchain-poller`, `blockchain-listener`,
     `scalether-util`, `scalether-domain`, `scalether-core`, `scalether-abi`, `scalether-transaction`,
     `scalether-listener`, `scalether-contract`, `scalether-generator`, `scalether-test`,

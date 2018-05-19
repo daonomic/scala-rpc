@@ -2,19 +2,16 @@ package scalether.test
 
 import java.math.BigInteger
 
-import cats.{Functor, Monad, MonadError}
-import cats.implicits._
+import io.daonomic.cats.MonadThrowable
 import scalether.abi._
-import scalether.abi.array._
 import scalether.abi.tuple._
 import scalether.contract._
 import scalether.domain._
 import scalether.transaction._
-import scalether.util.Hex
 
 import scala.language.higherKinds
 
-class Token[F[_]](address: Address, sender: TransactionSender[F])(implicit m: MonadError[F, Throwable])
+class Token[F[_]](address: Address, sender: TransactionSender[F])(implicit m: MonadThrowable[F])
   extends Contract[F](address, sender) {
 
   def approve(spender: Address, value: BigInteger): PreparedTransaction[F, Boolean] =

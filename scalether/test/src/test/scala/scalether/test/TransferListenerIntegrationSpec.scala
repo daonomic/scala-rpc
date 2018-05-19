@@ -2,7 +2,7 @@ package scalether.test
 
 import java.math.BigInteger
 
-import cats.implicits._
+import io.daonomic.cats.implicits._
 import io.daonomic.blockchain.block.{BlockListenService, BlockListenerImpl}
 import io.daonomic.blockchain.poller.tries.implicits._
 import io.daonomic.blockchain.state.VarState
