@@ -2,7 +2,8 @@ package scalether.domain.response
 
 import java.math.BigInteger
 
-import scalether.domain.{Address, Binary, Word}
+import io.daonomic.rpc.domain.{Binary, Word}
+import scalether.domain.Address
 
 case class Log(logIndex: BigInteger,
                transactionIndex: BigInteger,

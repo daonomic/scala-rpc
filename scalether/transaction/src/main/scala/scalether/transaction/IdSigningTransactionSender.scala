@@ -4,8 +4,8 @@ import java.math.BigInteger
 
 import cats.Id
 import io.daonomic.cats.implicits._
+import io.daonomic.rpc.domain.Word
 import scalether.core.IdEthereum
-import scalether.domain.Word
 import scalether.domain.request.Transaction
 
 class IdSigningTransactionSender(ethereum: IdEthereum, nonceProvider: IdNonceProvider, privateKey: BigInteger, gas: BigInteger, gasPrice: IdGasPriceProvider)

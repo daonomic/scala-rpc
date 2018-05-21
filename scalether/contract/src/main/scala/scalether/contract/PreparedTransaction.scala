@@ -4,9 +4,10 @@ import java.math.BigInteger
 
 import cats.implicits._
 import io.daonomic.cats.MonadThrowable
+import io.daonomic.rpc.domain.{Binary, Word}
 import scalether.abi.Signature
 import scalether.domain.request.Transaction
-import scalether.domain.{Address, Binary, Word}
+import scalether.domain.Address
 import scalether.transaction.TransactionSender
 
 import scala.language.higherKinds
@@ -31,7 +32,7 @@ class PreparedTransaction[F[_], O](val address: Address,
 
   def call(): F[O] =
     sender.call(Transaction(to = address, data = data, value = value, gas = gas, gasPrice = gasPrice))
-      .map(binary => signature.decode(binary.bytes))
+      .map(binary => signature.decode(binary))
 
   def execute(): F[Word] =
     sender.sendTransaction(Transaction(to = address, data = data, value = value, gas = gas, gasPrice = gasPrice))
@@ -52,5 +53,5 @@ object PreparedTransaction {
                         gas: BigInteger = null,
                         gasPrice: BigInteger = null)
                        (implicit m: MonadThrowable[F]): PreparedTransaction[F, O] =
-    new PreparedTransaction[F, O](address, signature, Binary(signature.encode(in)), sender, value, gas, gasPrice)
+    new PreparedTransaction[F, O](address, signature, signature.encode(in), sender, value, gas, gasPrice)
 }

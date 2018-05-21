@@ -44,11 +44,11 @@ class AbiTupleIntegrationSpec extends FlatSpec with PropertyChecks with Integrat
   }
 
   it should "encode" in {
-    println(Hex.prefixed(Tuple2Type(StringType, Uint256Type).encode("", BigInteger.ZERO)))
+    println(Tuple2Type(StringType, Uint256Type).encode("", BigInteger.ZERO))
   }
 
   it should "encode array" in {
-    println(Hex.prefixed(VarArrayType(Tuple2Type(StringType, Uint256Type)).encode(Array(("", BigInteger.ZERO)))))
+    println(VarArrayType(Tuple2Type(StringType, Uint256Type)).encode(Array(("", BigInteger.ZERO))))
   }
 
   it should "decode struct with string" in {

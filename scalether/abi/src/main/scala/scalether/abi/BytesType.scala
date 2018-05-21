@@ -2,6 +2,8 @@ package scalether.abi
 
 import java.math.BigInteger
 
+import io.daonomic.rpc.domain
+import io.daonomic.rpc.domain.Binary
 import scalether.util.{Bytes, Padding}
 
 object BytesType extends Type[Array[Byte]] {
@@ -9,24 +11,24 @@ object BytesType extends Type[Array[Byte]] {
 
   override def size: Option[Int] = None
 
-  def encode(bytes: Array[Byte]): Array[Byte] =
+  def encode(bytes: Array[Byte]): Binary =
     Uint256Type.encode(BigInteger.valueOf(bytes.length)) ++ Padding.padRight(bytes, Bytes.ZERO)
 
-  def decode(bytes: Array[Byte], offset: Int): Decoded[Array[Byte]] = {
-    val ld = Uint256Type.decode(bytes, offset)
+  def decode(data: domain.Bytes, offset: Int): Decoded[Array[Byte]] = {
+    val ld = Uint256Type.decode(data, offset)
     val length = ld.value.intValue()
-    Decoded(bytes.slice(ld.offset, ld.offset + length), ld.offset + Padding.getLength(length))
+    Decoded(data.slice(ld.offset, ld.offset + length), ld.offset + Padding.getLength(length))
   }
 }
 
 case class FixedBytesType(bits: Short) extends Type[Array[Byte]] {
   def string = s"bytes$bits"
 
-  def encode(t: Array[Byte]): Array[Byte] =
-    Padding.padRight(t.slice(0, bits), Bytes.ZERO)
+  def encode(t: Array[Byte]): Binary =
+    Binary(Padding.padRight(t.slice(0, bits), Bytes.ZERO))
 
-  def decode(bytes: Array[Byte], offset: Int): Decoded[Array[Byte]] = {
-    Decoded(bytes.slice(offset, offset + bits), offset + 32)
+  def decode(data: domain.Bytes, offset: Int): Decoded[Array[Byte]] = {
+    Decoded(data.slice(offset, offset + bits), offset + 32)
   }
 }
 

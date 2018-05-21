@@ -2,17 +2,19 @@ package scalether.abi
 
 import java.math.BigInteger
 
-import scalether.util.Padding.padLeft
+import io.daonomic.rpc.domain
+import io.daonomic.rpc.domain.Binary
 import scalether.util.Bytes
+import scalether.util.Padding.padLeft
 
 case class IntType(bits: Short) extends Type[BigInteger] {
   def string = s"int$bits"
 
-  def encode(t: BigInteger): Array[Byte] =
-    padLeft(t.toByteArray, if (t.compareTo(BigInteger.ZERO) >= 0) Bytes.ZERO else Bytes.ONE)
+  def encode(t: BigInteger): Binary =
+    Binary(padLeft(t.toByteArray, if (t.compareTo(BigInteger.ZERO) >= 0) Bytes.ZERO else Bytes.ONE))
 
-  def decode(bytes: Array[Byte], offset: Int): Decoded[BigInteger] =
-    Decoded(new BigInteger(bytes.slice(offset, offset + 32)), offset + 32)
+  def decode(data: domain.Bytes, offset: Int): Decoded[BigInteger] =
+    Decoded(new BigInteger(data.slice(offset, offset + 32).bytes), offset + 32)
 }
 
 object Int8Type extends IntType(8)

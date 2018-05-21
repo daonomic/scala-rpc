@@ -3,6 +3,7 @@ package scalether.domain
 import java.nio.charset.StandardCharsets
 
 import com.fasterxml.jackson.databind.annotation.{JsonDeserialize, JsonSerialize}
+import io.daonomic.rpc.domain.{Binary, Bytes}
 import org.web3j.crypto.Hash
 import scalether.domain.jackson.{AddressDeserializer, AddressSerializer}
 import scalether.util.Hex

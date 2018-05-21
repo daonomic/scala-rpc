@@ -2,10 +2,10 @@ package scalether.test
 
 import io.daonomic.cats.implicits._
 import io.daonomic.rpc.ManualTag
+import io.daonomic.rpc.domain.Word
 import io.daonomic.rpc.tries.ScalajHttpTransport
 import org.scalatest.FlatSpec
 import scalether.core.{Ethereum, Parity}
-import scalether.domain.Word
 
 import scala.util.Try
 

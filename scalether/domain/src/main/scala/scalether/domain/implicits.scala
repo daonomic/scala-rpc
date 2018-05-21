@@ -2,6 +2,8 @@ package scalether.domain
 
 import java.math.BigInteger
 
+import io.daonomic.rpc.domain.Word
+
 import scala.language.implicitConversions
 
 object implicits {

@@ -3,8 +3,8 @@ package scalether.transaction
 import java.math.BigInteger
 
 import cats.Id
+import io.daonomic.rpc.domain.{Binary, Word}
 import scalether.domain.request.Transaction
-import scalether.domain.{Binary, Word}
 
 trait IdTransactionSender extends TransactionSender[Id] {
   def call(transaction: Transaction): Binary

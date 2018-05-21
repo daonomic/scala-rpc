@@ -4,10 +4,11 @@ import java.math.BigInteger
 
 import cats.implicits._
 import io.daonomic.cats.MonadThrowable
+import io.daonomic.rpc.domain.{Binary, Word}
 import org.web3j.crypto.Keys
 import scalether.core.Ethereum
 import scalether.domain.request.Transaction
-import scalether.domain.{Address, Binary, Word}
+import scalether.domain.Address
 
 import scala.language.higherKinds
 

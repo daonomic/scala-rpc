@@ -1,7 +1,7 @@
-package scalether.domain
+package io.daonomic.rpc.domain
 
 import com.fasterxml.jackson.databind.annotation.{JsonDeserialize, JsonSerialize}
-import scalether.domain.jackson.{WordDeserializer, WordSerializer}
+import io.daonomic.rpc.domain.jackson.{WordDeserializer, WordSerializer}
 import scalether.util.Hex
 
 @JsonSerialize(using = classOf[WordSerializer])

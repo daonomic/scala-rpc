@@ -1,6 +1,7 @@
 package scalether.domain.request
 
-import scalether.domain.{Address, Word}
+import io.daonomic.rpc.domain.Word
+import scalether.domain.Address
 
 import scala.annotation.varargs
 import scala.language.implicitConversions

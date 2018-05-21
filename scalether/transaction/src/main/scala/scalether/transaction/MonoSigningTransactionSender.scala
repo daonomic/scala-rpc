@@ -3,9 +3,9 @@ package scalether.transaction
 import java.math.BigInteger
 
 import io.daonomic.cats.implicits._
+import io.daonomic.rpc.domain.Word
 import reactor.core.publisher.Mono
 import scalether.core.MonoEthereum
-import scalether.domain.Word
 import scalether.domain.request.Transaction
 
 class MonoSigningTransactionSender(ethereum: MonoEthereum, nonceProvider: MonoNonceProvider, privateKey: BigInteger, gas: BigInteger, gasPrice: MonoGasPriceProvider)
