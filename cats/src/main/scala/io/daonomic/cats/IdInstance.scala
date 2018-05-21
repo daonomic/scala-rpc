@@ -2,6 +2,8 @@ package io.daonomic.cats
 
 import cats.Id
 
+import scala.annotation.tailrec
+
 class IdInstance extends MonadThrowable[Id] {
   override def raiseError[A](e: Throwable): Id[A] = throw e
 
@@ -9,7 +11,10 @@ class IdInstance extends MonadThrowable[Id] {
 
   override def flatMap[A, B](fa: Id[A])(f: A => Id[B]): Id[B] = f(fa)
 
-  override def tailRecM[A, B](a: A)(f: A => Id[Either[A, B]]): Id[B] = ???
+  @tailrec override final def tailRecM[A, B](a: A)(f: A => Either[A, B]): B = f(a) match {
+    case Left(a1) => tailRecM(a1)(f)
+    case Right(b) => b
+  }
 
   override def pure[A](x: A): Id[A] = x
 }
