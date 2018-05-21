@@ -9,7 +9,7 @@ class BoolSpec extends FlatSpec with PropertyChecks {
       val encoded = BoolType.encode(bool)
       val decoded = BoolType.decode(encoded, 0)
       assert(decoded.value == bool)
-      assert(decoded.offset == encoded.length)
+      assert(decoded.offset == encoded.bytes.length)
     }
   }
 }

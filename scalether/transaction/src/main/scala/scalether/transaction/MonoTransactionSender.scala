@@ -2,9 +2,9 @@ package scalether.transaction
 
 import java.math.BigInteger
 
+import io.daonomic.rpc.domain.{Binary, Word}
 import reactor.core.publisher.Mono
 import scalether.domain.request.Transaction
-import scalether.domain.{Binary, Word}
 
 trait MonoTransactionSender extends TransactionSender[Mono] {
   def call(transaction: Transaction): Mono[Binary]

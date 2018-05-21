@@ -3,9 +3,10 @@ package scalether.contract
 import java.math.BigInteger
 
 import io.daonomic.cats.implicits._
+import io.daonomic.rpc.domain.{Binary, Word}
 import reactor.core.publisher.Mono
 import scalether.abi.Signature
-import scalether.domain.{Address, Binary, Word}
+import scalether.domain.Address
 import scalether.transaction.MonoTransactionSender
 
 class MonoPreparedTransaction[O](address: Address,
@@ -43,5 +44,5 @@ object MonoPreparedTransaction {
                   value: BigInteger = null,
                   gas: BigInteger = null,
                   gasPrice: BigInteger = null): MonoPreparedTransaction[O] =
-    new MonoPreparedTransaction[O](address, signature, Binary(signature.encode(in)), sender, value, gas, gasPrice)
+    new MonoPreparedTransaction[O](address, signature, signature.encode(in), sender, value, gas, gasPrice)
 }

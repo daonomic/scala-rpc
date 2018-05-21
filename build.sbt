@@ -10,7 +10,10 @@ parallelExecution in ThisBuild := false
 lazy val `test-common` = project.common.tests("compile")
   .dependsOn(`scalether-domain`)
 
+lazy val util = project.common
+
 lazy val domain = project.common
+  .dependsOn(util)
 
 lazy val cats = project.common
   .settings(organization := "io.daonomic.cats")
@@ -62,12 +65,13 @@ lazy val `bitcoin-test` = (project in file("bitcoin/test"))
 //scalether
 lazy val `scalether-util` = (project in file("scalether/util"))
   .scalether
+  .dependsOn(util)
   .tests("test")
 
 lazy val `scalether-domain` = (project in file("scalether/domain"))
   .scalether
   .tests("test")
-  .dependsOn(`scalether-util`)
+  .dependsOn(domain, `scalether-util`)
 
 lazy val `scalether-core` = (project in file("scalether/core"))
   .scalether
@@ -102,7 +106,7 @@ lazy val root = (project in file("."))
   .common
   .settings(skip in publish := true)
   .aggregate(
-    domain, cats, core,
+    util, domain, cats, core,
     `transport-try`, `transport-mono`, `transport-id`,
     `blockchain-poller`, `blockchain-listener`,
     `scalether-util`, `scalether-domain`, `scalether-core`, `scalether-abi`, `scalether-transaction`,

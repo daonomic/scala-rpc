@@ -1,0 +1,45 @@
+package io.daonomic.rpc.domain
+
+import java.math.BigInteger
+
+import scalether.util.{Hex, Padding}
+
+trait Bytes {
+  def bytes: Array[Byte]
+
+  def slice(from: Int, until: Int): Binary =
+    Binary(bytes.slice(from, until))
+
+  def add(other: Bytes): Binary = {
+    Binary(bytes ++ other.bytes)
+  }
+
+  def add(other: Array[Byte]): Binary = {
+    Binary(bytes ++ other)
+  }
+
+  def ++(other: Bytes): Binary = add(other)
+
+  def ++(other: Array[Byte]): Binary = add(other)
+
+  def length: Int = bytes.length
+
+  def padded: Binary =
+    Binary.apply(Padding.padLeft(bytes, scalether.util.Bytes.ZERO))
+
+  def toBigInteger: BigInteger =
+    new BigInteger(Hex.to(bytes), 16)
+
+  override def toString: String =
+    Hex.prefixed(bytes)
+
+  override def equals(obj: scala.Any): Boolean = {
+    if (!obj.isInstanceOf[Bytes]) {
+      false
+    } else {
+      obj.asInstanceOf[Bytes].bytes.deep == bytes.deep
+    }
+  }
+
+  override def hashCode(): Int = bytes.toSeq.hashCode()
+}

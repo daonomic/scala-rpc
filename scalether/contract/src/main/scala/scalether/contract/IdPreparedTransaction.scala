@@ -4,8 +4,9 @@ import java.math.BigInteger
 
 import cats.Id
 import io.daonomic.cats.implicits._
+import io.daonomic.rpc.domain.{Binary, Word}
 import scalether.abi.Signature
-import scalether.domain.{Address, Binary, Word}
+import scalether.domain.Address
 import scalether.transaction.IdTransactionSender
 
 class IdPreparedTransaction[O](address: Address,
@@ -43,5 +44,5 @@ object IdPreparedTransaction {
                   value: BigInteger = null,
                   gas: BigInteger = null,
                   gasPrice: BigInteger = null): IdPreparedTransaction[O] =
-    new IdPreparedTransaction[O](address, signature, Binary(signature.encode(in)), sender, value, gas, gasPrice)
+    new IdPreparedTransaction[O](address, signature, signature.encode(in), sender, value, gas, gasPrice)
 }

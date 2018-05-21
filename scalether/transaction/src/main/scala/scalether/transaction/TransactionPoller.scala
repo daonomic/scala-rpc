@@ -3,8 +3,8 @@ package scalether.transaction
 import cats.Monad
 import cats.implicits._
 import io.daonomic.blockchain.poller.Poller
+import io.daonomic.rpc.domain.Word
 import scalether.core.Ethereum
-import scalether.domain.Word
 import scalether.domain.response.TransactionReceipt
 
 import scala.language.higherKinds

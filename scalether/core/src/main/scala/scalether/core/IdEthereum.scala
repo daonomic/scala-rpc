@@ -4,8 +4,9 @@ import java.math.BigInteger
 
 import io.daonomic.cats.implicits._
 import cats.Id
+import io.daonomic.rpc.domain.{Binary, Word}
 import io.daonomic.rpc.{IdRpcTransport, RpcException}
-import scalether.domain.{Address, Binary, Word}
+import scalether.domain.Address
 import scalether.domain.request.{LogFilter, Transaction}
 import scalether.domain.response
 import scalether.domain.response.{Block, Log, TransactionReceipt}

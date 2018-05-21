@@ -1,10 +1,10 @@
-package scalether.domain.jackson
+package io.daonomic.rpc.domain.jackson
 
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.core.JsonToken.VALUE_STRING
 import com.fasterxml.jackson.databind.DeserializationContext
 import com.fasterxml.jackson.databind.deser.std.StdScalarDeserializer
-import scalether.domain.Binary
+import io.daonomic.rpc.domain.Binary
 
 class BinaryDeserializer extends StdScalarDeserializer[Binary](classOf[Binary]) {
   def deserialize(jp: JsonParser, ctxt: DeserializationContext): Binary = jp.getCurrentToken match {

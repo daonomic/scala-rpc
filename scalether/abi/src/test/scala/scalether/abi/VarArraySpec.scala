@@ -2,6 +2,7 @@ package scalether.abi
 
 import java.math.BigInteger
 
+import io.daonomic.rpc.domain.Binary
 import org.scalatest.FlatSpec
 import scalether.abi.AbiTestConst._
 import scalether.abi.array.VarArrayType
@@ -10,7 +11,7 @@ class VarArraySpec extends FlatSpec {
   val arr = new VarArrayType(Uint256Type)
 
   "VarArrayType" should "decode empty array" in {
-    val result = arr.decode(zero, 0)
+    val result = arr.decode(Binary(zero), 0)
     assert(result.offset == 32)
     assert(result.value.isEmpty)
   }
@@ -23,11 +24,11 @@ class VarArraySpec extends FlatSpec {
 
   it should "encode empty array" in {
     val result = arr.encode(Array())
-    assert(result sameElements zero)
+    assert(result == Binary(zero))
   }
 
   it should "encode non-empty array" in {
     val result = arr.encode(Array(BigInteger.ZERO))
-    assert(result sameElements (one ++ zero))
+    assert(result == Binary(one ++ zero))
   }
 }

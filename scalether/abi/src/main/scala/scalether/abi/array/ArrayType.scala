@@ -2,6 +2,8 @@ package scalether.abi.array
 
 import java.math.BigInteger
 
+import io.daonomic.rpc.domain
+import io.daonomic.rpc.domain.Binary
 import scalether.abi.{Decoded, Type, Uint256Type}
 
 import scala.collection.mutable.ListBuffer
@@ -11,27 +13,27 @@ abstract class ArrayType[T](`type`: Type[T])
                            (implicit classTag: ClassTag[T])
   extends Type[Array[T]] {
 
-  def encode(value: Array[T]): Array[Byte] = {
+  def encode(value: Array[T]): Binary = {
     val head = ListBuffer[Byte]()
     val tail = ListBuffer[Byte]()
     val headSize = `type`.size.getOrElse(32) * value.length
     for (item <- value) {
       if (`type`.dynamic) {
-        head ++= Uint256Type.encode(BigInteger.valueOf(headSize + tail.size))
-        tail ++= `type`.encode(item)
+        head ++= Uint256Type.encode(BigInteger.valueOf(headSize + tail.size)).bytes
+        tail ++= `type`.encode(item).bytes
       } else {
-        head ++= `type`.encode(item)
+        head ++= `type`.encode(item).bytes
       }
     }
-    (head ++ tail).toArray
+    Binary((head ++ tail).toArray)
   }
 
-  protected def decode(length: Int, bytes: Array[Byte], offset: Int): Decoded[Array[T]] = {
+  protected def decode(length: Int, data: domain.Bytes, offset: Int): Decoded[Array[T]] = {
     if (`type`.dynamic) {
       var current = offset
       val list: IndexedSeq[T] = for (i <- 0 until length) yield {
-        val bytesOffset = Uint256Type.decode(bytes, offset + i * 32).value.intValue()
-        val decoded = `type`.decode(bytes, offset + bytesOffset)
+        val bytesOffset = Uint256Type.decode(data, offset + i * 32).value.intValue()
+        val decoded = `type`.decode(data, offset + bytesOffset)
         current = decoded.offset
         decoded.value
       }
@@ -39,7 +41,7 @@ abstract class ArrayType[T](`type`: Type[T])
     } else {
       var current = offset
       val list: IndexedSeq[T] = for (_ <- 1 to length) yield {
-        val decoded = `type`.decode(bytes, current)
+        val decoded = `type`.decode(data, current)
         current = decoded.offset
         decoded.value
       }

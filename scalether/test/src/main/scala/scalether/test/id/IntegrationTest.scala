@@ -4,6 +4,7 @@ import java.math.BigInteger
 
 import cats.Id
 import io.daonomic.cats.implicits._
+import io.daonomic.rpc.domain._
 import scalether.abi._
 import scalether.abi.array._
 import scalether.abi.tuple._
@@ -66,11 +67,11 @@ object IntegrationTest extends ContractObject {
 
   val constructor = UnitType
 
-  def encodeArgs: Array[Byte] =
+  def encodeArgs: Binary =
     constructor.encode()
 
   def deployTransactionData: Binary =
-    Binary(Hex.toBytes(bin) ++ encodeArgs)
+    Binary(Hex.toBytes(bin)) ++ encodeArgs
 
   def deploy(sender: IdTransactionSender): Word =
     sender.sendTransaction(request.Transaction(data = deployTransactionData))
@@ -130,7 +131,7 @@ object AddressEvent {
     assert(log.topics.head == event.id)
 
     val decodedData = event.decode(log.data)
-    val topic = event.indexed.type1.decode(log.topics(1).bytes, 0).value
+    val topic = event.indexed.type1.decode(log.topics(1), 0).value
     val value = decodedData
     AddressEvent(topic, value)
   }
@@ -151,8 +152,8 @@ object MixedEvent {
     assert(log.topics.head == event.id)
 
     val decodedData = event.decode(log.data)
-    val topic = event.indexed.type1.decode(log.topics(1).bytes, 0).value
-    val test = event.indexed.type2.decode(log.topics(2).bytes, 0).value
+    val topic = event.indexed.type1.decode(log.topics(1), 0).value
+    val test = event.indexed.type2.decode(log.topics(2), 0).value
     val value = decodedData
     MixedEvent(topic, test, value)
   }

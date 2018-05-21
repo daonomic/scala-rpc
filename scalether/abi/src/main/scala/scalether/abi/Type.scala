@@ -1,5 +1,6 @@
 package scalether.abi
 
+import io.daonomic.rpc.domain.{Binary, Bytes}
 import scalether.abi.array.{FixArrayType, VarArrayType}
 import scalether.abi.tuple.{TupleType, UnitType}
 
@@ -10,9 +11,9 @@ trait Type[T] {
 
   def dynamic: Boolean = size.isEmpty
 
-  def encode(value: T): Array[Byte]
+  def encode(value: T): Binary
 
-  def decode(bytes: Array[Byte], offset: Int): Decoded[T]
+  def decode(data: Bytes, offset: Int): Decoded[T]
 }
 
 object Type {

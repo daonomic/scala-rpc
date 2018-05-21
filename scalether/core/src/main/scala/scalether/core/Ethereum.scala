@@ -4,9 +4,10 @@ import java.math.BigInteger
 
 import io.daonomic.cats.MonadThrowable
 import io.daonomic.rpc.RpcTransport
+import io.daonomic.rpc.domain.{Binary, Word}
 import scalether.domain.request.{LogFilter, Transaction}
 import scalether.domain.response.{Block, Log, TransactionReceipt}
-import scalether.domain.{Address, Binary, Word, response}
+import scalether.domain.{Address, response}
 
 import scala.language.higherKinds
 

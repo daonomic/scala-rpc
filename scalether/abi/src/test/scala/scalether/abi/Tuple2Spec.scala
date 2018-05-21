@@ -24,7 +24,7 @@ class Tuple2Spec extends FlatSpec with PropertyChecks {
         Uint256Type.encode(BigInteger.valueOf(64)) ++
         Uint256Type.encode(BigInteger.valueOf(1)) ++
         Uint256Type.encode(varVal)
-      assert(encoded sameElements test)
+      assert(encoded == test)
     }
   }
 

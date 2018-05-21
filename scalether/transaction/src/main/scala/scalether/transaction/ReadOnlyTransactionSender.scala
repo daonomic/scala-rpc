@@ -3,9 +3,10 @@ package scalether.transaction
 import java.math.BigInteger
 
 import io.daonomic.cats.MonadThrowable
+import io.daonomic.rpc.domain.{Binary, Word}
 import scalether.core.Ethereum
 import scalether.domain.request.Transaction
-import scalether.domain.{Address, Binary, Word}
+import scalether.domain.Address
 
 import scala.language.higherKinds
 

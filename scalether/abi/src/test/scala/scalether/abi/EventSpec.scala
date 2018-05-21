@@ -1,8 +1,8 @@
 package scalether.abi
 
+import io.daonomic.rpc.domain.Word
 import org.scalatest.FlatSpec
 import scalether.abi.tuple.Tuple1Type
-import scalether.domain.Word
 
 class EventSpec extends FlatSpec {
   "Event" should "calculate id" in {

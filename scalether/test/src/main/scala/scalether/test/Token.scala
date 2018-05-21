@@ -49,8 +49,8 @@ object Transfer {
     assert(log.topics.head == event.id)
 
     val decodedData = event.decode(log.data)
-    val from = event.indexed.type1.decode(log.topics(1).bytes, 0).value
-    val to = event.indexed.type2.decode(log.topics(2).bytes, 0).value
+    val from = event.indexed.type1.decode(log.topics(1), 0).value
+    val to = event.indexed.type2.decode(log.topics(2), 0).value
     val value = decodedData
     Transfer(from, to, value)
   }
@@ -65,8 +65,8 @@ object Approval {
     assert(log.topics.head == event.id)
 
     val decodedData = event.decode(log.data)
-    val owner = event.indexed.type1.decode(log.topics(1).bytes, 0).value
-    val spender = event.indexed.type2.decode(log.topics(2).bytes, 0).value
+    val owner = event.indexed.type1.decode(log.topics(1), 0).value
+    val spender = event.indexed.type2.decode(log.topics(2), 0).value
     val value = decodedData
     Approval(owner, spender, value)
   }

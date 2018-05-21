@@ -2,10 +2,9 @@ package scalether.core
 
 import java.math.BigInteger
 
-import io.daonomic.rpc.domain.Response
+import io.daonomic.rpc.domain.{Response, Word}
 import io.daonomic.rpc.JsonConverter
 import org.scalatest.{FlatSpec, Matchers}
-import scalether.domain.Word
 import scalether.domain.request.{LogFilter, TopicFilter}
 
 class JsonSpec extends FlatSpec with Matchers {

@@ -2,7 +2,8 @@ package scalether.domain.response.parity
 
 import java.math.BigInteger
 
-import scalether.domain.{Address, Word}
+import io.daonomic.rpc.domain.Word
+import scalether.domain.Address
 
 case class Trace(action: Action,
                  blockHash: Word,

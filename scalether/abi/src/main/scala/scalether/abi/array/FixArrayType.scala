@@ -1,5 +1,6 @@
 package scalether.abi.array
 
+import io.daonomic.rpc.domain
 import scalether.abi.{Decoded, Type}
 
 import scala.reflect.ClassTag
@@ -14,8 +15,8 @@ class FixArrayType[T](val length: Int, val `type`: Type[T])
 
   def string = s"${`type`.string}[$length]"
 
-  def decode(bytes: Array[Byte], offset: Int): Decoded[Array[T]] =
-    decode(length, bytes, offset)
+  def decode(data: domain.Bytes, offset: Int): Decoded[Array[T]] =
+    decode(length, data, offset)
 }
 
 object FixArrayType {

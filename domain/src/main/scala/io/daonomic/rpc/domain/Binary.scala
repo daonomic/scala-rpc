@@ -1,7 +1,7 @@
-package scalether.domain
+package io.daonomic.rpc.domain
 
 import com.fasterxml.jackson.databind.annotation.{JsonDeserialize, JsonSerialize}
-import scalether.domain.jackson.{BinaryDeserializer, BinarySerializer}
+import io.daonomic.rpc.domain.jackson.{BinaryDeserializer, BinarySerializer}
 import scalether.util.Hex
 
 @JsonSerialize(using = classOf[BinarySerializer])
@@ -9,7 +9,9 @@ import scalether.util.Hex
 case class Binary(bytes: Array[Byte]) extends Bytes
 
 object Binary {
-  def apply(): Binary = new Binary(Array())
+  val empty: Binary = new Binary(Array())
+
+  def apply(): Binary = empty
 
   def apply(bytes: Array[Byte]): Binary =
     if (bytes == null) new Binary(Array()) else new Binary(bytes)

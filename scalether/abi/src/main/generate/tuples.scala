@@ -1,7 +1,5 @@
 import java.io.{File, FileOutputStream, PrintWriter}
 
-import scala.collection.immutable
-
 def generate(arity: Int, writer: PrintWriter): Unit = {
   val range = 1 to arity
 
@@ -9,6 +7,7 @@ def generate(arity: Int, writer: PrintWriter): Unit = {
   writer.println()
   writer.println("import java.math.BigInteger")
   writer.println()
+  writer.println("import io.daonomic.rpc.domain._")
   writer.println("import scalether.abi.{Decoded, Type, Uint256Type}")
   writer.println()
   writer.println("import scala.collection.mutable.ListBuffer")
@@ -19,27 +18,27 @@ def generate(arity: Int, writer: PrintWriter): Unit = {
   writer.println()
   writer.println(s"  def types = List(${range.map(i => "type" + i).mkString(", ")})")
   writer.println()
-  writer.println(s"  def encode(value: ($ts)): Array[Byte] = {")
+  writer.println(s"  def encode(value: ($ts)): Binary = {")
   writer.println(s"    val head = ListBuffer[Byte]()")
   writer.println(s"    val tail = ListBuffer[Byte]()")
   for (i <- range) {
     writer.println(s"    if (type$i.dynamic) {")
-    writer.println(s"      head ++= Uint256Type.encode(BigInteger.valueOf(headSize + tail.size))")
-    writer.println(s"      tail ++= type$i.encode(value._$i)")
+    writer.println(s"      head ++= Uint256Type.encode(BigInteger.valueOf(headSize + tail.size)).bytes")
+    writer.println(s"      tail ++= type$i.encode(value._$i).bytes")
     writer.println(s"    } else {")
-    writer.println(s"      head ++= type$i.encode(value._$i)")
+    writer.println(s"      head ++= type$i.encode(value._$i).bytes")
     writer.println(s"    } ")
   }
-  writer.println(s"    (head ++ tail).toArray")
+  writer.println(s"    Binary((head ++ tail).toArray)")
   writer.println(s"  }")
   writer.println()
-  writer.println(s"  def decode(bytes: Array[Byte], offset: Int): Decoded[($ts)] = {")
+  writer.println(s"  def decode(data: Bytes, offset: Int): Decoded[($ts)] = {")
   for (i <- range) {
     writer.println(s"    val v$i = if (type$i.dynamic) {")
-    writer.println(s"      val bytesOffset = Uint256Type.decode(bytes, offset + headOffset(${i - 1})).value.intValue()")
-    writer.println(s"      type$i.decode(bytes, offset + bytesOffset)")
+    writer.println(s"      val bytesOffset = Uint256Type.decode(data, offset + headOffset(${i - 1})).value.intValue()")
+    writer.println(s"      type$i.decode(data, offset + bytesOffset)")
     writer.println(s"    } else {")
-    writer.println(s"      type$i.decode(bytes, offset + headOffset(${i - 1}))")
+    writer.println(s"      type$i.decode(data, offset + headOffset(${i - 1}))")
     writer.println(s"    } ")
   }
   writer.println(s"    Decoded((${range.map(i => s"v$i.value").mkString(", ")}), v$arity.offset)")

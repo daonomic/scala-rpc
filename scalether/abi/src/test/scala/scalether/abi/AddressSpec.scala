@@ -1,5 +1,6 @@
 package scalether.abi
 
+import io.daonomic.rpc.domain.Binary
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatest.FlatSpec
@@ -10,7 +11,7 @@ import scalether.util.{Bytes, Padding}
 class AddressSpec extends FlatSpec with PropertyChecks {
   "Address" should "encode address" in {
     val address = "0x8283ffd0f535e1103c3599d2d00b85815774a896"
-    val bytes = AddressType.encode(Address(address))
+    val bytes = AddressType.encode(Address(address)).bytes
     assert("0x" + BigInt(bytes).toString(16) == address)
   }
 
@@ -18,10 +19,10 @@ class AddressSpec extends FlatSpec with PropertyChecks {
 
   it should "decode encoded" in {
     forAll(address) { list =>
-      val bytes = Padding.padLeft(list.toArray, Bytes.ZERO)
+      val bytes = Binary(Padding.padLeft(list.toArray, Bytes.ZERO))
       val address = AddressType.decode(bytes, 0).value
       val encoded = AddressType.encode(address)
-      assert(encoded sameElements bytes)
+      assert(encoded == bytes)
     }
   }
 }

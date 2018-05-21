@@ -2,9 +2,9 @@ package scalether.transaction
 
 import java.math.BigInteger
 
+import io.daonomic.rpc.domain.{Binary, Word}
 import scalether.core.Ethereum
 import scalether.domain.request.Transaction
-import scalether.domain.{Binary, Word}
 
 import scala.language.higherKinds
 

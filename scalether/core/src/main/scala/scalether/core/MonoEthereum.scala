@@ -5,10 +5,11 @@ import java.util
 
 import io.daonomic.cats.implicits._
 import io.daonomic.rpc.MonoRpcTransport
+import io.daonomic.rpc.domain.{Binary, Word}
 import reactor.core.publisher.Mono
 import scalether.domain.request.{LogFilter, Transaction}
 import scalether.domain.response.{Block, Log, TransactionReceipt}
-import scalether.domain.{Address, Binary, Word, response}
+import scalether.domain.{Address, response}
 
 import scala.collection.JavaConverters._
 

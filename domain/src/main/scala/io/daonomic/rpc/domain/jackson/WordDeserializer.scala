@@ -1,10 +1,10 @@
-package scalether.domain.jackson
+package io.daonomic.rpc.domain.jackson
 
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.core.JsonToken.VALUE_STRING
 import com.fasterxml.jackson.databind.DeserializationContext
 import com.fasterxml.jackson.databind.deser.std.StdScalarDeserializer
-import scalether.domain.Word
+import io.daonomic.rpc.domain.Word
 
 class WordDeserializer extends StdScalarDeserializer[Word](classOf[Word]) {
   def deserialize(jp: JsonParser, ctxt: DeserializationContext): Word = jp.getCurrentToken match {

@@ -1,9 +1,9 @@
-package scalether.domain.jackson
+package io.daonomic.rpc.domain.jackson
 
 import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.databind.SerializerProvider
 import com.fasterxml.jackson.databind.ser.std.StdScalarSerializer
-import scalether.domain.Binary
+import io.daonomic.rpc.domain.Binary
 import scalether.util.Hex
 
 class BinarySerializer extends StdScalarSerializer[Binary](classOf[Binary]) {

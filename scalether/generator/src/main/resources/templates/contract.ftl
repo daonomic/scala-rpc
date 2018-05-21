@@ -126,7 +126,7 @@
     <#if isHashTopic(arg)>
         log.topics(${index + 1})
     <#else>
-        event.indexed.type${index + 1}.decode(log.topics(${index + 1}).bytes, 0).value
+        event.indexed.type${index + 1}.decode(log.topics(${index + 1}), 0).value
     </#if>
 </#compress></#macro>
 <#macro event_non_indexed_arg arg index><#compress>
@@ -159,6 +159,7 @@ import ${monadImport}
 <#list imports![] as import>
 import ${import}
 </#list>
+import io.daonomic.rpc.domain._
 import scalether.abi._
 import scalether.abi.array._
 import scalether.abi.tuple._
@@ -209,11 +210,11 @@ object ${truffle.name} extends ContractObject {
 
   val constructor = <@type constructor_args/>
 
-  def encodeArgs<@args constructor_args/>: Array[Byte] =
+  def encodeArgs<@args constructor_args/>: Binary =
     constructor.encode(<@args_values constructor_args/>)
 
   def deployTransactionData<@args constructor_args/>: Binary =
-    Binary(Hex.toBytes(bin) ++ encodeArgs<@args_params constructor_args/>)
+    Binary(Hex.toBytes(bin)) ++ encodeArgs<@args_params constructor_args/>
 
   def deploy<@monad_param/>(sender: <@sender/>)<@args constructor_args/><@implicit>(implicit f: Functor[<@monad/>])</@>: <@monadic>Word</@> =
     sender.sendTransaction(request.Transaction(data = deployTransactionData<@args_params constructor_args/>))
