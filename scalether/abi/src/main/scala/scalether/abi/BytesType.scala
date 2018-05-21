@@ -17,7 +17,7 @@ object BytesType extends Type[Array[Byte]] {
   def decode(data: domain.Bytes, offset: Int): Decoded[Array[Byte]] = {
     val ld = Uint256Type.decode(data, offset)
     val length = ld.value.intValue()
-    Decoded(data.slice(ld.offset, ld.offset + length), ld.offset + Padding.getLength(length))
+    Decoded(data.slice(ld.offset, ld.offset + length).bytes, ld.offset + Padding.getLength(length))
   }
 }
 
@@ -28,7 +28,7 @@ case class FixedBytesType(bits: Short) extends Type[Array[Byte]] {
     Binary(Padding.padRight(t.slice(0, bits), Bytes.ZERO))
 
   def decode(data: domain.Bytes, offset: Int): Decoded[Array[Byte]] = {
-    Decoded(data.slice(offset, offset + bits), offset + 32)
+    Decoded(data.slice(offset, offset + bits).bytes, offset + 32)
   }
 }
 
