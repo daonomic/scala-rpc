@@ -6,6 +6,7 @@ import cats.implicits._
 import io.daonomic.cats.MonadThrowable
 import io.daonomic.rpc.domain.{Binary, Word}
 import scalether.abi.Signature
+import scalether.abi.tuple.TupleType
 import scalether.domain.request.Transaction
 import scalether.domain.Address
 import scalether.transaction.TransactionSender
@@ -13,7 +14,7 @@ import scalether.transaction.TransactionSender
 import scala.language.higherKinds
 
 class PreparedTransaction[F[_], O](val address: Address,
-                                   val signature: Signature[_, O],
+                                   val out: TupleType[O],
                                    val data: Binary,
                                    sender: TransactionSender[F],
                                    val value: BigInteger,
@@ -22,17 +23,17 @@ class PreparedTransaction[F[_], O](val address: Address,
                                   (implicit m: MonadThrowable[F]) {
 
   def withGas(newGas: BigInteger): PreparedTransaction[F, O] =
-    new PreparedTransaction[F, O](address, signature, data, sender, value, newGas, gasPrice)
+    new PreparedTransaction[F, O](address, out, data, sender, value, newGas, gasPrice)
 
   def withGasPrice(newGasPrice: BigInteger): PreparedTransaction[F, O] =
-    new PreparedTransaction[F, O](address, signature, data, sender, value, gas, newGasPrice)
+    new PreparedTransaction[F, O](address, out, data, sender, value, gas, newGasPrice)
 
   def withValue(newValue: BigInteger): PreparedTransaction[F, O] =
-    new PreparedTransaction[F, O](address, signature, data, sender, newValue, gas, gasPrice)
+    new PreparedTransaction[F, O](address, out, data, sender, newValue, gas, gasPrice)
 
   def call(): F[O] =
     sender.call(Transaction(to = address, data = data, value = value, gas = gas, gasPrice = gasPrice))
-      .map(binary => signature.decode(binary))
+      .map(binary => out.decode(binary, 0).value)
 
   def execute(): F[Word] =
     sender.sendTransaction(Transaction(to = address, data = data, value = value, gas = gas, gasPrice = gasPrice))
@@ -53,5 +54,5 @@ object PreparedTransaction {
                         gas: BigInteger = null,
                         gasPrice: BigInteger = null)
                        (implicit m: MonadThrowable[F]): PreparedTransaction[F, O] =
-    new PreparedTransaction[F, O](address, signature, signature.encode(in), sender, value, gas, gasPrice)
+    new PreparedTransaction[F, O](address, signature.out, signature.encode(in), sender, value, gas, gasPrice)
 }
