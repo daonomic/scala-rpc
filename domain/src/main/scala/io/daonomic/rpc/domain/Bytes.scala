@@ -33,6 +33,12 @@ trait Bytes {
   override def toString: String =
     Hex.prefixed(bytes)
 
+  def prefixed: String =
+    toString()
+
+  def hex: String =
+    Hex.to(bytes)
+
   override def equals(obj: scala.Any): Boolean = {
     if (!obj.isInstanceOf[Bytes]) {
       false
