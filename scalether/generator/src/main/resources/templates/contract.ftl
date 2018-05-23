@@ -46,7 +46,7 @@
     <#elseif abiType?starts_with("uint")>
         BigInteger
     <#elseif abiType == "bool">
-        Boolean
+        java.lang.Boolean
     <#elseif abiType?starts_with("bytes")>
         Array[Byte]
     <#elseif abiType?ends_with("[]")>
