@@ -12,7 +12,7 @@ class BlockSpec extends FlatSpec with IntegrationSpec {
   }
 
   it should "draw help" in {
-    println(bitcoind.getBlockHash(bitcoind.getBlockCount.block()).block())
+    println(bitcoind.help().block())
   }
 
   it should "do some basic operations" taggedAs ManualTag in {
