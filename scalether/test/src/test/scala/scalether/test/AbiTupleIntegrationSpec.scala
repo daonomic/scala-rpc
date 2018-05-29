@@ -43,7 +43,7 @@ class AbiTupleIntegrationSpec extends FlatSpec with PropertyChecks with Integrat
   }
 
   it should "execute fallback functions" in {
-    test.fallback.execute()
+    test.fallback.withValue(BigInteger.TEN).execute()
     assert(test.state.get == BigInteger.valueOf(10000))
   }
 
