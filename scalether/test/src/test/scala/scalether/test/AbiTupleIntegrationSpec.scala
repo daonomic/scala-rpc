@@ -11,7 +11,6 @@ import scalether.abi.tuple.Tuple2Type
 import scalether.abi.{StringType, Uint256Type}
 import scalether.domain.Address
 import scalether.domain.response.Log
-import scalether.util.Hex
 
 import scala.util.Try
 
