@@ -51,5 +51,8 @@ class TestBlockListener(service: TransferListenService[Mono]) extends BlockListe
 }
 
 object TestTransferListener extends TransferListener[Mono] {
-  override def onTransfer(t: transfer.Transfer, confirmations: Int, confirmed: Boolean): Mono[Unit] = Mono.just()
+  override def onTransfer(t: transfer.Transfer, confirmations: Int, confirmed: Boolean): Mono[Unit] = {
+    println(t)
+    Mono.just()
+  }
 }

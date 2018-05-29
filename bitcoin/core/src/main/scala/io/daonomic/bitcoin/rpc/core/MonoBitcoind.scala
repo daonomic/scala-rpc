@@ -8,6 +8,10 @@ import io.daonomic.rpc.MonoRpcTransport
 import reactor.core.publisher.Mono
 
 class MonoBitcoind(transport: MonoRpcTransport) extends Bitcoind[Mono](transport) {
+
+  override def help(what: String*): Mono[String] =
+    super.help(what:_*)
+
   override def getBlockCount: Mono[BigInteger] =
     super.getBlockCount
 

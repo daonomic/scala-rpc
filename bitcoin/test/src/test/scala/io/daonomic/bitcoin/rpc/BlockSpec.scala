@@ -11,6 +11,10 @@ class BlockSpec extends FlatSpec with IntegrationSpec {
     bitcoind.getBlockSimple(hash).block
   }
 
+  it should "draw help" in {
+    println(bitcoind.getBlockHash(bitcoind.getBlockCount.block()).block())
+  }
+
   it should "do some basic operations" taggedAs ManualTag in {
     println(bitcoind.getNewAddress)
 

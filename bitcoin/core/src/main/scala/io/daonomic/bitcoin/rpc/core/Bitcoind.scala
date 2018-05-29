@@ -13,6 +13,9 @@ class Bitcoind[F[_]](transport: RpcTransport[F])
                     (implicit me: MonadThrowable[F])
   extends RpcHttpClient[F](new JsonConverter(), transport) {
 
+  def help(what: String*): F[String] =
+    exec("help", what: _*)
+
   def getBlockCount: F[BigInteger] =
     exec("getblockcount")
 
@@ -35,8 +38,8 @@ class Bitcoind[F[_]](transport: RpcTransport[F])
     exec("getblockhash", blockNumber)
 
   def getBlockSimple(hash: String): F[Block[String]] =
-    exec("getblock", hash, 1)
+    get(s"/rest/block/notxdetails/$hash.json")
 
   def getBlockFull(hash: String): F[Block[Transaction]] =
-    exec("getblock", hash, 2)
+    get(s"/rest/block/$hash.json")
 }
