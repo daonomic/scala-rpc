@@ -22,8 +22,10 @@ abstract class AbstractListenService[F[_]](confidence: Int, state: State[BigInte
 
   private def fetchAndNotify(blockNumber: BigInteger, saved: Option[BigInteger]): F[Unit] = {
     logger.info(s"fetchAndNotify saved=$saved block=$blockNumber")
-    val from = saved.getOrElse(blockNumber.subtract(BigInteger.ONE))
-    val start = from.subtract(BigInteger.valueOf(confidence - 1))
+    val start = saved match {
+      case None => blockNumber.subtract(BigInteger.valueOf(confidence - 1))
+      case Some(savedBlock) => savedBlock.subtract(BigInteger.valueOf(confidence - 2))
+    }
     val numbers = blockNumbers(start, blockNumber)
     logger.info(s"will fetchAndNotify blocks: $numbers")
     n.notify(numbers) { num =>
