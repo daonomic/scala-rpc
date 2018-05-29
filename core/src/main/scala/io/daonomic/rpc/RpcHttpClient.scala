@@ -2,7 +2,7 @@ package io.daonomic.rpc
 
 import cats.implicits._
 import io.daonomic.cats.MonadThrowable
-import io.daonomic.rpc.domain.{Error, Request, Response}
+import io.daonomic.rpc.domain.{Error, Request, Response, StatusAndBody}
 import org.slf4j.{Logger, LoggerFactory}
 
 import scala.language.higherKinds
@@ -12,6 +12,14 @@ class RpcHttpClient[F[_]](jsonConverter: JsonConverter, transport: RpcTransport[
                          (implicit me: MonadThrowable[F]) {
 
   private val logger: Logger = LoggerFactory.getLogger(getClass)
+
+  def get[T <: AnyRef](url: String)
+                      (implicit mf: Manifest[T]): F[T] = {
+    if (logger.isDebugEnabled()) {
+      logger.debug(s"get $url")
+    }
+    transport.get(url).flatMap(response => parseResponse(response))
+  }
 
   def exec[T](method: String, params: Any*)
              (implicit mf: Manifest[T]): F[T] = {
@@ -32,20 +40,24 @@ class RpcHttpClient[F[_]](jsonConverter: JsonConverter, transport: RpcTransport[
     }
   }
 
-  private def execute[T](request: Request)(implicit mf: Manifest[T]): F[Response[T]] = {
+  private def execute[T](request: Request)
+                        (implicit mf: Manifest[T]): F[Response[T]] = {
     val requestJson = jsonConverter.toJson(request)
     if (logger.isDebugEnabled) {
       logger.debug(s"request=$requestJson")
     }
-    transport.execute(requestJson).flatMap(response => {
-      if (logger.isDebugEnabled()) {
-        logger.debug(s"response=${response.body}")
-      }
-      try {
-        me.pure(jsonConverter.fromJson[Response[T]](response.body))
-      } catch {
-        case e: Throwable => me.raiseError(new IllegalArgumentException(s"unable to parse response json. http status code=${response.code}", e))
-      }
-    })
+    transport.post("", requestJson)
+      .flatMap(resp => parseResponse(resp))
+  }
+
+  private def parseResponse[T <: AnyRef](response: StatusAndBody)(implicit mf: Manifest[T]): F[T] = {
+    if (logger.isDebugEnabled()) {
+      logger.debug(s"response=${response.body}")
+    }
+    try {
+      me.pure(jsonConverter.fromJson[T](response.body))
+    } catch {
+      case e: Throwable => me.raiseError(new IllegalArgumentException(s"unable to parse response json. http status code=${response.code}", e))
+    }
   }
 }
