@@ -6,6 +6,6 @@ import io.daonomic.rpc.mono.WebClientTransport
 import reactor.core.publisher.Mono
 
 trait IntegrationSpec {
-  val transport = WebClientTransport("http://bch-dev.roborox.ru:18332", "user", "pass")
+  val transport = WebClientTransport("http://btc.roborox.ru:8332", "user", "pass")
   val bitcoind = new Bitcoind[Mono](transport)
 }
