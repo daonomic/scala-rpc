@@ -18,8 +18,8 @@ class PreparedTransaction[F[_], O](val address: Address,
                                    val data: Binary,
                                    sender: TransactionSender[F],
                                    val value: BigInteger,
-                                   val gas: BigInteger,
-                                   val gasPrice: BigInteger)
+                                   val gas: BigInteger = null,
+                                   val gasPrice: BigInteger = null)
                                   (implicit m: MonadThrowable[F]) {
 
   def withGas(newGas: BigInteger): PreparedTransaction[F, O] =

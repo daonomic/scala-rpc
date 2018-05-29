@@ -43,6 +43,11 @@ class AbiTupleIntegrationSpec extends FlatSpec with PropertyChecks with Integrat
     }
   }
 
+  it should "execute fallback functions" in {
+    test.fallback.execute()
+    assert(test.state.get == BigInteger.valueOf(10000))
+  }
+
   it should "encode" in {
     println(Tuple2Type(StringType, Uint256Type).encode("", BigInteger.ZERO))
   }

@@ -190,16 +190,18 @@ class ${truffle.name}<@monad_param/>(address: Address, sender: <@sender/>)<@impl
   <#list truffle.abi as item>
     <#if item.type != 'event' && item.name??>
       <#assign signatureName="${get_name(signatures, item.name)}Signature"/>
-            <#if item.constant>
+        <#if item.constant>
   def ${item.name}<@args item.inputs/>: <@monadic><@tuple_type item.outputs/></@> =
     <#if preparedTransaction?has_content>${preparedTransaction}<#else>PreparedTransaction</#if>(address, ${signatureName}, <@args_tuple item.inputs/>, sender).call()
-            <#else>
+        <#else>
   def ${item.name}<@args item.inputs/>: <#if preparedTransaction?has_content>${preparedTransaction}<#else>PreparedTransaction</#if>[<#if !(preparedTransaction?has_content)><@monad/>, </#if><@tuple_type item.outputs/>] =
     <#if preparedTransaction?has_content>${preparedTransaction}<#else>PreparedTransaction</#if>(address, ${signatureName}, <@args_tuple item.inputs/>, sender)
-            </#if>
-
         </#if>
-    </#list>
+	<#elseif item.type?lower_case == 'fallback'>
+  def fallback: <#if preparedTransaction?has_content>${preparedTransaction}<#else>PreparedTransaction</#if>[<#if !(preparedTransaction?has_content)><@monad/>, </#if>Unit] =
+    new <#if preparedTransaction?has_content>${preparedTransaction}<#else>PreparedTransaction</#if>(address, UnitType, Binary(), sender, BigInteger.ZERO)
+    </#if>
+  </#list>
 }
 
 object ${truffle.name} extends ContractObject {
