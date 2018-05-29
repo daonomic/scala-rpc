@@ -15,8 +15,8 @@ class MonoPreparedTransaction[O](address: Address,
                                  data: Binary,
                                  sender: MonoTransactionSender,
                                  value: BigInteger,
-                                 gas: BigInteger,
-                                 gasPrice: BigInteger)
+                                 gas: BigInteger = null,
+                                 gasPrice: BigInteger = null)
   extends PreparedTransaction[Mono, O](address, out, data, sender, value, gas, gasPrice) {
 
   override def withGas(newGas: BigInteger): MonoPreparedTransaction[O] =

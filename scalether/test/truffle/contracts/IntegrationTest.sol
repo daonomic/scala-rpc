@@ -4,6 +4,10 @@ pragma solidity ^0.4.21;
 contract IntegrationTest {
     uint256 public state;
 
+    function () public {
+        state = 10000;
+    }
+
     function setState(uint256 _state) public {
         state = _state;
     }
