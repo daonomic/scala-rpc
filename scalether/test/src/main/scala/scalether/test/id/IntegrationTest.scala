@@ -28,7 +28,7 @@ class IntegrationTest(address: Address, sender: IdTransactionSender)
     new IdPreparedTransaction(address, UnitType, Binary(), sender, BigInteger.ZERO)
   def setState(_state: BigInteger): IdPreparedTransaction[Unit] =
     IdPreparedTransaction(address, setStateSignature, _state, sender)
-  def checkUintArrayAbi(array: BigInteger): IdPreparedTransaction[Unit] =
+  def checkUintArrayAbi(array: Array[BigInteger]): IdPreparedTransaction[Unit] =
     IdPreparedTransaction(address, checkUintArrayAbiSignature, array, sender)
   def checkStructsWithString(structs: Array[(String, BigInteger)]): IdPreparedTransaction[Unit] =
     IdPreparedTransaction(address, checkStructsWithStringSignature, structs, sender)

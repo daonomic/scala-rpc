@@ -29,7 +29,7 @@ class IntegrationTest[F[_]](address: Address, sender: TransactionSender[F])(impl
     new PreparedTransaction(address, UnitType, Binary(), sender, BigInteger.ZERO)
   def setState(_state: BigInteger): PreparedTransaction[F, Unit] =
     PreparedTransaction(address, setStateSignature, _state, sender)
-  def checkUintArrayAbi(array: BigInteger): PreparedTransaction[F, Unit] =
+  def checkUintArrayAbi(array: Array[BigInteger]): PreparedTransaction[F, Unit] =
     PreparedTransaction(address, checkUintArrayAbiSignature, array, sender)
   def checkStructsWithString(structs: Array[(String, BigInteger)]): PreparedTransaction[F, Unit] =
     PreparedTransaction(address, checkStructsWithStringSignature, structs, sender)

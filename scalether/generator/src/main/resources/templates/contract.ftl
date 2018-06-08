@@ -43,17 +43,17 @@
         Address
     <#elseif abiType == 'string'>
         String
+    <#elseif abiType?ends_with("[]")>
+        Array[<@single_scala_type abiType?substring(0, abiType?length - 2) components/>]
+    <#elseif abiType?ends_with("]")>
+        <#local start=abiType?index_of("[")/>
+        Array[<@single_scala_type abiType?substring(0, start) components/>]
     <#elseif abiType?starts_with("uint")>
         BigInteger
     <#elseif abiType == "bool">
         java.lang.Boolean
     <#elseif abiType?starts_with("bytes")>
         Array[Byte]
-    <#elseif abiType?ends_with("[]")>
-        Array[<@single_scala_type abiType?substring(0, abiType?length - 2) components/>]
-    <#elseif abiType?ends_with("]")>
-        <#local start=abiType?index_of("[")/>
-        Array[<@single_scala_type abiType?substring(0, start) components/>]
     <#elseif abiType == "tuple">
         (<#list components as component><@single_scala_type component.type component.components/><#if component?has_next>, </#if></#list>)
     <#else>
