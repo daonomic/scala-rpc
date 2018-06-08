@@ -72,6 +72,12 @@
         AddressType
     <#elseif abiType == 'string'>
         StringType
+    <#elseif abiType?ends_with("[]")>
+        VarArrayType(<@single_type abiType?substring(0, abiType?length - 2) components/>)
+    <#elseif abiType?ends_with("]")>
+        <#local start=abiType?index_of("[")/>
+        <#local num=abiType?substring(start + 1, abiType?length - 1)/>
+        FixArrayType(${num}, <@single_type abiType?substring(0, start) components/>)
     <#elseif abiType == 'uint'>
         Uint${abiType?substring(4)}Type
     <#elseif abiType?starts_with("uint")>
@@ -82,12 +88,6 @@
         BytesType
     <#elseif abiType?starts_with("bytes")>
         Bytes${abiType?substring(5)}Type
-    <#elseif abiType?ends_with("[]")>
-        VarArrayType(<@single_type abiType?substring(0, abiType?length - 2) components/>)
-    <#elseif abiType?ends_with("]")>
-        <#local start=abiType?index_of("[")/>
-        <#local num=abiType?substring(start + 1, abiType?length - 1)/>
-        FixArrayType(${num}, <@single_type abiType?substring(0, start) components/>)
     <#elseif abiType == "tuple">
         Tuple${components?size}Type(<#list components as component><@single_type component.type component.components/><#if component?has_next>, </#if></#list>)
     <#else>
