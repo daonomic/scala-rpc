@@ -32,6 +32,10 @@ contract IntegrationTest {
         uint256 value;
     }
 
+    function checkUintArrayAbi(uint[] array) public {
+
+    }
+
     function checkStructsWithString(StructWithString[] structs) public {
         uint length = structs.length;
         for (uint i=0; i<length; i++) {
