@@ -18,7 +18,7 @@ class RpcHttpClient[F[_]](jsonConverter: JsonConverter, transport: RpcTransport[
     if (logger.isDebugEnabled()) {
       logger.debug(s"get $url")
     }
-    transport.get(url).flatMap(response => parseResponse(response))
+    transport.get(url).flatMap(response => parseResponse(response, url))
   }
 
   def exec[T](method: String, params: Any*)
@@ -47,17 +47,17 @@ class RpcHttpClient[F[_]](jsonConverter: JsonConverter, transport: RpcTransport[
       logger.debug(s"request=$requestJson")
     }
     transport.post("", requestJson)
-      .flatMap(resp => parseResponse(resp))
+      .flatMap(resp => parseResponse(resp, requestJson))
   }
 
-  private def parseResponse[T <: AnyRef](response: StatusAndBody)(implicit mf: Manifest[T]): F[T] = {
+  private def parseResponse[T <: AnyRef](response: StatusAndBody, request: String)(implicit mf: Manifest[T]): F[T] = {
     if (logger.isDebugEnabled()) {
       logger.debug(s"response=${response.body}")
     }
     try {
       me.pure(jsonConverter.fromJson[T](response.body))
     } catch {
-      case e: Throwable => me.raiseError(new IllegalArgumentException(s"unable to parse response json. http status code=${response.code}", e))
+      case e: Throwable => me.raiseError(new IllegalArgumentException(s"unable to parse response json. http status code=${response.code} request=$request", e))
     }
   }
 }
