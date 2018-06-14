@@ -4,7 +4,7 @@ pragma solidity ^0.4.21;
 contract IntegrationTest {
     uint256 public state;
 
-    function () public {
+    function () payable public {
         state = 10000;
     }
 
