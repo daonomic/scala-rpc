@@ -5,6 +5,7 @@ import java.math.BigInteger
 import cats.implicits._
 import io.daonomic.cats.MonadThrowable
 import io.daonomic.rpc.domain.Binary
+import org.slf4j.{Logger, LoggerFactory}
 import scalether.core.Ethereum
 import scalether.domain.request.Transaction
 import scalether.domain.Address
@@ -14,6 +15,9 @@ import scala.language.higherKinds
 abstract class AbstractTransactionSender[F[_]](val ethereum: Ethereum[F], val from: Address, val gas: BigInteger, val gasPriceProvider: GasPriceProvider[F])
                                               (implicit me: MonadThrowable[F])
   extends TransactionSender[F] {
+
+  protected val logger: Logger = LoggerFactory.getLogger(getClass)
+  logger.info(s"created from=$from")
 
   def call(transaction: Transaction): F[Binary] =
     ethereum.ethCall(transaction.copy(from = from), "latest")
