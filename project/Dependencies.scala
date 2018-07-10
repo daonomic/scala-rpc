@@ -10,6 +10,7 @@ object Dependencies {
   val cats = "org.typelevel" %% "cats-core" % "1.1.0"
   val springWebFlux = "org.springframework" % "spring-webflux" % "5.0.4.RELEASE"
   val scalajHttp = "org.scalaj" %% "scalaj-http" % "2.3.0"
+  val sttp = "com.softwaremill.sttp" %% "core" % "1.2.2"
 
   val jackson = "com.fasterxml.jackson.core" % "jackson-databind" % jacksonVersion
   val jacksonScala = "com.fasterxml.jackson.module" %% "jackson-module-scala" % jacksonVersion

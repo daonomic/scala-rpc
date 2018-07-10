@@ -34,6 +34,10 @@ lazy val `transport-mono` = (project in file("transport/mono"))
   .transport
   .dependsOn(core, `test-common` % "test")
 
+lazy val `transport-sttp` = (project in file("transport/sttp"))
+  .transport
+  .dependsOn(core, `test-common` % "test")
+
 //blockchain common
 lazy val `blockchain-poller` = (project in file("blockchain/poller"))
   .blockchain
