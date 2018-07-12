@@ -111,7 +111,7 @@ lazy val root = (project in file("."))
   .settings(skip in publish := true)
   .aggregate(
     util, domain, cats, core,
-    `transport-try`, `transport-mono`, `transport-id`,
+    `transport-try`, `transport-sttp`, `transport-mono`, `transport-id`,
     `blockchain-poller`, `blockchain-listener`,
     `scalether-util`, `scalether-domain`, `scalether-core`, `scalether-abi`, `scalether-transaction`,
     `scalether-listener`, `scalether-contract`, `scalether-generator`, `scalether-test`,
