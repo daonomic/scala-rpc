@@ -18,7 +18,7 @@ final class SttpTransportSpec extends FlatSpec {
           value.toLowerCase.startsWith("application/json")
     }
 
-  "SttpTransport" should "get the expected URI" in {
+  "get" should "hit the expected URI" in {
     forAll { responseBody: String =>
       val expectedUri = uri"https://host.example/path/subpath/end"
       implicit val backend: SttpBackend[Id, Nothing] = SttpBackendStub
@@ -31,7 +31,7 @@ final class SttpTransportSpec extends FlatSpec {
     }
   }
 
-  "SttpTransport" should "post to the expected URI" in {
+  "post" should "hit to the expected URI" in {
     forAll { (requestBody: String, responseBody: String) =>
       implicit val backend: SttpBackend[Id, Nothing] = SttpBackendStub
         .synchronous
@@ -43,7 +43,7 @@ final class SttpTransportSpec extends FlatSpec {
     }
   }
 
-  "SttpTransport" should "post with an appropriate content-type set" in {
+  it should "make a request with an appropriate content-type set" in {
     forAll { (requestBody: String, responseBody: String) =>
       implicit val backend: SttpBackend[Id, Nothing] = SttpBackendStub
         .synchronous
@@ -57,7 +57,7 @@ final class SttpTransportSpec extends FlatSpec {
     }
   }
 
-  "SttpTransport" should "return post error bodies as expected" in {
+  it should "return error bodies as expected" in {
     forAll { (requestBody: String, responseBody: String) =>
       implicit val backend: SttpBackend[Id, Nothing] = SttpBackendStub
         .synchronous
