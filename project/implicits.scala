@@ -12,7 +12,7 @@ object implicits {
   val bintrayPackage = sbt.settingKey[String]("Bintray package name")
 
   implicit class RichProject(project: Project) {
-    def tests(scope: String): Project = project
+    def tests(scope: String = "test"): Project = project
       .settings(libraryDependencies += scalaTest % scope)
       .settings(libraryDependencies += scalaCheck % scope)
       .settings(libraryDependencies += mockito % scope)
