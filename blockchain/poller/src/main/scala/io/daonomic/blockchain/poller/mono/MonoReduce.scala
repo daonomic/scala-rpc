@@ -9,14 +9,14 @@ object MonoReduce {
   }
 
   def subscribe[T, R](r: R, list: Seq[T], reduce: (R, T) => Mono[R], sink: MonoSink[R]): Unit = list match {
-    case Nil => sink.success(r)
-    case head :: tail => reduce(r, head).subscribe(new Subscriber[R] {
+    case _ if list.isEmpty => sink.success(r)
+    case _ => reduce(r, list.head).subscribe(new Subscriber[R] {
       override def onSubscribe(s: Subscription): Unit = {
         s.request(1)
       }
 
       override def onNext(r: R): Unit =
-        subscribe(r, tail, reduce, sink)
+        subscribe(r, list.tail, reduce, sink)
 
       override def onError(t: Throwable): Unit =
         sink.error(t)
