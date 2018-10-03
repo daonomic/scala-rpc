@@ -14,7 +14,7 @@ object MonoReduce {
   def subscribe[T, R](r: R, list: Seq[T], reduce: (R, T) => Mono[R], sink: MonoSink[R]): Unit = list match {
     case _ if list.isEmpty => sink.success(r)
     case _ => reduce(r, list.head)
-      .subscribeOn(scheduler)
+      .publishOn(scheduler)
       .subscribe(new Subscriber[R] {
         override def onSubscribe(s: Subscription): Unit = {
           s.request(1)
