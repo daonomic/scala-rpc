@@ -7,23 +7,28 @@ import java.util.concurrent.TimeUnit
 import io.daonomic.rpc.MonoRpcTransport
 import io.daonomic.rpc.domain.StatusAndBody
 import io.netty.channel.ChannelOption
-import io.netty.handler.timeout.ReadTimeoutHandler
+import io.netty.handler.timeout.{ReadTimeoutHandler, WriteTimeoutHandler}
 import org.springframework.http.ResponseEntity
 import org.springframework.http.client.reactive.ReactorClientHttpConnector
 import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClient.RequestHeadersSpec
 import reactor.core.publisher.Mono
+import reactor.netty.http.client.HttpClient
+import reactor.netty.tcp.TcpClient
 
-class WebClientTransport(rpcUrl: String, requestTimeoutMs: Int = 10000, readTimeoutMs: Int = 10000,
+class WebClientTransport(rpcUrl: String, requestTimeoutMs: Int = 10000, readWriteTimeoutMs: Int = 10000,
                          f: RequestHeadersSpec[_] => RequestHeadersSpec[_] = t => t)
   extends MonoRpcTransport {
 
-  private val connector = new ReactorClientHttpConnector(options => {
-    options.option[Integer](ChannelOption.CONNECT_TIMEOUT_MILLIS, requestTimeoutMs)
-      .compression(true)
-      .afterNettyContextInit(ctx => ctx.addHandlerLast(new ReadTimeoutHandler(readTimeoutMs, TimeUnit.MILLISECONDS)))
-  })
+  private val tcpClient = TcpClient.create()
+    .option[Integer](ChannelOption.CONNECT_TIMEOUT_MILLIS, requestTimeoutMs)
+    .doOnConnected { conn =>
+      conn
+        .addHandlerLast(new ReadTimeoutHandler(readWriteTimeoutMs, TimeUnit.MILLISECONDS))
+        .addHandlerLast(new WriteTimeoutHandler(readWriteTimeoutMs, TimeUnit.MILLISECONDS))
+    }
+  private val connector = new ReactorClientHttpConnector(HttpClient.from(tcpClient))
 
   private val client = WebClient.builder()
     .baseUrl(rpcUrl)

@@ -42,6 +42,7 @@ lazy val `transport-sttp` = (project in file("transport/sttp"))
 lazy val `blockchain-poller` = (project in file("blockchain/poller"))
   .tests()
   .blockchain
+  .tests("test")
   .dependsOn(cats)
 
 lazy val `blockchain-listener` = (project in file("blockchain/listener"))
