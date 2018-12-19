@@ -9,11 +9,13 @@ import org.web3j.crypto.Keys
 import scalether.core.Ethereum
 import scalether.domain.request.Transaction
 import scalether.domain.Address
+import scalether.sync.Synchronizer
 
 import scala.language.higherKinds
 
 class SigningTransactionSender[F[_]](ethereum: Ethereum[F],
                                      nonceProvider: NonceProvider[F],
+                                     synchronizer: Synchronizer[F],
                                      privateKey: BigInteger,
                                      gas: BigInteger,
                                      gasPrice: GasPriceProvider[F])
@@ -28,9 +30,11 @@ class SigningTransactionSender[F[_]](ethereum: Ethereum[F],
         if (transaction.nonce != null) {
           ethereum.ethSendRawTransaction(Binary(signer.sign(transaction)))
         } else {
-          nonceProvider.nonce(address = from).flatMap(
-            nonce => ethereum.ethSendRawTransaction(Binary(signer.sign(transaction.copy(nonce = nonce))))
-          )
+          synchronizer.synchronized(from) {
+            nonceProvider.nonce(address = from).flatMap(
+              nonce => ethereum.ethSendRawTransaction(Binary(signer.sign(transaction.copy(nonce = nonce))))
+            )
+          }
         }
       }
   }

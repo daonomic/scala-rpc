@@ -7,7 +7,7 @@ object Dependencies {
   val slf4jApi = "org.slf4j" % "slf4j-api" % "1.7.25"
   val reactor = "io.projectreactor" % "reactor-core" % "3.2.3.RELEASE"
   val reactorNetty = "io.projectreactor.netty" % "reactor-netty" % "0.8.3.RELEASE"
-  val cats = "org.typelevel" %% "cats-core" % "1.4.0"
+  val cats = "org.typelevel" %% "cats-core" % "1.5.0"
   val springWebFlux = "org.springframework" % "spring-webflux" % "5.1.3.RELEASE"
   val scalajHttp = "org.scalaj" %% "scalaj-http" % "2.4.1"
   val sttp = "com.softwaremill.sttp" %% "core" % "1.4.2"
