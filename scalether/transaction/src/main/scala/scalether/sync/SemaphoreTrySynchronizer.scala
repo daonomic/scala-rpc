@@ -14,13 +14,13 @@ class SemaphoreTrySynchronizer(timeout: Long, unit: TimeUnit) extends TrySynchro
     this(Long.MaxValue, TimeUnit.MILLISECONDS)
   }
 
-  override def synchronized[T](address: Address)(execution: => Try[T]): Try[T] = {
+  override def synchronize[T](address: Address)(execution: () => Try[T]): Try[T] = {
     val semaphore = getSemaphore(address)
     if (!semaphore.tryAcquire(timeout, unit)) {
       Failure(new IllegalStateException("Timeout waiting for lock"))
     } else {
       try {
-        execution
+        execution()
       } finally {
         semaphore.release()
       }

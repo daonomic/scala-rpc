@@ -2,7 +2,6 @@ package scalether.sync
 
 import java.util.concurrent.{ConcurrentHashMap, Semaphore, TimeUnit}
 
-import cats.Id
 import scalether.domain.Address
 
 import scala.concurrent.duration.TimeUnit
@@ -14,13 +13,13 @@ class SemaphoreIdSynchronizer(timeout: Long, unit: TimeUnit) extends IdSynchroni
     this(Long.MaxValue, TimeUnit.MILLISECONDS)
   }
 
-  override def synchronized[T](address: Address)(execution: => T): T = {
+  override def synchronize[T](address: Address)(execution: () => T): T = {
     val semaphore = getSemaphore(address)
     if (!semaphore.tryAcquire(timeout, unit)) {
       throw new IllegalStateException("Timeout waiting for lock")
     }
     try {
-      execution
+      execution()
     } finally {
       semaphore.release()
     }

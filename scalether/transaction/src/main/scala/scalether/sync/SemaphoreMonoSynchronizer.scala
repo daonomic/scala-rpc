@@ -15,12 +15,12 @@ class SemaphoreMonoSynchronizer(timeout: Long, unit: TimeUnit) extends MonoSynch
     this(Long.MaxValue, TimeUnit.MILLISECONDS)
   }
 
-  override def synchronized[V](address: Address)(execution: => Mono[V]): Mono[V] = {
+  override def synchronize[V](address: Address)(execution: () => Mono[V]): Mono[V] = {
     val semaphore = getSemaphore(address)
     toMono[Boolean](() => semaphore.tryAcquire(timeout, unit))
         .flatMap[V] { acquired =>
           if (acquired) {
-            execution
+            execution()
               .doOnTerminate(() => semaphore.release())
           } else {
             Mono.error(new IllegalStateException("Timeout waiting for semaphore"))

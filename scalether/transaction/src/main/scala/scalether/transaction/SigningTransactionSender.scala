@@ -7,8 +7,8 @@ import io.daonomic.cats.MonadThrowable
 import io.daonomic.rpc.domain.{Binary, Word}
 import org.web3j.crypto.Keys
 import scalether.core.Ethereum
-import scalether.domain.request.Transaction
 import scalether.domain.Address
+import scalether.domain.request.Transaction
 import scalether.sync.Synchronizer
 
 import scala.language.higherKinds
@@ -30,7 +30,7 @@ class SigningTransactionSender[F[_]](ethereum: Ethereum[F],
         if (transaction.nonce != null) {
           ethereum.ethSendRawTransaction(Binary(signer.sign(transaction)))
         } else {
-          synchronizer.synchronized(from) {
+          synchronizer.synchronize(from) { () =>
             nonceProvider.nonce(address = from).flatMap(
               nonce => ethereum.ethSendRawTransaction(Binary(signer.sign(transaction.copy(nonce = nonce))))
             )
