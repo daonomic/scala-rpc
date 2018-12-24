@@ -26,15 +26,13 @@ class SigningTransactionSender[F[_]](ethereum: Ethereum[F],
 
   def sendTransaction(transaction: Transaction): F[Word] = fill(transaction).flatMap {
     transaction =>
-      ethereum.ethCall(transaction, "latest").flatMap { _ =>
-        if (transaction.nonce != null) {
-          ethereum.ethSendRawTransaction(Binary(signer.sign(transaction)))
-        } else {
-          synchronizer.synchronize(from) { () =>
-            nonceProvider.nonce(address = from).flatMap(
-              nonce => ethereum.ethSendRawTransaction(Binary(signer.sign(transaction.copy(nonce = nonce))))
-            )
-          }
+      if (transaction.nonce != null) {
+        ethereum.ethSendRawTransaction(Binary(signer.sign(transaction)))
+      } else {
+        synchronizer.synchronize(from) { () =>
+          nonceProvider.nonce(address = from).flatMap(
+            nonce => ethereum.ethSendRawTransaction(Binary(signer.sign(transaction.copy(nonce = nonce))))
+          )
         }
       }
   }
