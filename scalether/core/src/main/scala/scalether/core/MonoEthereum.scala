@@ -31,11 +31,17 @@ class MonoEthereum(transport: MonoRpcTransport)
   override def ethBlockNumber(): Mono[BigInteger] =
     super.ethBlockNumber()
 
-  override def ethGetBlockByHash(hash: Word): Mono[Block] =
+  override def ethGetBlockByHash(hash: Word): Mono[Block[Word]] =
     super.ethGetBlockByHash(hash)
 
-  override def ethGetBlockByNumber(number: BigInteger): Mono[Block] =
+  override def ethGetFullBlockByHash(hash: Word): Mono[Block[response.Transaction]] =
+    super.ethGetFullBlockByHash(hash)
+
+  override def ethGetBlockByNumber(number: BigInteger): Mono[Block[Word]] =
     super.ethGetBlockByNumber(number)
+
+  override def ethGetFullBlockByNumber(number: BigInteger): Mono[Block[response.Transaction]] =
+    super.ethGetFullBlockByNumber(number)
 
   override def ethCall(transaction: Transaction, defaultBlockParameter: String): Mono[Binary] =
     super.ethCall(transaction, defaultBlockParameter)

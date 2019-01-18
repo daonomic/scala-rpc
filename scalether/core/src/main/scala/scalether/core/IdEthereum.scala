@@ -28,10 +28,14 @@ class IdEthereum(transport: IdRpcTransport) extends Ethereum[Id](transport) {
   override def ethBlockNumber(): BigInteger = super.ethBlockNumber()
 
   @throws[RpcException]
-  override def ethGetBlockByHash(hash: Word): Block = super.ethGetBlockByHash(hash)
+  override def ethGetBlockByHash(hash: Word): Block[Word] = super.ethGetBlockByHash(hash)
+
+  override def ethGetFullBlockByHash(hash: Word): Id[Block[response.Transaction]] = super.ethGetFullBlockByHash(hash)
 
   @throws[RpcException]
-  override def ethGetBlockByNumber(number: BigInteger): Block = super.ethGetBlockByNumber(number)
+  override def ethGetBlockByNumber(number: BigInteger): Block[Word] = super.ethGetBlockByNumber(number)
+
+  override def ethGetFullBlockByNumber(number: BigInteger): Id[Block[response.Transaction]] = super.ethGetFullBlockByNumber(number)
 
   @throws[RpcException]
   override def ethCall(transaction: Transaction, defaultBlockParameter: String): Binary = super.ethCall(transaction, defaultBlockParameter)

@@ -30,11 +30,17 @@ class Ethereum[F[_]](transport: RpcTransport[F])
   def ethBlockNumber(): F[BigInteger] =
     exec("eth_blockNumber")
 
-  def ethGetBlockByHash(hash: Word): F[Block] =
+  def ethGetBlockByHash(hash: Word): F[Block[Word]] =
     exec("eth_getBlockByHash", hash, false)
 
-  def ethGetBlockByNumber(number: BigInteger): F[Block] =
+  def ethGetFullBlockByHash(hash: Word): F[Block[response.Transaction]] =
+    exec("eth_getBlockByHash", hash, true)
+
+  def ethGetBlockByNumber(number: BigInteger): F[Block[Word]] =
     exec("eth_getBlockByNumber", number, false)
+
+  def ethGetFullBlockByNumber(number: BigInteger): F[Block[response.Transaction]] =
+    exec("eth_getBlockByNumber", number, true)
 
   def ethCall(transaction: Transaction, defaultBlockParameter: String): F[Binary] =
     exec("eth_call", transaction, defaultBlockParameter)
