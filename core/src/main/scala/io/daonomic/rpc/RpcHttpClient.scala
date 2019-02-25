@@ -25,7 +25,7 @@ class RpcHttpClient[F[_]](jsonConverter: JsonConverter, transport: RpcTransport[
              (implicit mf: Manifest[T]): F[T] = {
     execOption[T](method, params: _*).flatMap {
       case Some(v) => me.pure(v)
-      case None => me.raiseError(new RpcCodeException(Error.default))
+      case None => me.raiseError(new RpcCodeException(s"no result provided, method: $method params: $params", Error.default))
     }
   }
 
@@ -34,7 +34,7 @@ class RpcHttpClient[F[_]](jsonConverter: JsonConverter, transport: RpcTransport[
     execute[T](Request(1, method, params: _*)).flatMap {
       response =>
         response.error match {
-          case Some(r) => me.raiseError(new RpcCodeException(r))
+          case Some(r) => me.raiseError(new RpcCodeException(s"error caught. method: $method params: $params", r))
           case None => me.pure(response.result)
         }
     }

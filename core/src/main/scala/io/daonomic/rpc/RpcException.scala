@@ -6,4 +6,4 @@ class RpcException(message: String, cause: Throwable) extends Exception(message,
 
 class RpcIoException(cause: Throwable) extends RpcException(null, cause)
 
-class RpcCodeException(val error: Error) extends RpcException(s"${error.code}: ${error.fullMessage}", null)
+class RpcCodeException(val message: String, val error: Error) extends RpcException(s"$message... ${error.code}: ${error.fullMessage}", null)
