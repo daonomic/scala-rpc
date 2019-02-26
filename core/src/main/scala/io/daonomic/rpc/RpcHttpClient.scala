@@ -41,7 +41,7 @@ class RpcHttpClient[F[_]](jsonConverter: JsonConverter, transport: RpcTransport[
     }
   }
 
-  def executeRaw[T](request: Request): F[Response[JsonNode]] =
+  def executeRaw(request: Request): F[Response[JsonNode]] =
     execute(request)
 
   private def execute[T](request: Request)
