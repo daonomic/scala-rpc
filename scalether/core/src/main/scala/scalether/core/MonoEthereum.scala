@@ -3,10 +3,9 @@ package scalether.core
 import java.math.BigInteger
 import java.util
 
-import com.fasterxml.jackson.databind.JsonNode
 import io.daonomic.cats.implicits._
 import io.daonomic.rpc.MonoRpcTransport
-import io.daonomic.rpc.domain.{Binary, Request, Response, Word}
+import io.daonomic.rpc.domain.{Binary, Word}
 import reactor.core.publisher.Mono
 import scalether.domain.request.{LogFilter, Transaction}
 import scalether.domain.response.{Block, Log, TransactionReceipt}
@@ -98,6 +97,6 @@ class MonoEthereum(transport: MonoRpcTransport)
   override def execOption[T](method: String, params: Any*)(implicit mf: Manifest[T]): Mono[Option[T]] =
     super.execOption(method, params:_*)
 
-  override def executeRaw(request: Request): Mono[Response[JsonNode]] =
+  override def executeRaw(request: String): Mono[String] =
     super.executeRaw(request)
 }
