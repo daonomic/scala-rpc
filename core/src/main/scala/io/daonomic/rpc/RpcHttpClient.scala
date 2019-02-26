@@ -1,6 +1,7 @@
 package io.daonomic.rpc
 
 import cats.implicits._
+import com.fasterxml.jackson.databind.JsonNode
 import io.daonomic.cats.MonadThrowable
 import io.daonomic.rpc.domain.{Error, Request, Response, StatusAndBody}
 import org.slf4j.{Logger, LoggerFactory}
@@ -39,6 +40,9 @@ class RpcHttpClient[F[_]](jsonConverter: JsonConverter, transport: RpcTransport[
         }
     }
   }
+
+  def executeRaw[T](request: Request): F[Response[JsonNode]] =
+    execute(request)
 
   private def execute[T](request: Request)
                         (implicit mf: Manifest[T]): F[Response[T]] = {
