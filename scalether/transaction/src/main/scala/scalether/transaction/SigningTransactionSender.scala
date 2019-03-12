@@ -29,8 +29,9 @@ class SigningTransactionSender[F[_]](ethereum: Ethereum[F],
       if (transaction.nonce != null) {
         ethereum.ethSendRawTransaction(Binary(signer.sign(transaction)))
       } else {
-        synchronizer.synchronize(from) { () =>
-          nonceProvider.nonce(address = from).flatMap(
+        val finalFrom = Option(transaction.from).getOrElse(from)
+        synchronizer.synchronize(finalFrom) { () =>
+          nonceProvider.nonce(address = finalFrom).flatMap(
             nonce => ethereum.ethSendRawTransaction(Binary(signer.sign(transaction.copy(nonce = nonce))))
           )
         }

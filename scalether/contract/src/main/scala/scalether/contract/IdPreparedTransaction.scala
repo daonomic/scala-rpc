@@ -16,17 +16,21 @@ class IdPreparedTransaction[O](address: Address,
                                sender: IdTransactionSender,
                                value: BigInteger,
                                gas: BigInteger = null,
-                               gasPrice: BigInteger = null)
-  extends PreparedTransaction[Id, O](address, out, data, sender, value, gas, gasPrice) {
+                               gasPrice: BigInteger = null,
+                               from: Address = null)
+  extends PreparedTransaction[Id, O](address, out, data, sender, value, gas, gasPrice, from) {
 
   override def withGas(newGas: BigInteger): IdPreparedTransaction[O] =
-    new IdPreparedTransaction[O](address, out, data, sender, value, newGas, gasPrice)
+    new IdPreparedTransaction[O](address, out, data, sender, value, newGas, gasPrice, from)
 
   override def withGasPrice(newGasPrice: BigInteger): IdPreparedTransaction[O] =
-    new IdPreparedTransaction[O](address, out, data, sender, value, gas, newGasPrice)
+    new IdPreparedTransaction[O](address, out, data, sender, value, gas, newGasPrice, from)
 
   override def withValue(newValue: BigInteger): IdPreparedTransaction[O] =
-    new IdPreparedTransaction[O](address, out, data, sender, newValue, gas, gasPrice)
+    new IdPreparedTransaction[O](address, out, data, sender, newValue, gas, gasPrice, from)
+
+  override def withFrom(newFrom: Address): IdPreparedTransaction[O] =
+    new IdPreparedTransaction[O](address, out, data, sender, value, gas, gasPrice, newFrom)
 
   override def call(): O = super.call()
 
@@ -44,6 +48,7 @@ object IdPreparedTransaction {
                   sender: IdTransactionSender,
                   value: BigInteger = null,
                   gas: BigInteger = null,
-                  gasPrice: BigInteger = null): IdPreparedTransaction[O] =
-    new IdPreparedTransaction[O](address, signature.out, signature.encode(in), sender, value, gas, gasPrice)
+                  gasPrice: BigInteger = null,
+                  from: Address = null): IdPreparedTransaction[O] =
+    new IdPreparedTransaction[O](address, signature.out, signature.encode(in), sender, value, gas, gasPrice, from)
 }

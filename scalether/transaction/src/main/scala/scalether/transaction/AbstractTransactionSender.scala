@@ -19,11 +19,13 @@ abstract class AbstractTransactionSender[F[_]](val ethereum: Ethereum[F], val fr
   protected val logger: Logger = LoggerFactory.getLogger(getClass)
   logger.info(s"created from=$from")
 
-  def call(transaction: Transaction): F[Binary] =
-    ethereum.ethCall(transaction.copy(from = from), "latest")
+  def call(transaction: Transaction): F[Binary] = {
+    val tx = transaction.copy(from = Option(transaction.from).getOrElse(from))
+    ethereum.ethCall(tx, "latest")
+  }
 
   override def estimate(transaction: Transaction): F[BigInteger] =
-    ethereum.ethEstimateGas(transaction.copy(from = from), "latest")
+    ethereum.ethEstimateGas(transaction.copy(from = Option(transaction.from).getOrElse(from)), "latest")
 
   protected def fill(transaction: Transaction): F[Transaction] =
     for {
@@ -31,7 +33,7 @@ abstract class AbstractTransactionSender[F[_]](val ethereum: Ethereum[F], val fr
       gas <- getGas(transaction)
     } yield
       transaction.copy(
-        from = from,
+        from = Option(transaction.from).getOrElse(from),
         gas = gas,
         gasPrice = gasPrice
       )
