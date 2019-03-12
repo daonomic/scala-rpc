@@ -1,5 +1,7 @@
 package io.daonomic.rpc
 
+import java.util.concurrent.atomic.AtomicInteger
+
 import cats.implicits._
 import io.daonomic.cats.MonadThrowable
 import io.daonomic.rpc.domain.{Error, Request, Response, StatusAndBody}
@@ -7,6 +9,10 @@ import org.slf4j.{Logger, LoggerFactory}
 
 import scala.language.higherKinds
 import scala.reflect.Manifest
+
+object RpcId {
+  val id = new AtomicInteger()
+}
 
 class RpcHttpClient[F[_]](jsonConverter: JsonConverter, transport: RpcTransport[F])
                          (implicit me: MonadThrowable[F]) {
@@ -31,7 +37,7 @@ class RpcHttpClient[F[_]](jsonConverter: JsonConverter, transport: RpcTransport[
 
   def execOption[T](method: String, params: Any*)
                    (implicit mf: Manifest[T]): F[Option[T]] = {
-    execute[T](Request(1, method, params: _*)).flatMap {
+    execute[T](Request(RpcId.id.incrementAndGet(), method, params: _*)).flatMap {
       response =>
         response.error match {
           case Some(r) => me.raiseError(new RpcCodeException(s"error caught. method: $method params: $params", r))
