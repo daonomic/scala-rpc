@@ -4,11 +4,12 @@ import java.nio.charset.StandardCharsets
 
 import io.daonomic.rpc.domain
 import io.daonomic.rpc.domain.Binary
+import org.slf4j.{Logger, LoggerFactory}
 import scalether.abi.tuple.TupleType
 import scalether.util.Hash
 
 case class Signature[I, O](name: String, in: TupleType[I], out: TupleType[O]) {
-  println(s"created signature $name id: $id")
+  Signature.logger.info(s"created signature $name id: $id")
 
   def id: Binary = {
     val bytes = toString.getBytes(StandardCharsets.US_ASCII)
@@ -22,4 +23,8 @@ case class Signature[I, O](name: String, in: TupleType[I], out: TupleType[O]) {
     this.out.decode(out, 0).value
 
   override def toString: String = name + in.string
+}
+
+object Signature {
+  val logger: Logger = LoggerFactory.getLogger(classOf[Signature.type ])
 }
