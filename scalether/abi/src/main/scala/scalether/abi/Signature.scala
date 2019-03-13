@@ -8,6 +8,8 @@ import scalether.abi.tuple.TupleType
 import scalether.util.Hash
 
 case class Signature[I, O](name: String, in: TupleType[I], out: TupleType[O]) {
+  println(s"created signature $name id: $id")
+
   def id: Binary = {
     val bytes = toString.getBytes(StandardCharsets.US_ASCII)
     Binary(Hash.sha3(bytes)).slice(0, 4)
