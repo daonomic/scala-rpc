@@ -1,7 +1,12 @@
 package scalether.generator.domain;
 
+import scalether.generator.util.Hash;
+import scalether.generator.util.Hex;
+
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class AbiFunction implements AbiItem {
     private String name;
@@ -57,5 +62,14 @@ public class AbiFunction implements AbiItem {
 
     public void setConstant(boolean constant) {
         this.constant = constant;
+    }
+
+    public String getId() {
+        return Hex.prefixed(Hash.sha3(toString().getBytes(StandardCharsets.ISO_8859_1))).substring(0, 10);
+    }
+
+    @Override
+    public String toString() {
+        return name + "(" + getInputs().stream().map(AbiComponent::getType).collect(Collectors.joining(",")) + ")";
     }
 }

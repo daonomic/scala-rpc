@@ -104,7 +104,7 @@
         Tuple${types?size}Type(<@type_list types/>)
     </#if>
 </#compress></#macro>
-<#macro signature item>Signature("${item.name}", <@type item.inputs/>, <@type item.outputs/>)</#macro>
+<#macro signature item>Signature("${item.name}", <@type item.inputs/>, <@type item.outputs/>)/*${item.id!}*/</#macro>
 <#macro tuple_type types=[]><#compress>
     <#if types?size == 1 || types?size == 0>
         <@scala_type types/>

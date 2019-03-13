@@ -6,6 +6,7 @@ name := "generator"
 libraryDependencies += freemarker
 libraryDependencies += beanutils
 libraryDependencies += jackson
+libraryDependencies += bouncyCastle
 
 libraryDependencies += "org.scala-lang" % "scala-library" % fullScalaVersion % "test"
 
