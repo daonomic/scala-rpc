@@ -26,5 +26,5 @@ case class Signature[I, O](name: String, in: TupleType[I], out: TupleType[O]) {
 }
 
 object Signature {
-  val logger: Logger = LoggerFactory.getLogger(classOf[Signature.type ])
+  val logger: Logger = LoggerFactory.getLogger(Signature.getClass)
 }
