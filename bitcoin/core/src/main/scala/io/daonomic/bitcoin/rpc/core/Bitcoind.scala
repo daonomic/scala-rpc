@@ -3,15 +3,15 @@ package io.daonomic.bitcoin.rpc.core
 import java.math.BigInteger
 
 import cats.implicits._
-import io.daonomic.bitcoin.rpc.domain.{Block, Transaction}
+import io.daonomic.bitcoin.rpc.domain.Transaction
 import io.daonomic.cats.MonadThrowable
-import io.daonomic.rpc.{JsonConverter, RpcHttpClient, RpcTransport}
+import io.daonomic.rpc.{RpcClient, RpcTransport}
 
 import scala.language.higherKinds
 
 class Bitcoind[F[_]](transport: RpcTransport[F])
                     (implicit me: MonadThrowable[F])
-  extends RpcHttpClient[F](new JsonConverter(), transport) {
+  extends RpcClient[F](transport) {
 
   def help(what: String*): F[String] =
     exec("help", what: _*)
@@ -36,10 +36,4 @@ class Bitcoind[F[_]](transport: RpcTransport[F])
 
   def getBlockHash(blockNumber: BigInteger): F[String] =
     exec("getblockhash", blockNumber)
-
-  def getBlockSimple(hash: String): F[Block[String]] =
-    get(s"/rest/block/notxdetails/$hash.json")
-
-  def getBlockFull(hash: String): F[Block[Transaction]] =
-    get(s"/rest/block/$hash.json")
 }

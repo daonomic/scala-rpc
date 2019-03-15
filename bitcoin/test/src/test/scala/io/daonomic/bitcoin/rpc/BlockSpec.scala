@@ -8,7 +8,7 @@ class BlockSpec extends FlatSpec with IntegrationSpec {
     val currentBlock = bitcoind.getBlockCount.block()
     val hash = bitcoind.getBlockHash(currentBlock).block()
     assert(hash != null)
-    bitcoind.getBlockSimple(hash).block
+    restBitcoind.getBlockSimple(hash).block
   }
 
   it should "draw help" in {
@@ -16,12 +16,12 @@ class BlockSpec extends FlatSpec with IntegrationSpec {
   }
 
   it should "do some basic operations" taggedAs ManualTag in {
-    println(bitcoind.getNewAddress)
+    println(bitcoind.getNewAddress.block())
 
     bitcoind.generate(30).block()
   }
 
   it should "import address" taggedAs ManualTag in {
-    println(bitcoind.importAddress("mjvathXVxkoeHh7KYhNmUN8uMiSWxvtZUa", "test1"))
+    println(bitcoind.importAddress("mjvathXVxkoeHh7KYhNmUN8uMiSWxvtZUa", "test1").block())
   }
 }

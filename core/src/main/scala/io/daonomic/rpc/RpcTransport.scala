@@ -1,10 +1,9 @@
 package io.daonomic.rpc
 
-import io.daonomic.rpc.domain.StatusAndBody
+import io.daonomic.rpc.domain.{Request, Response}
 
 import scala.language.higherKinds
 
 trait RpcTransport[F[_]] {
-  def get(url: String): F[StatusAndBody]
-  def post(url: String, request: String): F[StatusAndBody]
+  def send[T: Manifest](request: Request): F[Response[T]]
 }

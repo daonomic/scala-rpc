@@ -2,9 +2,12 @@ package scalether.core
 
 import java.math.BigInteger
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.scala.experimental.ScalaObjectMapper
 import io.daonomic.cats.MonadThrowable
-import io.daonomic.rpc.RpcTransport
+import io.daonomic.rpc.{JsonConverter, RpcClient, RpcTransport}
 import io.daonomic.rpc.domain.{Binary, Word}
+import scalether.core.json.EthereumJacksonModule
 import scalether.domain.request.{LogFilter, Transaction}
 import scalether.domain.response.{Block, Log, TransactionReceipt}
 import scalether.domain.{Address, response}
@@ -13,7 +16,7 @@ import scala.language.higherKinds
 
 class Ethereum[F[_]](transport: RpcTransport[F])
                     (implicit me: MonadThrowable[F])
-  extends EthereumRpcClient[F](transport) {
+  extends RpcClient[F](transport) {
 
   def web3ClientVersion(): F[String] =
     exec("web3_clientVersion")
@@ -83,4 +86,8 @@ class Ethereum[F[_]](transport: RpcTransport[F])
 
   def ethGetCode(address: Address, defaultBlockParameter: String): F[Binary] =
     exec("eth_getCode", address, defaultBlockParameter)
+}
+
+object Ethereum {
+  val mapper: ObjectMapper with ScalaObjectMapper = JsonConverter.createMapper(new EthereumJacksonModule)
 }
