@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.experimental.ScalaObjectMapper
 import io.daonomic.rpc.domain.{Request, Response}
-import io.daonomic.rpc.{MonoHttpTransport, MonoRpcTransport}
+import io.daonomic.rpc.{JsonConverter, MonoHttpTransport, MonoRpcTransport}
 import io.netty.channel.ChannelOption
 import io.netty.handler.timeout.{ReadTimeoutHandler, WriteTimeoutHandler}
 import org.springframework.core.ParameterizedTypeReference
@@ -76,4 +76,7 @@ object WebClientTransport {
   def apply(rpcUrl: String, user: String, password: String, mapper: ObjectMapper with ScalaObjectMapper, requestTimeoutMs: Int = 10000, readTimeoutMs: Int = 10000): WebClientTransport = {
     new WebClientTransport(rpcUrl, mapper, headers = Map("Authorization" -> s"Basic ${WebClientTransport.getBasicHeaderValue(user, password)}"))
   }
+
+  def createForEthereum(rpcUrl: String, requestTimeoutMs: Int = 10000, readTimeoutMs: Int = 10000) =
+    new WebClientTransport(rpcUrl, JsonConverter.createMapper(new EthereumJacksonModule()))
 }
