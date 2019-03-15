@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.experimental.ScalaObjectMapper
 import io.daonomic.rpc.domain.{Request, Response}
-import io.daonomic.rpc.{JsonConverter, MonoHttpTransport, MonoRpcTransport}
+import io.daonomic.rpc.{MonoHttpTransport, MonoRpcTransport}
 import io.netty.channel.ChannelOption
 import io.netty.handler.timeout.{ReadTimeoutHandler, WriteTimeoutHandler}
 import org.springframework.core.ParameterizedTypeReference
