@@ -76,7 +76,4 @@ object WebClientTransport {
   def apply(rpcUrl: String, user: String, password: String, mapper: ObjectMapper with ScalaObjectMapper, requestTimeoutMs: Int = 10000, readTimeoutMs: Int = 10000): WebClientTransport = {
     new WebClientTransport(rpcUrl, mapper, headers = Map("Authorization" -> s"Basic ${WebClientTransport.getBasicHeaderValue(user, password)}"))
   }
-
-  def createForEthereum(rpcUrl: String, requestTimeoutMs: Int = 10000, readTimeoutMs: Int = 10000) =
-    new WebClientTransport(rpcUrl, JsonConverter.createMapper(new EthereumJacksonModule()))
 }
