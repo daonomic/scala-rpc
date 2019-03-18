@@ -253,15 +253,21 @@ case class ${eventName}(<#list item.all as arg>${arg.name}: <@event_arg_type arg
 
 object ${eventName} {
   val event = Event("${item.name}", List(<@type_list item.inputs/>), <@type item.indexed/>, <@type item.nonIndexed/>)
+  val id = event.id
 
   @annotation.varargs def filter(fromBlock: String, toBlock: String, addresses: Address*): LogFilter =
-    LogFilter(topics = List(SimpleTopicFilter(event.id)), address = addresses.toList, fromBlock = fromBlock, toBlock = toBlock)
+    LogFilter(topics = List(SimpleTopicFilter(id)), address = addresses.toList, fromBlock = fromBlock, toBlock = toBlock)
 
   @annotation.varargs def filter(addresses: Address*): LogFilter =
-    LogFilter(topics = List(SimpleTopicFilter(event.id)), address = addresses.toList)
+    LogFilter(topics = List(SimpleTopicFilter(id)), address = addresses.toList)
+
+  def apply(receipt: scalether.domain.response.TransactionReceipt): List[${eventName}] =
+    receipt.logs
+      .filter(_.topics.head == id)
+      .map(${eventName}(_))
 
   def apply(log: response.Log): ${eventName} = {
-    assert(log.topics.head == event.id)
+    assert(log.topics.head == id)
 
     <#if item.nonIndexed?has_content>val decodedData = event.decode(log.data)</#if>
     <#list item.indexed as arg>
