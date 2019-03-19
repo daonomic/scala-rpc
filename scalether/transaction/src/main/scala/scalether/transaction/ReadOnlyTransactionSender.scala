@@ -14,8 +14,10 @@ class ReadOnlyTransactionSender[F[_]](val ethereum: Ethereum[F], val from: Addre
                                      (implicit m: MonadThrowable[F])
   extends TransactionSender[F] {
 
-  override def call(transaction: Transaction): F[Binary] =
-    ethereum.ethCall(transaction.copy(from = from), "latest")
+  override def call(transaction: Transaction): F[Binary] = {
+    val tx = transaction.copy(from = Option(transaction.from).getOrElse(from))
+    ethereum.ethCall(tx, "latest")
+  }
 
   override def estimate(transaction: Transaction): F[BigInteger] =
     ethereum.ethEstimateGas(transaction.copy(from = from), "latest")
