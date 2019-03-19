@@ -32,6 +32,7 @@ lazy val `transport-id` = (project in file("transport/id"))
 
 lazy val `transport-mono` = (project in file("transport/mono"))
   .transport
+  .tests()
   .dependsOn(core, `test-common` % "test")
 
 lazy val `transport-sttp` = (project in file("transport/sttp"))
