@@ -192,14 +192,14 @@ class ${truffle.name}<@monad_param/>(address: Address, sender: <@sender/>)<@impl
       <#assign signatureName="${get_name(signatures, item.name)}Signature"/>
         <#if item.constant>
   def ${item.name}<@args item.inputs/>: <@monadic><@tuple_type item.outputs/></@> =
-    <#if preparedTransaction?has_content>${preparedTransaction}<#else>PreparedTransaction</#if>(address, ${signatureName}, <@args_tuple item.inputs/>, sender).call()
+    <#if preparedTransaction?has_content>${preparedTransaction}<#else>PreparedTransaction</#if>(address, ${signatureName}, <@args_tuple item.inputs/>, sender, description = "${item.name}").call()
         <#else>
   def ${item.name}<@args item.inputs/>: <#if preparedTransaction?has_content>${preparedTransaction}<#else>PreparedTransaction</#if>[<#if !(preparedTransaction?has_content)><@monad/>, </#if><@tuple_type item.outputs/>] =
-    <#if preparedTransaction?has_content>${preparedTransaction}<#else>PreparedTransaction</#if>(address, ${signatureName}, <@args_tuple item.inputs/>, sender)
+    <#if preparedTransaction?has_content>${preparedTransaction}<#else>PreparedTransaction</#if>(address, ${signatureName}, <@args_tuple item.inputs/>, sender, description = "${item.name}")
         </#if>
 	<#elseif item.type?lower_case == 'fallback'>
   def fallback: <#if preparedTransaction?has_content>${preparedTransaction}<#else>PreparedTransaction</#if>[<#if !(preparedTransaction?has_content)><@monad/>, </#if>Unit] =
-    new <#if preparedTransaction?has_content>${preparedTransaction}<#else>PreparedTransaction</#if>(address, UnitType, Binary(), sender, BigInteger.ZERO)
+    new <#if preparedTransaction?has_content>${preparedTransaction}<#else>PreparedTransaction</#if>(address, UnitType, Binary(), sender, BigInteger.ZERO, description = "fallback")
     </#if>
   </#list>
 }

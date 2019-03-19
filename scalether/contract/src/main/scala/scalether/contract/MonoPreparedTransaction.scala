@@ -17,20 +17,21 @@ class MonoPreparedTransaction[O](address: Address,
                                  value: BigInteger,
                                  gas: BigInteger = null,
                                  gasPrice: BigInteger = null,
-                                 from: Address = null)
-  extends PreparedTransaction[Mono, O](address, out, data, sender, value, gas, gasPrice, from) {
+                                 from: Address = null,
+                                 description: String = null)
+  extends PreparedTransaction[Mono, O](address, out, data, sender, value, gas, gasPrice, from, description) {
 
   override def withGas(newGas: BigInteger): MonoPreparedTransaction[O] =
-    new MonoPreparedTransaction[O](address, out, data, sender, value, newGas, gasPrice, from)
+    new MonoPreparedTransaction[O](address, out, data, sender, value, newGas, gasPrice, from, description)
 
   override def withGasPrice(newGasPrice: BigInteger): MonoPreparedTransaction[O] =
-    new MonoPreparedTransaction[O](address, out, data, sender, value, gas, newGasPrice, from)
+    new MonoPreparedTransaction[O](address, out, data, sender, value, gas, newGasPrice, from, description)
 
   override def withValue(newValue: BigInteger): MonoPreparedTransaction[O] =
-    new MonoPreparedTransaction[O](address, out, data, sender, newValue, gas, gasPrice, from)
+    new MonoPreparedTransaction[O](address, out, data, sender, newValue, gas, gasPrice, from, description)
 
   override def withFrom(newFrom: Address): MonoPreparedTransaction[O] =
-    new MonoPreparedTransaction[O](address, out, data, sender, value, gas, gasPrice, newFrom)
+    new MonoPreparedTransaction[O](address, out, data, sender, value, gas, gasPrice, newFrom, description)
 
   override def call(): Mono[O] = super.call()
 
@@ -49,6 +50,7 @@ object MonoPreparedTransaction {
                   value: BigInteger = null,
                   gas: BigInteger = null,
                   gasPrice: BigInteger = null,
-                  from: Address = null): MonoPreparedTransaction[O] =
-    new MonoPreparedTransaction[O](address, signature.out, signature.encode(in), sender, value, gas, gasPrice, from)
+                  from: Address = null,
+                  description: String = null): MonoPreparedTransaction[O] =
+    new MonoPreparedTransaction[O](address, signature.out, signature.encode(in), sender, value, gas, gasPrice, from, description)
 }

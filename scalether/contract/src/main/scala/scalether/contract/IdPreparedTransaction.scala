@@ -17,20 +17,21 @@ class IdPreparedTransaction[O](address: Address,
                                value: BigInteger,
                                gas: BigInteger = null,
                                gasPrice: BigInteger = null,
-                               from: Address = null)
-  extends PreparedTransaction[Id, O](address, out, data, sender, value, gas, gasPrice, from) {
+                               from: Address = null,
+                               description: String = null)
+  extends PreparedTransaction[Id, O](address, out, data, sender, value, gas, gasPrice, from, description) {
 
   override def withGas(newGas: BigInteger): IdPreparedTransaction[O] =
-    new IdPreparedTransaction[O](address, out, data, sender, value, newGas, gasPrice, from)
+    new IdPreparedTransaction[O](address, out, data, sender, value, newGas, gasPrice, from, description)
 
   override def withGasPrice(newGasPrice: BigInteger): IdPreparedTransaction[O] =
-    new IdPreparedTransaction[O](address, out, data, sender, value, gas, newGasPrice, from)
+    new IdPreparedTransaction[O](address, out, data, sender, value, gas, newGasPrice, from, description)
 
   override def withValue(newValue: BigInteger): IdPreparedTransaction[O] =
-    new IdPreparedTransaction[O](address, out, data, sender, newValue, gas, gasPrice, from)
+    new IdPreparedTransaction[O](address, out, data, sender, newValue, gas, gasPrice, from, description)
 
   override def withFrom(newFrom: Address): IdPreparedTransaction[O] =
-    new IdPreparedTransaction[O](address, out, data, sender, value, gas, gasPrice, newFrom)
+    new IdPreparedTransaction[O](address, out, data, sender, value, gas, gasPrice, newFrom, description)
 
   override def call(): O = super.call()
 
@@ -49,6 +50,7 @@ object IdPreparedTransaction {
                   value: BigInteger = null,
                   gas: BigInteger = null,
                   gasPrice: BigInteger = null,
-                  from: Address = null): IdPreparedTransaction[O] =
-    new IdPreparedTransaction[O](address, signature.out, signature.encode(in), sender, value, gas, gasPrice, from)
+                  from: Address = null,
+                  description: String = null): IdPreparedTransaction[O] =
+    new IdPreparedTransaction[O](address, signature.out, signature.encode(in), sender, value, gas, gasPrice, from, description)
 }
