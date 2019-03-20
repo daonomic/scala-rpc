@@ -26,10 +26,10 @@ public class WebSocketClient {
     public static Flux<String> connect(URI uri, Flux<String> send) {
         return Flux.create(sink -> new ReactorNettyWebSocketClient().execute(uri, session -> {
             logger.info("connected to {}", uri);
-            Flux<WebSocketMessage> receive = session.receive()
-                .doOnNext(m -> sink.next(m.getPayloadAsText()));
-            return session.send(send.map(session::textMessage))
-                .and(receive);
+            return Mono.when(
+                session.receive().doOnNext(m -> sink.next(m.getPayloadAsText())),
+                session.send(send.map(session::textMessage))
+            );
         }).subscribe(
             __ -> {
             },

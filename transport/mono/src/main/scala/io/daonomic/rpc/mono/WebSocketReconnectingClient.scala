@@ -8,6 +8,7 @@ import WebSocketReconnectingClient.logger
 
 class WebSocketReconnectingClient(uri: String) {
   private val send = EmitterProcessor.create[String]()
+  private val sendSink = send.sink()
 
   private val incoming = ReplayProcessor.create[String](0)
 
@@ -20,7 +21,7 @@ class WebSocketReconnectingClient(uri: String) {
   }
 
   def send(message: String): Unit = {
-    send.onNext(message)
+    sendSink.next(message)
   }
 
   def receive(): Flux[String] = incoming
