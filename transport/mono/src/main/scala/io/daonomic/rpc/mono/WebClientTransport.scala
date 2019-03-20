@@ -73,7 +73,7 @@ object WebClientTransport {
   def getBasicHeaderValue(username: String, password: String): String =
     Base64.getEncoder.encodeToString((username + ':' + password).getBytes(StandardCharsets.UTF_8))
 
-  def createForBitcoin(rpcUrl: String, user: String, password: String, requestTimeoutMs: Int = 10000, readTimeoutMs: Int = 10000): WebClientTransport = {
+  def createWithBasicAuth(rpcUrl: String, user: String, password: String, requestTimeoutMs: Int = 10000, readTimeoutMs: Int = 10000): WebClientTransport = {
     new WebClientTransport(rpcUrl, JsonConverter.createMapper(), headers = Map("Authorization" -> s"Basic ${WebClientTransport.getBasicHeaderValue(user, password)}"))
   }
 }
