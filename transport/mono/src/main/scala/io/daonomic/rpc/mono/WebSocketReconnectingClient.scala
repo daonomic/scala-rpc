@@ -2,9 +2,9 @@ package io.daonomic.rpc.mono
 
 import java.net.URI
 
+import io.daonomic.rpc.mono.WebSocketReconnectingClient.logger
 import org.slf4j.{Logger, LoggerFactory}
 import reactor.core.publisher.{EmitterProcessor, Flux, ReplayProcessor}
-import WebSocketReconnectingClient.logger
 
 class WebSocketReconnectingClient(uri: String) {
   private val send = EmitterProcessor.create[String]()

@@ -110,7 +110,7 @@ lazy val `scalether-transport-mono` = (project in file("scalether/transport-mono
 
 lazy val `scalether-test` = (project in file("scalether/test"))
   .scalether
-  .dependsOn(`scalether-contract`, `scalether-listener`, `transport-try`, `test-common` % "test")
+  .dependsOn(`scalether-contract`, `scalether-listener`, `transport-try`, `test-common` % "test", `transport-mono`)
   .settings(skip in publish := true)
 
 lazy val root = (project in file("."))
