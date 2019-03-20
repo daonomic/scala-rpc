@@ -1,23 +1,24 @@
 package io.daonomic.rpc.mono
 
-import java.net.URI
+import java.util.concurrent.atomic.AtomicLong
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.experimental.ScalaObjectMapper
 import io.daonomic.rpc.MonoRpcTransport
 import io.daonomic.rpc.domain.{Request, Response}
-import reactor.core.publisher.{EmitterProcessor, Mono}
+import reactor.core.publisher.Mono
 
-class WebSocketRpcTransport(uri: String, mapper: ObjectMapper with ScalaObjectMapper) extends MonoRpcTransport {
-  private val send = EmitterProcessor.create[String]()
-  private val sendSink = send.sink()
+class WebSocketRpcTransport(client: WebSocketReconnectingClient, mapper: ObjectMapper with ScalaObjectMapper) extends MonoRpcTransport {
 
-  private val incoming = WebSocketClient.reconnect(new URI(uri), send)
+  val id = new AtomicLong()
 
   override def send[T: Manifest](request: Request): Mono[Response[T]] = {
-    Mono.create[Response[T]] { sink =>
-      sendSink.next(mapper.writeValueAsString(request))
-      incoming.filter().subscribe(sink)
-    }
+    val id = this.id.incrementAndGet()
+    client.receive()
+      .map[Response[T]](response => mapper.readValue[Response[T]](response))
+      .filter(response => response.id == id)
+      .map[Response[T]](response => response.copy(id = request.id))
+      .next()
+      .doOnSubscribe(_ => client.send(mapper.writeValueAsString(request.copy(id = id))))
   }
 }
