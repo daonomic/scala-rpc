@@ -1,5 +1,6 @@
 package io.daonomic.rpc.mono
 
+import java.time.Duration
 import java.util.concurrent.atomic.AtomicLong
 
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -8,7 +9,7 @@ import io.daonomic.rpc.MonoRpcTransport
 import io.daonomic.rpc.domain.{Request, Response}
 import reactor.core.publisher.Mono
 
-class WebSocketRpcTransport(client: WebSocketReconnectingClient, mapper: ObjectMapper with ScalaObjectMapper) extends MonoRpcTransport {
+class WebSocketRpcTransport(client: WebSocketReconnectingClient, mapper: ObjectMapper with ScalaObjectMapper, timeout: Duration = Duration.ofSeconds(10)) extends MonoRpcTransport {
 
   val id = new AtomicLong()
 
@@ -20,5 +21,6 @@ class WebSocketRpcTransport(client: WebSocketReconnectingClient, mapper: ObjectM
       .map[Response[T]](response => response.copy(id = request.id))
       .next()
       .doOnSubscribe(_ => client.send(mapper.writeValueAsString(request.copy(id = id))))
+      .timeout(timeout)
   }
 }
