@@ -21,7 +21,7 @@ import reactor.netty.http.client.HttpClient
 import reactor.netty.tcp.TcpClient
 
 class WebClientTransport(rpcUrl: String, mapper: ObjectMapper with ScalaObjectMapper, requestTimeoutMs: Int = 10000, readWriteTimeoutMs: Int = 10000,
-                            headers: Map[String, String] = Map())
+                         headers: Map[String, String] = Map())
   extends MonoRpcTransport with MonoHttpTransport {
 
   private val client = buildClient()
