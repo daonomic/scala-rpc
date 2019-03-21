@@ -2,19 +2,21 @@ package io.daonomic.rpc.mono
 
 import java.net.URI
 
+import com.fasterxml.jackson.databind.{JsonNode, ObjectMapper}
 import io.daonomic.rpc.mono.WebSocketReconnectingClient.logger
 import org.slf4j.{Logger, LoggerFactory}
 import reactor.core.publisher.{EmitterProcessor, Flux, ReplayProcessor}
 
 class WebSocketReconnectingClient(uri: String) {
+  private val mapper = new ObjectMapper()
   private val send = EmitterProcessor.create[String]()
   private val sendSink = send.sink()
 
-  private val incoming = ReplayProcessor.create[String](0)
+  private val incoming = ReplayProcessor.create[JsonNode](0)
 
   {
     WebSocketClient.reconnect(new URI(uri), send).subscribe(
-      s => incoming.onNext(s),
+      s => incoming.onNext(mapper.readTree(s)),
       th => logger.error("should never happen", th),
       () => logger.error("should never happen")
     )
@@ -24,7 +26,7 @@ class WebSocketReconnectingClient(uri: String) {
     sendSink.next(message)
   }
 
-  def receive(): Flux[String] = incoming
+  def receive(): Flux[JsonNode] = incoming
 }
 
 object WebSocketReconnectingClient {
