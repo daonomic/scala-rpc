@@ -5,9 +5,10 @@ import java.net.URI
 import com.fasterxml.jackson.databind.{JsonNode, ObjectMapper}
 import io.daonomic.rpc.mono.WebSocketReconnectingClient.logger
 import org.slf4j.{Logger, LoggerFactory}
+import org.springframework.web.reactive.socket.adapter.NettyWebSocketSessionSupport
 import reactor.core.publisher.{EmitterProcessor, Flux, ReplayProcessor}
 
-class WebSocketReconnectingClient(uri: String) {
+class WebSocketReconnectingClient(uri: String, maxFramePayloadLength: Int = NettyWebSocketSessionSupport.DEFAULT_FRAME_MAX_SIZE) {
   private val mapper = new ObjectMapper()
   private val send = EmitterProcessor.create[String]()
   private val sendSink = send.sink()
@@ -15,7 +16,7 @@ class WebSocketReconnectingClient(uri: String) {
   private val incoming = ReplayProcessor.create[JsonNode](0)
 
   {
-    WebSocketClient.reconnect(new URI(uri), send).subscribe(
+    SimpleWebSocketClient.reconnect(new URI(uri), maxFramePayloadLength, send).subscribe(
       s => incoming.onNext(mapper.readTree(s)),
       th => logger.error("should never happen", th),
       () => logger.error("should never happen")

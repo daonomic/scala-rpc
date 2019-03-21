@@ -3,6 +3,7 @@ package io.daonomic.rpc
 import java.util.concurrent.atomic.AtomicInteger
 
 import cats.implicits._
+import com.fasterxml.jackson.databind.JsonNode
 import io.daonomic.cats.MonadThrowable
 import io.daonomic.rpc.domain.{Error, Request, Response}
 
@@ -22,7 +23,7 @@ class RpcClient[F[_]](transport: RpcTransport[F])
 
   def execOption[T](method: String, params: Any*)
                    (implicit mf: Manifest[T]): F[Option[T]] = {
-    executeRaw[T](Request(RpcClient.id.incrementAndGet(), method, params: _*)).flatMap {
+    transport.send[T](Request(RpcClient.id.incrementAndGet(), method, params: _*)).flatMap {
       response =>
         response.error match {
           case Some(r) => me.raiseError(new RpcCodeException(s"error caught. method: $method params: $params", r))
@@ -31,8 +32,8 @@ class RpcClient[F[_]](transport: RpcTransport[F])
     }
   }
 
-  def executeRaw[T: Manifest](request: Request): F[Response[T]] = {
-    transport.send(request)
+  def executeRaw(request: Request): F[Response[JsonNode]] = {
+    transport.send[JsonNode](request)
   }
 }
 
