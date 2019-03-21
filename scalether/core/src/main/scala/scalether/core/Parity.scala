@@ -3,14 +3,14 @@ package scalether.core
 import java.math.BigInteger
 
 import io.daonomic.cats.MonadThrowable
-import io.daonomic.rpc.RpcTransport
+import io.daonomic.rpc.{RpcClient, RpcTransport}
 import scalether.domain.response.parity.Trace
 
 import scala.language.higherKinds
 
 class Parity[F[_]](transport: RpcTransport[F])
                   (implicit me: MonadThrowable[F])
-  extends EthereumRpcClient[F](transport) {
+  extends RpcClient[F](transport) {
 
   def traceTransaction(txHash: String): F[List[Trace]] = {
     exec("trace_transaction", txHash)

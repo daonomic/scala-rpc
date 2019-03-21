@@ -8,16 +8,17 @@ import io.daonomic.blockchain.poller.tries.implicits._
 import io.daonomic.blockchain.state.VarState
 import io.daonomic.blockchain.transfer
 import io.daonomic.blockchain.transfer.{TransferListenService, TransferListener}
-import io.daonomic.rpc.ManualTag
+import io.daonomic.rpc.{JsonConverter, ManualTag}
 import io.daonomic.rpc.tries.ScalajHttpTransport
 import org.scalatest.FlatSpec
+import scalether.core.json.EthereumJacksonModule
 import scalether.core.{Ethereum, Parity}
 import scalether.listener.{EthereumBlockchain, SimpleEthereumBlockchain}
 
 import scala.util.{Failure, Try}
 
 class TransferListenerIntegrationSpec extends FlatSpec {
-  val transport = new ScalajHttpTransport("http://ether-ropsten:8545")
+  val transport = new ScalajHttpTransport("http://ether-ropsten:8545", new JsonConverter(new EthereumJacksonModule))
   val ethereum = new Ethereum(transport)
   val parity = new Parity(transport)
   val blockchain = new EthereumBlockchain(ethereum, parity)

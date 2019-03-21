@@ -14,7 +14,7 @@ import org.scalatest.FlatSpec
 import reactor.core.publisher.Mono
 
 class TransferListenerIntegrationSpec extends FlatSpec with IntegrationSpec {
-  val blockchain = new BitcoinBlockchain(bitcoind)
+  val blockchain = new BitcoinBlockchain(bitcoind, restBitcoind)
 
   "TranferListenService" should "listen for transfers" taggedAs ManualTag in {
 

@@ -5,10 +5,11 @@ import java.math.BigInteger
 import io.daonomic.rpc.domain.{Response, Word}
 import io.daonomic.rpc.JsonConverter
 import org.scalatest.{FlatSpec, Matchers}
+import scalether.core.json.EthereumJacksonModule
 import scalether.domain.request.{LogFilter, TopicFilter}
 
 class JsonSpec extends FlatSpec with Matchers {
-  val json:JsonConverter = EthereumRpcClient.jsonConverter
+  val json:JsonConverter = new JsonConverter(new EthereumJacksonModule)
 
   "JsonConverter" should "deserialize responses with BigInteger" in {
     val result = json.fromJson[Response[BigInteger]]("{\"id\":1,\"result\":\"0x4A817C800\"}")

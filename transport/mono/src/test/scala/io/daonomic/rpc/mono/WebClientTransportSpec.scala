@@ -1,14 +1,14 @@
 package io.daonomic.rpc.mono
 
-import io.daonomic.rpc.ManualTag
+import io.daonomic.rpc.domain.{Request, Response}
+import io.daonomic.rpc.{JsonConverter, ManualTag}
 import org.scalatest.FlatSpec
 
 class WebClientTransportSpec extends FlatSpec {
-  val transport = WebClientTransport("http://localhost:18332", "user", "pass")
+  val transport = new WebClientTransport("http://ether-ropsten:8545", JsonConverter.createMapper())
 
-  "MonoTransport" should "execute req with basic auth" taggedAs ManualTag in {
-    val resp = transport.post("", "{\"id\":1,\"method\":\"getblockchaininfo\",\"params\":[],\"jsonrpc\":\"2.0\"}").block()
-    assert(resp.code == 200)
-    println(resp)
+  "MonoTransport" should "send post requests and get back responses" taggedAs ManualTag in {
+    val resp = transport.send[String](Request(1, "net_version")).block()
+    assert(resp.result.get == "200")
   }
 }

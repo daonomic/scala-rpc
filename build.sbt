@@ -32,6 +32,7 @@ lazy val `transport-id` = (project in file("transport/id"))
 
 lazy val `transport-mono` = (project in file("transport/mono"))
   .transport
+  .tests()
   .dependsOn(core, `test-common` % "test")
 
 lazy val `transport-sttp` = (project in file("transport/sttp"))
@@ -103,9 +104,13 @@ lazy val `scalether-generator` = (project in file("scalether/generator"))
   .scalether
   .dependsOn(`test-common` % "test")
 
+lazy val `scalether-transport-mono` = (project in file("scalether/transport-mono"))
+  .scalether
+  .dependsOn(`scalether-core`, `transport-mono`)
+
 lazy val `scalether-test` = (project in file("scalether/test"))
   .scalether
-  .dependsOn(`scalether-contract`, `scalether-listener`, `transport-try`, `test-common` % "test")
+  .dependsOn(`scalether-contract`, `scalether-listener`, `transport-try`, `test-common` % "test", `transport-mono`)
   .settings(skip in publish := true)
 
 lazy val root = (project in file("."))
@@ -116,6 +121,6 @@ lazy val root = (project in file("."))
     `transport-try`, `transport-sttp`, `transport-mono`, `transport-id`,
     `blockchain-poller`, `blockchain-listener`,
     `scalether-util`, `scalether-domain`, `scalether-core`, `scalether-abi`, `scalether-transaction`,
-    `scalether-listener`, `scalether-contract`, `scalether-generator`, `scalether-test`,
+    `scalether-listener`, `scalether-contract`, `scalether-generator`, `scalether-test`, `scalether-transport-mono`,
     `bitcoin-domain`, `bitcoin-core`, `bitcoin-listener`
   )

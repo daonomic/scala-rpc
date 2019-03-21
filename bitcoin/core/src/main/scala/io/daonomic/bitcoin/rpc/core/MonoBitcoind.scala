@@ -2,7 +2,7 @@ package io.daonomic.bitcoin.rpc.core
 
 import java.math.BigInteger
 
-import io.daonomic.bitcoin.rpc.domain.{Block, Transaction}
+import io.daonomic.bitcoin.rpc.domain.Transaction
 import io.daonomic.cats.implicits._
 import io.daonomic.rpc.MonoRpcTransport
 import reactor.core.publisher.Mono
@@ -35,10 +35,4 @@ class MonoBitcoind(transport: MonoRpcTransport) extends Bitcoind[Mono](transport
 
   override def getBlockHash(blockNumber: BigInteger): Mono[String] =
     super.getBlockHash(blockNumber)
-
-  override def getBlockSimple(hash: String): Mono[Block[String]] =
-    super.getBlockSimple(hash)
-
-  override def getBlockFull(hash: String): Mono[Block[Transaction]] =
-    super.getBlockFull(hash)
 }

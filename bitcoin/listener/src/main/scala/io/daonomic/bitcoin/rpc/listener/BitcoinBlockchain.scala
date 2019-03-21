@@ -4,13 +4,13 @@ import cats.implicits._
 import java.math.BigInteger
 
 import cats.Monad
-import io.daonomic.bitcoin.rpc.core.Bitcoind
+import io.daonomic.bitcoin.rpc.core.{Bitcoind, RestBitcoind}
 import io.daonomic.bitcoin.rpc.domain
 import io.daonomic.blockchain.{BalanceChange, Blockchain, Transaction}
 
 import scala.language.higherKinds
 
-class BitcoinBlockchain[F[_]](bitcoind: Bitcoind[F])
+class BitcoinBlockchain[F[_]](bitcoind: Bitcoind[F], restBitcoind: RestBitcoind[F])
                              (implicit m: Monad[F])
   extends Blockchain[F] {
 
@@ -19,12 +19,12 @@ class BitcoinBlockchain[F[_]](bitcoind: Bitcoind[F])
 
   override def getTransactionIdsByBlock(block: BigInteger): F[List[String]] =
     bitcoind.getBlockHash(block)
-      .flatMap(bitcoind.getBlockSimple)
+      .flatMap(restBitcoind.getBlockSimple)
       .map(_.tx)
 
   override def getTransactionsByBlock(block: BigInteger): F[List[Transaction]] =
     bitcoind.getBlockHash(block)
-      .flatMap(bitcoind.getBlockFull)
+      .flatMap(restBitcoind.getBlockFull)
       .map(block => block.tx.map(tx => new BitcoinTransaction(tx)))
 }
 

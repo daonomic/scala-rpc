@@ -1,23 +1,24 @@
 package scalether.test
 
 import io.daonomic.cats.implicits._
-import io.daonomic.rpc.ManualTag
 import io.daonomic.rpc.domain.Word
 import io.daonomic.rpc.tries.ScalajHttpTransport
+import io.daonomic.rpc.{JsonConverter, ManualTag}
 import org.scalatest.FlatSpec
+import scalether.core.json.EthereumJacksonModule
 import scalether.core.{Ethereum, Parity}
 
 import scala.util.Try
 
 class ParitySpec extends FlatSpec {
-  val parity = new Parity[Try](new ScalajHttpTransport("http://ether-dev:8545"))
-  val ethereum = new Ethereum[Try](new ScalajHttpTransport("http://ether-dev:8545"))
+  val parity = new Parity[Try](new ScalajHttpTransport("http://ether-ropsten:8545", new JsonConverter(new EthereumJacksonModule)))
+  val ethereum = new Ethereum[Try](new ScalajHttpTransport("http://ether-ropsten:8545", new JsonConverter(new EthereumJacksonModule)))
 
   "Parity" should "get transaction trace" taggedAs ManualTag in {
-    println(parity.traceTransaction("0x1825ab1f99ed41fa62f5ff324cf29eee802e6c07d3a5e21d905ff1f1add54b86").get)
+    println(parity.traceTransaction("0xad962f134127cee64c034d782d05c57eeeda5e20a8b0f078761278cdf7527829").get)
   }
 
   "Ethereum" should "get transaction by hash" taggedAs ManualTag in {
-    println(ethereum.ethGetTransactionByHash(Word("0x4442468db05a4ab2edf6a4550882d023ef1aa80cb92f33f850d21c181e6597f7")))
+    println(ethereum.ethGetTransactionByHash(Word("0xad962f134127cee64c034d782d05c57eeeda5e20a8b0f078761278cdf7527829")).get)
   }
 }
