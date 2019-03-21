@@ -8,7 +8,7 @@ import io.daonomic.blockchain.poller.mono.implicits._
 import io.daonomic.blockchain.state.VarState
 import io.daonomic.blockchain.transfer
 import io.daonomic.blockchain.transfer.{TransferListenService, TransferListener}
-import io.daonomic.cats.implicits._
+import io.daonomic.cats.mono.implicits._
 import io.daonomic.rpc.ManualTag
 import org.scalatest.FlatSpec
 import reactor.core.publisher.Mono

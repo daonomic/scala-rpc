@@ -1,0 +1,13 @@
+package scalether.transaction
+
+import io.daonomic.blockchain.poller.mono.implicits._
+import io.daonomic.cats.mono.implicits._
+import io.daonomic.rpc.domain.Word
+import reactor.core.publisher.Mono
+import scalether.core.MonoEthereum
+import scalether.domain.response.TransactionReceipt
+
+class MonoTransactionPoller(ethereum: MonoEthereum) extends TransactionPoller[Mono](ethereum) {
+  override def waitForTransaction(txHash: Mono[Word]): Mono[TransactionReceipt] =
+    super.waitForTransaction(txHash)
+}

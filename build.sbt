@@ -17,10 +17,16 @@ lazy val domain = project.common
 
 lazy val cats = project.common
   .settings(organization := "io.daonomic.cats")
-  .settings(bintrayPackage := "mono-cats")
+
+lazy val `cats-mono` = project.common
+  .settings(organization := "io.daonomic.cats")
+  .dependsOn(cats)
 
 lazy val core = project.common
   .dependsOn(domain, cats)
+
+lazy val `core-mono` = project.common
+  .dependsOn(core)
 
 lazy val `transport-try` = (project in file("transport/try"))
   .transport
@@ -33,7 +39,7 @@ lazy val `transport-id` = (project in file("transport/id"))
 lazy val `transport-mono` = (project in file("transport/mono"))
   .transport
   .tests()
-  .dependsOn(core, `test-common` % "test")
+  .dependsOn(`core-mono`, `test-common` % "test")
 
 lazy val `transport-sttp` = (project in file("transport/sttp"))
   .transport
@@ -43,13 +49,22 @@ lazy val `transport-sttp` = (project in file("transport/sttp"))
 lazy val `blockchain-poller` = (project in file("blockchain/poller"))
   .tests()
   .blockchain
-  .tests("test")
   .dependsOn(cats)
+
+lazy val `blockchain-poller-mono` = (project in file("blockchain/poller-mono"))
+  .tests()
+  .blockchain
+  .dependsOn(`blockchain-poller`, `cats-mono`)
 
 lazy val `blockchain-listener` = (project in file("blockchain/listener"))
   .blockchain
   .tests()
   .dependsOn(`blockchain-poller`)
+
+lazy val `blockchain-listener-mono` = (project in file("blockchain/listener-mono"))
+  .blockchain
+  .tests()
+  .dependsOn(`blockchain-listener`, `blockchain-poller-mono`)
 
 //bitcoin
 lazy val `bitcoin-domain` = (project in file("bitcoin/domain"))
@@ -60,13 +75,21 @@ lazy val `bitcoin-core` = (project in file("bitcoin/core"))
   .bitcoin
   .dependsOn(core, `bitcoin-domain`, cats, `test-common` % "test")
 
+lazy val `bitcoin-core-mono` = (project in file("bitcoin/core-mono"))
+  .bitcoin
+  .dependsOn(`bitcoin-core`, `core-mono`, `bitcoin-domain`, `cats-mono`, `test-common` % "test")
+
 lazy val `bitcoin-listener` = (project in file("bitcoin/listener"))
   .bitcoin
   .dependsOn(`blockchain-listener`, `bitcoin-core`, `test-common` % "test")
 
+lazy val `bitcoin-listener-mono` = (project in file("bitcoin/listener-mono"))
+  .bitcoin
+  .dependsOn(`bitcoin-listener`, `blockchain-listener-mono`, `bitcoin-core-mono`, `test-common` % "test")
+
 lazy val `bitcoin-test` = (project in file("bitcoin/test"))
   .bitcoin
-  .dependsOn(`bitcoin-listener`, `transport-try`, `transport-mono`, `test-common` % "test")
+  .dependsOn(`bitcoin-listener-mono`, `transport-try`, `transport-mono`, `test-common` % "test")
   .settings(skip in publish := true)
 
 //scalether
@@ -84,6 +107,10 @@ lazy val `scalether-core` = (project in file("scalether/core"))
   .scalether
   .dependsOn(core, `scalether-util`, `scalether-domain`, cats, `test-common` % "test")
 
+lazy val `scalether-core-mono` = (project in file("scalether/core-mono"))
+  .scalether
+  .dependsOn(`scalether-core`, `core-mono`, `cats-mono`, `test-common` % "test")
+
 lazy val `scalether-abi` = (project in file("scalether/abi"))
   .scalether
   .dependsOn(`scalether-core`, `test-common` % "test")
@@ -92,13 +119,25 @@ lazy val `scalether-transaction` = (project in file("scalether/transaction"))
   .scalether
   .dependsOn(`blockchain-poller`, `scalether-core`, `test-common` % "test")
 
+lazy val `scalether-transaction-mono` = (project in file("scalether/transaction-mono"))
+  .scalether
+  .dependsOn(`scalether-transaction`, `blockchain-poller-mono`, `scalether-core-mono`, `test-common` % "test")
+
 lazy val `scalether-listener` = (project in file("scalether/listener"))
   .scalether
   .dependsOn(`blockchain-listener`, `scalether-core`, `test-common` % "test")
 
+lazy val `scalether-listener-mono` = (project in file("scalether/listener-mono"))
+  .scalether
+  .dependsOn(`scalether-listener`, `blockchain-listener-mono`, `scalether-core-mono`, `test-common` % "test")
+
 lazy val `scalether-contract` = (project in file("scalether/contract"))
   .scalether
   .dependsOn(`scalether-abi`, `scalether-transaction`, `test-common` % "test")
+
+lazy val `scalether-contract-mono` = (project in file("scalether/contract-mono"))
+  .scalether
+  .dependsOn(`scalether-contract`, `scalether-abi`, `scalether-transaction-mono`, `test-common` % "test")
 
 lazy val `scalether-generator` = (project in file("scalether/generator"))
   .scalether
@@ -110,17 +149,17 @@ lazy val `scalether-transport-mono` = (project in file("scalether/transport-mono
 
 lazy val `scalether-test` = (project in file("scalether/test"))
   .scalether
-  .dependsOn(`scalether-contract`, `scalether-listener`, `transport-try`, `test-common` % "test", `transport-mono`)
+  .dependsOn(`scalether-contract-mono`, `scalether-listener-mono`, `transport-try`, `test-common` % "test", `transport-mono`)
   .settings(skip in publish := true)
 
 lazy val root = (project in file("."))
   .common
   .settings(skip in publish := true)
   .aggregate(
-    util, domain, cats, core,
+    util, domain, cats, `cats-mono`, core, `core-mono`,
     `transport-try`, `transport-sttp`, `transport-mono`, `transport-id`,
-    `blockchain-poller`, `blockchain-listener`,
-    `scalether-util`, `scalether-domain`, `scalether-core`, `scalether-abi`, `scalether-transaction`,
-    `scalether-listener`, `scalether-contract`, `scalether-generator`, `scalether-test`, `scalether-transport-mono`,
-    `bitcoin-domain`, `bitcoin-core`, `bitcoin-listener`
+    `blockchain-poller`, `blockchain-poller-mono`, `blockchain-listener`, `blockchain-listener-mono`,
+    `scalether-util`, `scalether-domain`, `scalether-core`, `scalether-core-mono`, `scalether-abi`, `scalether-transaction`, `scalether-transaction-mono`,
+    `scalether-listener`, `scalether-listener-mono`, `scalether-contract`, `scalether-contract-mono`, `scalether-generator`, `scalether-test`, `scalether-transport-mono`,
+    `bitcoin-domain`, `bitcoin-core`, `bitcoin-listener`, `bitcoin-core-mono`, `bitcoin-listener-mono`
   )

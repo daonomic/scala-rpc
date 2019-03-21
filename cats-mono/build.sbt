@@ -1,8 +1,7 @@
 import Dependencies._
 
+name := "cats-mono"
+
 libraryDependencies ++= Seq(
-  cats,
-  jackson,
-  jacksonScala,
-  slf4jApi
+  reactor
 )

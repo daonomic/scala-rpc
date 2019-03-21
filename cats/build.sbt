@@ -1,8 +1,7 @@
 import Dependencies._
 
-name := "mono"
+name := "cats"
 
 libraryDependencies ++= Seq(
-  reactor,
   cats
 )
