@@ -27,11 +27,11 @@ public class SimpleWebSocketClient {
         );
     }
 
-    public static Flux<String> connect(ReactorNettyWebSocketClient client, URI uri, Flux<String> send) {
+    private static Flux<String> connect(ReactorNettyWebSocketClient client, URI uri, Flux<String> send) {
         return Flux.create(sink -> client.execute(uri, session -> {
             logger.info("connected to {}", uri);
-            return Mono.when(
-                session.receive().doOnNext(m -> sink.next(m.getPayloadAsText())),
+            return Mono.first(
+                session.receive().doOnNext(m -> sink.next(m.getPayloadAsText())).then(),
                 session.send(send.map(session::textMessage))
             );
         }).subscribe(

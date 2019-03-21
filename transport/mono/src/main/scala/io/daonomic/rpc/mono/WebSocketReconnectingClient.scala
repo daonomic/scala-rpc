@@ -1,16 +1,17 @@
 package io.daonomic.rpc.mono
 
 import java.net.URI
+import java.time.Duration
 
 import com.fasterxml.jackson.databind.{JsonNode, ObjectMapper}
 import io.daonomic.rpc.mono.WebSocketReconnectingClient.logger
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.web.reactive.socket.adapter.NettyWebSocketSessionSupport
-import reactor.core.publisher.{EmitterProcessor, Flux, ReplayProcessor}
+import reactor.core.publisher.{Flux, ReplayProcessor}
 
-class WebSocketReconnectingClient(uri: String, maxFramePayloadLength: Int = NettyWebSocketSessionSupport.DEFAULT_FRAME_MAX_SIZE) {
+class WebSocketReconnectingClient(uri: String, val timeout: Duration = Duration.ofSeconds(5), maxFramePayloadLength: Int = NettyWebSocketSessionSupport.DEFAULT_FRAME_MAX_SIZE) {
   private val mapper = new ObjectMapper()
-  private val send = EmitterProcessor.create[String]()
+  private val send = ReplayProcessor.createTimeout[String](timeout)
   private val sendSink = send.sink()
 
   private val incoming = ReplayProcessor.create[JsonNode](0)
