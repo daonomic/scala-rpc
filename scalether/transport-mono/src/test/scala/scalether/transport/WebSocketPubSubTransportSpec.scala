@@ -1,29 +1,45 @@
 package scalether.transport
 
-import io.daonomic.rpc.ManualTag
+import java.math.BigInteger
+
+import io.daonomic.cats.mono.implicits._
+import io.daonomic.rpc.mono.{WebSocketReconnectingClient, WebSocketRpcTransport}
 import org.scalatest.FlatSpec
-import scalether.core.EthPubSub
-import scalether.domain.request.LogFilter
+import org.web3j.utils
+import reactor.core.publisher.Mono
+import scalether.core.{EthPubSub, Ethereum, MonoEthereum}
+import scalether.domain.request.Transaction
+import scalether.sync.SemaphoreMonoSynchronizer
+import scalether.transaction.{SigningTransactionSender, SimpleNonceProvider, ValGasPriceProvider}
+
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, Future}
 
 class WebSocketPubSubTransportSpec extends FlatSpec {
-  val pubSub = new EthPubSub(new WebSocketPubSubTransport("ether-ropsten:8546"))
+  val ethereum = new MonoEthereum(new WebSocketRpcTransport(new WebSocketReconnectingClient("localhost:8546"), Ethereum.mapper))
+  val sender = new SigningTransactionSender[Mono](
+    ethereum,
+    new SimpleNonceProvider[Mono](ethereum),
+    new SemaphoreMonoSynchronizer(),
+    utils.Numeric.toBigInt("0x00120de4b1518cf1f16dc1b02f6b4a8ac29e870174cb1d8575f578480930250a"),
+    BigInteger.valueOf(2000000),
+    new ValGasPriceProvider[Mono](BigInteger.ZERO)
+  )
+  val pubSub = new EthPubSub(new WebSocketPubSubTransport("localhost:8546"))
 
-  "WebSocketPubSubTransport" should "listen to newHeads" taggedAs ManualTag in {
+  "WebSocketPubSubTransport" should "listen to newHeads" in {
 
-    pubSub.newHeads()
-      .doOnNext(m => println(s"newHead: $m"))
-      .take(1)
-      .blockLast()
+    val future = Future {
+      pubSub.newHeads()
+        .take(1)
+        .blockLast()
+    }
 
-    println("got results. waiting")
+    val hash = sender.sendTransaction(Transaction(to = sender.from, value = BigInteger.ONE)).block()
+    val receipt = ethereum.ethGetTransactionReceipt(hash).block().get
 
-    Thread.sleep(100000)
-  }
-
-  it should "listen to new logs" taggedAs ManualTag in {
-    pubSub.logs(LogFilter())
-      .doOnNext(m => println(s"newLog: $m"))
-      .take(10000)
-      .blockLast()
+    val result = Await.result(future, Duration.Inf)
+    assert(receipt.blockHash == result.hash)
   }
 }

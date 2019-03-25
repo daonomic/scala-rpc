@@ -147,7 +147,7 @@ lazy val `scalether-generator` = (project in file("scalether/generator"))
 lazy val `scalether-transport-mono` = (project in file("scalether/transport-mono"))
   .scalether
   .tests()
-  .dependsOn(`scalether-core-mono`, `transport-mono`)
+  .dependsOn(`scalether-core-mono`, `transport-mono`, `scalether-transaction-mono` % "test")
 
 lazy val `scalether-test` = (project in file("scalether/test"))
   .scalether

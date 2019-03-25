@@ -38,7 +38,7 @@ class TransferListenerIntegrationSpec extends FlatSpec {
     }
   }
 
-  it should "listen to transfers using simple blockchain (no traces)" in {
+  it should "listen to transfers using simple blockchain (no traces)" taggedAs ManualTag in {
     val transferListenService = new TransferListenService(simple, 2, TestTransferListener, new VarState[BigInteger, Try](None))
     val blockListenService = new BlockListenService(simple, new BlockListenerImpl(transferListenService), new VarState[BigInteger, Try](None))
 
