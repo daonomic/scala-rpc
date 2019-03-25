@@ -1,6 +1,10 @@
 package io.daonomic.bitcoin.rpc.domain
 
-case class Block[T](hash: String,
+import java.math.BigInteger
+
+import io.daonomic.rpc.domain.{Binary, Bytes}
+
+case class Block[T](hash: Binary,
                     confirmations: Long,
                     strippedsize: Long,
                     size: Long,
@@ -8,13 +12,18 @@ case class Block[T](hash: String,
                     height: Long,
                     version: Long,
                     versionHex: String,
-                    merkleroot: String,
+                    merkleroot: Binary,
                     tx: List[T],
                     time: Long,
                     mediantime: Long,
                     nonce: Long,
-                    bits: String,
+                    bits: Binary,
                     difficulty: Double,
-                    chainwork: String,
-                    previousblockhash: String,
-                    nextblockhash: String)
+                    chainwork: Binary,
+                    previousblockhash: Binary,
+                    nextblockhash: Binary) extends io.daonomic.rpc.domain.Block {
+
+  override def getBlockNumber: BigInteger = BigInteger.valueOf(height)
+
+  override def getBlockHash: Bytes = hash
+}

@@ -6,9 +6,12 @@ import org.scalatest.FlatSpec
 class BlockSpec extends FlatSpec with IntegrationSpec {
   "Bitcoind" should "do some operations with blocks" in {
     val currentBlock = bitcoind.getBlockCount.block()
+    println(currentBlock)
     val hash = bitcoind.getBlockHash(currentBlock).block()
     assert(hash != null)
-    restBitcoind.getBlockSimple(hash).block
+    val block = restBitcoind.getBlockSimple(hash).block
+    println(block)
+    assert(currentBlock == block.getBlockNumber)
   }
 
   it should "draw help" in {

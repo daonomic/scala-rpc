@@ -2,7 +2,7 @@ package scalether.domain.response
 
 import java.math.BigInteger
 
-import io.daonomic.rpc.domain.{Binary, Word}
+import io.daonomic.rpc.domain.{Binary, Bytes, Word}
 import scalether.domain.Address
 
 case class Block[T](number: BigInteger,
@@ -21,4 +21,9 @@ case class Block[T](number: BigInteger,
                     gasLimit: BigInteger,
                     gasUsed: BigInteger,
                     transactions: List[T],
-                    timestamp: BigInteger)
+                    timestamp: BigInteger) extends io.daonomic.rpc.domain.Block {
+
+  override def getBlockNumber: BigInteger = number
+
+  override def getBlockHash: Bytes = hash
+}

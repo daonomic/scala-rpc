@@ -70,6 +70,7 @@ lazy val `blockchain-listener-mono` = (project in file("blockchain/listener-mono
 lazy val `bitcoin-domain` = (project in file("bitcoin/domain"))
   .bitcoin
   .tests()
+  .dependsOn(domain)
 
 lazy val `bitcoin-core` = (project in file("bitcoin/core"))
   .bitcoin
