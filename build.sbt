@@ -15,6 +15,9 @@ lazy val util = project.common
 lazy val domain = project.common
   .dependsOn(util)
 
+lazy val `domain-test` = project.common
+  .dependsOn(domain)
+
 lazy val cats = project.common
   .settings(organization := "io.daonomic.cats")
 
@@ -158,7 +161,7 @@ lazy val root = (project in file("."))
   .common
   .settings(skip in publish := true)
   .aggregate(
-    util, domain, cats, `cats-mono`, core, `core-mono`,
+    util, domain, `domain-test`, cats, `cats-mono`, core, `core-mono`,
     `transport-try`, `transport-sttp`, `transport-mono`, `transport-id`,
     `blockchain-poller`, `blockchain-poller-mono`, `blockchain-listener`, `blockchain-listener-mono`,
     `scalether-util`, `scalether-domain`, `scalether-core`, `scalether-core-mono`, `scalether-abi`, `scalether-transaction`, `scalether-transaction-mono`,
