@@ -5,8 +5,11 @@ import java.math.BigInteger
 import cats.Monad
 import cats.implicits._
 import io.daonomic.blockchain.{BalanceChange, Blockchain, Transaction}
+import io.daonomic.rpc.domain.Bytes
 import scalether.core.Ethereum
 import scalether.domain.response
+
+import scala.language.higherKinds
 
 class SimpleEthereumBlockchain[F[_]](ethereum: Ethereum[F])
                                     (implicit m: Monad[F])
@@ -23,9 +26,9 @@ class SimpleEthereumBlockchain[F[_]](ethereum: Ethereum[F])
   override def blockNumber: F[BigInteger] =
     ethereum.ethBlockNumber()
 
-  override def getTransactionIdsByBlock(block: BigInteger): F[List[String]] =
+  override def getTransactionIdsByBlock(block: BigInteger): F[List[Bytes]] =
     ethereum.ethGetBlockByNumber(block)
-      .map(_.transactions.map(_.toString))
+      .map(_.transactions)
 }
 
 class SimpleEthereumTransaction(val tx: response.Transaction) extends Transaction {

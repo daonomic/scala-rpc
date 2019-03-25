@@ -39,6 +39,8 @@ trait Bytes {
   def hex: String =
     Hex.to(bytes)
 
+  def toBinary: Binary
+
   override def equals(obj: scala.Any): Boolean = {
     if (!obj.isInstanceOf[Bytes]) {
       false

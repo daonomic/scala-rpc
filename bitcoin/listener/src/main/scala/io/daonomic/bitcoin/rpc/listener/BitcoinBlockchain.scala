@@ -1,12 +1,13 @@
 package io.daonomic.bitcoin.rpc.listener
 
-import cats.implicits._
 import java.math.BigInteger
 
 import cats.Monad
+import cats.implicits._
 import io.daonomic.bitcoin.rpc.core.{Bitcoind, RestBitcoind}
 import io.daonomic.bitcoin.rpc.domain
 import io.daonomic.blockchain.{BalanceChange, Blockchain, Transaction}
+import io.daonomic.rpc.domain.Bytes
 
 import scala.language.higherKinds
 
@@ -17,7 +18,7 @@ class BitcoinBlockchain[F[_]](bitcoind: Bitcoind[F], restBitcoind: RestBitcoind[
   override def blockNumber: F[BigInteger] =
     bitcoind.getBlockCount
 
-  override def getTransactionIdsByBlock(block: BigInteger): F[List[String]] =
+  override def getTransactionIdsByBlock(block: BigInteger): F[List[Bytes]] =
     bitcoind.getBlockHash(block)
       .flatMap(restBitcoind.getBlockSimple)
       .map(_.tx)

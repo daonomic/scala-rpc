@@ -5,6 +5,7 @@ import java.math.BigInteger
 import cats.Monad
 import cats.implicits._
 import io.daonomic.blockchain.{BalanceChange, Blockchain, Transaction}
+import io.daonomic.rpc.domain.Bytes
 import scalether.core.{Ethereum, Parity}
 import scalether.domain.response.parity.Trace
 
@@ -31,9 +32,9 @@ class EthereumBlockchain[F[_]](ethereum: Ethereum[F], parity: Parity[F])
   override def blockNumber: F[BigInteger] =
     ethereum.ethBlockNumber()
 
-  override def getTransactionIdsByBlock(block: BigInteger): F[List[String]] =
+  override def getTransactionIdsByBlock(block: BigInteger): F[List[Bytes]] =
     ethereum.ethGetBlockByNumber(block)
-    .map(_.transactions.map(_.toString))
+    .map(_.transactions)
 }
 
 class EthereumTransaction(val id: String, traces: List[Trace]) extends Transaction {

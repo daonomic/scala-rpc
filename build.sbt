@@ -59,7 +59,7 @@ lazy val `blockchain-poller-mono` = (project in file("blockchain/poller-mono"))
 lazy val `blockchain-listener` = (project in file("blockchain/listener"))
   .blockchain
   .tests()
-  .dependsOn(`blockchain-poller`)
+  .dependsOn(domain, `blockchain-poller`)
 
 lazy val `blockchain-listener-mono` = (project in file("blockchain/listener-mono"))
   .blockchain

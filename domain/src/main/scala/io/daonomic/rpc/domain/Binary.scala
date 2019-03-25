@@ -6,7 +6,9 @@ import scalether.util.Hex
 
 @JsonSerialize(using = classOf[BinarySerializer])
 @JsonDeserialize(using = classOf[BinaryDeserializer])
-case class Binary(bytes: Array[Byte]) extends Bytes
+case class Binary(bytes: Array[Byte]) extends Bytes {
+  override def toBinary: Binary = this
+}
 
 object Binary {
   val empty: Binary = new Binary(Array())
