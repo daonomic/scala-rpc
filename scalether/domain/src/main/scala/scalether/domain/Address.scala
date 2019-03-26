@@ -31,6 +31,6 @@ object Address {
   def apply(hex: String): Address =
     new Address(Hex.toBytes(hex))
 
-  def apply(binary: Binary): Address =
-    new Address(binary.bytes)
+  def apply(bytes: Bytes): Address =
+    new Address(bytes.bytes)
 }

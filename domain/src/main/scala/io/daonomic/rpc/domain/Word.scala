@@ -16,6 +16,6 @@ object Word {
   def apply(hex: String): Word =
     Word(Hex.toBytes(hex))
 
-  def apply(binary: Binary): Word =
-    Word(binary.bytes)
+  def apply(bytes: Bytes): Word =
+    Word(bytes.bytes)
 }
