@@ -90,7 +90,7 @@ public class ReactorNettyWebSocketClient implements WebSocketClient {
 					String protocol = responseHeaders.getFirst("Sec-WebSocket-Protocol");
 					HandshakeInfo info = new HandshakeInfo(url, responseHeaders, Mono.empty(), protocol);
 					NettyDataBufferFactory factory = new NettyDataBufferFactory(outbound.alloc());
-					WebSocketSession session = new ReactorNettyWebSocketSession(inbound, outbound, info, factory, ReactorNettyWebSocketSession.DEFAULT_FRAME_MAX_SIZE * 2);
+					WebSocketSession session = new ReactorNettyWebSocketSession(inbound, outbound, info, factory, maxFramePayloadLength);
 					if (logger.isDebugEnabled()) {
 						logger.debug("Started session '" + session.getId() + "' for " + url);
 					}
