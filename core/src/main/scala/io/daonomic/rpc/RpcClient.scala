@@ -16,7 +16,8 @@ class RpcClient[F[_]](transport: RpcTransport[F])
   def exec[T](method: String, params: Any*)
              (implicit mf: Manifest[T]): F[T] = {
     execOption[T](method, params: _*).flatMap {
-      case Some(v) => me.pure(v)
+      case Some(v) if v != null => me.pure(v)
+      case Some(_) => me.raiseError(new RpcCodeException(s"no result provided, method: $method params: $params", Error.default))
       case None => me.raiseError(new RpcCodeException(s"no result provided, method: $method params: $params", Error.default))
     }
   }
