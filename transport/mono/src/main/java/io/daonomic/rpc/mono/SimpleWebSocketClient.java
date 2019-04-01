@@ -16,12 +16,13 @@ public class SimpleWebSocketClient {
 
     public static Flux<String> reconnect(URI uri, int maxFramePayloadLength, Flux<String> send) {
         return Flux.create(sink -> {
-                HttpClient httpClient = HttpClient.create(ConnectionProvider.fixed("webSocket", 1));
-                ReactorNettyWebSocketClient client = new ReactorNettyWebSocketClient(httpClient, maxFramePayloadLength);
-                connect(client, uri, send)
-                    .doOnNext(sink::next)
-                    .<Void>then(Mono.error(new IllegalStateException("disconnected")))
-                    .retryBackoff(Long.MAX_VALUE, Duration.ofMillis(500), Duration.ofMillis(5000))
+                Mono.defer(() -> {
+                    HttpClient httpClient = HttpClient.create(ConnectionProvider.fixed("webSocket", 1));
+                    ReactorNettyWebSocketClient client = new ReactorNettyWebSocketClient(httpClient, maxFramePayloadLength);
+                    return connect(client, uri, send)
+                        .doOnNext(sink::next)
+                        .<Void>then(Mono.error(new IllegalStateException("disconnected")));
+                }).retryBackoff(Long.MAX_VALUE, Duration.ofMillis(500), Duration.ofMillis(5000))
                     .subscribe();
             }
         );
@@ -45,14 +46,15 @@ public class SimpleWebSocketClient {
             final Disposable d = mono
                 .doOnTerminate(() -> logger.info("disconnected from {}", uri))
                 .subscribe(
-                __ -> {},
-                th -> {
-                    logger.error("got error for " + uri, th);
-                    sink.error(th);
-                },
-                sink::complete,
-                s -> logger.info("connecting to {}", uri)
-            );
+                    __ -> {
+                    },
+                    th -> {
+                        logger.error("got error for " + uri, th);
+                        sink.error(th);
+                    },
+                    sink::complete,
+                    s -> logger.info("connecting to {}", uri)
+                );
             sink.onCancel(() -> {
                 logger.info("cancelled");
                 d.dispose();
