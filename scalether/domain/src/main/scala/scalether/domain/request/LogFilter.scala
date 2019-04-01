@@ -9,12 +9,15 @@ import scala.language.implicitConversions
 case class LogFilter(topics: List[TopicFilter] = Nil,
                      address: List[Address] = Nil,
                      fromBlock: String = "latest",
-                     toBlock: String = "latest") {
+                     toBlock: String = "latest",
+                     blockHash: Word = null) {
   @varargs def address(address: Address*):LogFilter = copy(address = address.toList)
 
   def blocks(fromBlock: String, toBlock: String): LogFilter =
     this.copy(fromBlock = fromBlock, toBlock = toBlock)
 
+  def blockHash(blockHash: Word): LogFilter =
+    this.copy(blockHash = blockHash, toBlock = null, fromBlock = null)
 }
 
 object LogFilter {
