@@ -249,7 +249,7 @@ object ${truffle.name} extends ContractObject {
         <#assign simpleName=simpleName[0..*(simpleName?length-5)]/>
     </#if>
     <#assign eventName="${get_name(events, simpleName)}Event"/>
-case class ${eventName}(address: Address<#if item.all?has_content>, <#list item.all as arg>${arg.name}: <@event_arg_type arg/><#if arg?has_next>, </#if></#list></#if>)
+case class ${eventName}(log: Log<#if item.all?has_content>, <#list item.all as arg>${arg.name}: <@event_arg_type arg/><#if arg?has_next>, </#if></#list></#if>)
 
 object ${eventName} {
   val event = Event("${item.name}", List(<@type_list item.inputs/>), <@type item.indexed/>, <@type item.nonIndexed/>)
@@ -282,7 +282,7 @@ object ${eventName} {
     val ${arg.name} = <@event_non_indexed_arg arg arg?index/>
       </#list>
     </#if>
-    ${eventName}(log.address<#if item.all?has_content>, <#list item.all as arg>${arg.name}<#if arg?has_next>, </#if></#list></#if>)
+    ${eventName}(log<#if item.all?has_content>, <#list item.all as arg>${arg.name}<#if arg?has_next>, </#if></#list></#if>)
   }
 }
 
