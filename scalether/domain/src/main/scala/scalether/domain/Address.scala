@@ -28,6 +28,8 @@ case class Address(bytes: Array[Byte]) extends Bytes {
 }
 
 object Address {
+  val ZERO = Address(new Array[Byte](20))
+
   def apply(hex: String): Address =
     new Address(Hex.toBytes(hex))
 
