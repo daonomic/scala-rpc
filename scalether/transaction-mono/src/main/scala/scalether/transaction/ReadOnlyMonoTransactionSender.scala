@@ -6,7 +6,7 @@ import scalether.core.MonoEthereum
 import scalether.domain.Address
 
 import scala.language.higherKinds
-class ReadOnlyMonoTransactionSender(ethereum: MonoEthereum, from: Address)
+class ReadOnlyMonoTransactionSender(override val ethereum: MonoEthereum, from: Address)
   extends ReadOnlyTransactionSender[Mono](ethereum, from) with MonoTransactionSender {
 
 }

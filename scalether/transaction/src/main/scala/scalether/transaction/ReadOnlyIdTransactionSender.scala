@@ -7,7 +7,6 @@ import scalether.domain.Address
 
 import scala.language.higherKinds
 
-class ReadOnlyIdTransactionSender(ethereum: IdEthereum, from: Address)
+class ReadOnlyIdTransactionSender(override val ethereum: IdEthereum, from: Address)
   extends ReadOnlyTransactionSender[Id](ethereum, from) with IdTransactionSender {
-
 }
