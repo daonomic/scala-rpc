@@ -4,11 +4,13 @@ import java.math.BigInteger
 
 import io.daonomic.rpc.domain.{Binary, Word}
 import scalether.core.Ethereum
+import scalether.domain.Address
 import scalether.domain.request.Transaction
 
 import scala.language.higherKinds
 
 trait TransactionSender[F[_]] {
+  val from: Address
   val ethereum: Ethereum[F]
   def call(transaction: Transaction): F[Binary]
   def estimate(transaction: Transaction): F[BigInteger]
