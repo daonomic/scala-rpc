@@ -1,7 +1,10 @@
 package scalether.generator.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import scalether.generator.util.Hex;
+import scalether.util.Hash;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -40,6 +43,10 @@ public class AbiEvent implements AbiItem {
         return "event";
     }
 
+    public String getId() {
+        return Hex.prefixed(Hash.sha3(toString().getBytes(StandardCharsets.US_ASCII)));
+    }
+
     @JsonIgnore
     public List<AbiEventParam> getIndexed() {
         return inputs.stream().filter(AbiEventParam::isIndexed).collect(Collectors.toList());
@@ -56,5 +63,10 @@ public class AbiEvent implements AbiItem {
         result.addAll(getIndexed());
         result.addAll(getNonIndexed());
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return name + "(" + inputs.stream().map(AbiEventParam::getType).collect(Collectors.joining(",")) + ")";
     }
 }

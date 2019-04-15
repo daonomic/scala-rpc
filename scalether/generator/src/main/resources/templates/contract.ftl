@@ -253,7 +253,7 @@ case class ${eventName}(log: response.Log<#if item.all?has_content>, <#list item
 
 object ${eventName} {
   val event = Event("${item.name}", List(<@type_list item.inputs/>), <@type item.indexed/>, <@type item.nonIndexed/>)
-  val id: Word = event.id
+  val id: Word = Word.apply("${item.id}")
 
   @annotation.varargs def filter(fromBlock: String, toBlock: String, addresses: Address*): LogFilter =
     LogFilter(topics = List(SimpleTopicFilter(id)), address = addresses.toList, fromBlock = fromBlock, toBlock = toBlock)
