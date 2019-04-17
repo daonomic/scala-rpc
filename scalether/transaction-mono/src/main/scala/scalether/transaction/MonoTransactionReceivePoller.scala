@@ -8,5 +8,5 @@ import scalether.core.MonoEthereum
 import scalether.domain.response.Transaction
 
 class MonoTransactionReceivePoller(ethereum: MonoEthereum) extends TransactionReceivePoller[Mono](ethereum) {
-  override def receiveTransaction(txHash: Mono[Word]): Mono[Transaction] = super.receiveTransaction(txHash)
+  override def receiveTransaction(txHash: Word): Mono[Transaction] = super.receiveTransaction(txHash)
 }

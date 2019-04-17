@@ -12,9 +12,8 @@ import scala.language.higherKinds
 class TransactionReceivePoller[F[_]](val ethereum: Ethereum[F])
                                     (implicit f: Monad[F], poller: Poller[F]) {
 
-  def receiveTransaction(txHash: F[Word]): F[Transaction] = for {
-    hash <- txHash
-    result <- poller.poll(1000)(pollForTransaction(hash))
+  def receiveTransaction(txHash: Word): F[Transaction] = for {
+    result <- poller.poll(1000)(pollForTransaction(txHash))
   } yield result
 
   private def pollForTransaction(txHash: Word): F[Option[Transaction]] =
