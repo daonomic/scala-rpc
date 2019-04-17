@@ -24,17 +24,25 @@ class SigningTransactionSender[F[_]](ethereum: Ethereum[F],
 
   private val signer = new TransactionSigner(privateKey)
 
-  def sendTransaction(transaction: Transaction): F[Word] = fill(transaction).flatMap {
+  def prepare(transaction: Transaction): F[Transaction] = fill(transaction).flatMap {
     transaction =>
       if (transaction.nonce != null) {
-        ethereum.ethSendRawTransaction(Binary(signer.sign(transaction)))
+        m.pure(transaction)
       } else {
         val finalFrom = Option(transaction.from).getOrElse(from)
         synchronizer.synchronize(finalFrom) { () =>
-          nonceProvider.nonce(address = finalFrom).flatMap(
-            nonce => ethereum.ethSendRawTransaction(Binary(signer.sign(transaction.copy(nonce = nonce))))
+          nonceProvider.nonce(address = finalFrom).map(
+            nonce => transaction.copy(nonce = nonce)
           )
         }
       }
   }
+
+  def getRawTransaction(transaction: Transaction): F[Binary] =
+    prepare(transaction)
+      .map(tx => Binary(signer.sign(tx)))
+
+  def sendTransaction(transaction: Transaction): F[Word] =
+    getRawTransaction(transaction)
+      .flatMap(signed => ethereum.ethSendRawTransaction(signed))
 }

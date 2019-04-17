@@ -3,7 +3,7 @@ package scalether.transaction
 import java.math.BigInteger
 
 import io.daonomic.cats.mono.implicits._
-import io.daonomic.rpc.domain.Word
+import io.daonomic.rpc.domain.{Binary, Word}
 import reactor.core.publisher.Mono
 import scalether.core.MonoEthereum
 import scalether.domain.request.Transaction
@@ -18,4 +18,10 @@ class MonoSigningTransactionSender(override val ethereum: MonoEthereum, noncePro
 
   override def sendTransaction(transaction: Transaction): Mono[Word] =
     super.sendTransaction(transaction)
+
+  override def prepare(transaction: Transaction): Mono[Transaction] =
+    super.prepare(transaction)
+
+  override def getRawTransaction(transaction: Transaction): Mono[Binary] =
+    super.getRawTransaction(transaction)
 }

@@ -4,7 +4,7 @@ import java.math.BigInteger
 
 import cats.Id
 import io.daonomic.cats.implicits._
-import io.daonomic.rpc.domain.Word
+import io.daonomic.rpc.domain.{Binary, Word}
 import scalether.core.IdEthereum
 import scalether.domain.request.Transaction
 import scalether.sync.{IdSynchronizer, SemaphoreIdSynchronizer}
@@ -18,4 +18,10 @@ class IdSigningTransactionSender(override val ethereum: IdEthereum, nonceProvide
 
   override def sendTransaction(transaction: Transaction): Word =
     super.sendTransaction(transaction)
+
+  override def prepare(transaction: Transaction): Transaction =
+    super.prepare(transaction)
+
+  override def getRawTransaction(transaction: Transaction): Binary =
+    super.getRawTransaction(transaction)
 }
