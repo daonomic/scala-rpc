@@ -28,7 +28,11 @@ case class Address(bytes: Array[Byte]) extends Bytes {
 }
 
 object Address {
-  val ZERO = Address(new Array[Byte](20))
+  val ZERO = Address("0x0000000000000000000000000000000000000000")
+  val ONE = Address("0x0000000000000000000000000000000000000001")
+  val TWO = Address("0x0000000000000000000000000000000000000002")
+  val THREE = Address("0x0000000000000000000000000000000000000003")
+  val FOUR = Address("0x0000000000000000000000000000000000000004")
 
   def apply(hex: String): Address =
     new Address(Hex.toBytes(hex))
