@@ -21,4 +21,8 @@ class ParitySpec extends FlatSpec {
   "Ethereum" should "get transaction by hash" taggedAs ManualTag in {
     println(ethereum.ethGetTransactionByHash(Word("0xad962f134127cee64c034d782d05c57eeeda5e20a8b0f078761278cdf7527829")).get)
   }
+
+  it should "get None by hash if tx not found" taggedAs ManualTag in {
+    assert(ethereum.ethGetTransactionByHash(Word("0xad962f134127cee64c034d782d05c57eeeda5e20a8b0f078761278cdf7527828")).get.isEmpty)
+  }
 }

@@ -28,7 +28,11 @@ class RpcClient[F[_]](transport: RpcTransport[F])
       response =>
         response.error match {
           case Some(r) => me.raiseError(new RpcCodeException(s"error caught. method: $method params: $params", r))
-          case None => me.pure(response.result)
+          case None =>
+            response.result match {
+              case Some(null) => me.pure(None)
+              case other => me.pure(other)
+            }
         }
     }
   }

@@ -1,2 +1,4 @@
 #!/usr/bin/env bash
-parity --chain ~/.ethereum/parity-dev.json --tracing on --reseal-min-period 0 --unsafe-expose
+rm -rf ~/.local/share/io.parity.ethereum
+parity --chain ~/.ethereum/parity-dev.json --reseal-min-period 0 --unsafe-expose
+
