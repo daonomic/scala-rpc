@@ -33,6 +33,9 @@ class MonoPreparedTransaction[O](address: Address,
   override def withFrom(newFrom: Address): MonoPreparedTransaction[O] =
     new MonoPreparedTransaction[O](address, out, data, sender, value, gas, gasPrice, newFrom, description)
 
+  def withSender(newSender: MonoTransactionSender): MonoPreparedTransaction[O] =
+    new MonoPreparedTransaction[O](address, out, data, newSender, value, gas, gasPrice, from, description)
+
   override def call(): Mono[O] = super.call()
 
   override def execute(): Mono[Word] = super.execute()

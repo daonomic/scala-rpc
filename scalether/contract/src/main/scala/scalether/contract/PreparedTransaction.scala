@@ -17,7 +17,7 @@ import scala.language.higherKinds
 class PreparedTransaction[F[_], O](val address: Address,
                                    val out: TupleType[O],
                                    val data: Binary,
-                                   sender: TransactionSender[F],
+                                   val sender: TransactionSender[F],
                                    val value: BigInteger,
                                    val gas: BigInteger = null,
                                    val gasPrice: BigInteger = null,
@@ -36,6 +36,9 @@ class PreparedTransaction[F[_], O](val address: Address,
 
   def withFrom(newFrom: Address): PreparedTransaction[F, O] =
     new PreparedTransaction[F, O](address, out, data, sender, value, gas, gasPrice, newFrom, description)
+
+  def withSender(newSender: TransactionSender[F]): PreparedTransaction[F, O] =
+    new PreparedTransaction[F, O](address, out, data, newSender, value, gas, gasPrice, from, description)
 
   def call(): F[O] = {
     val tx = Transaction(to = address, data = data, value = value, gas = gas, gasPrice = gasPrice, from = from)
