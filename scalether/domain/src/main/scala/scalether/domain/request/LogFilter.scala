@@ -40,11 +40,6 @@ case class SimpleTopicFilter(word: Word) extends TopicFilter {
   }
 }
 
-object SimpleTopicFilter {
-  def apply(word: Word): SimpleTopicFilter =
-    if (word != null) new SimpleTopicFilter(word) else null
-}
-
 case class OrTopicFilter(words: List[Word]) extends TopicFilter
 
 object OrTopicFilter {

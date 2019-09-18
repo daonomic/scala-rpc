@@ -18,7 +18,10 @@ trait Type[T] {
 
   //todo implement for types with size > 32
   def encodeForTopic(value: T): SimpleTopicFilter =
-    SimpleTopicFilter(Word(encode(value)))
+    if (value != null)
+      SimpleTopicFilter(Word(encode(value)))
+    else
+      null
 }
 
 object Type {
