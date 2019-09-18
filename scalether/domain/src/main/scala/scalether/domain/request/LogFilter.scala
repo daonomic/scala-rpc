@@ -11,7 +11,7 @@ case class LogFilter(topics: List[TopicFilter] = Nil,
                      fromBlock: String = "latest",
                      toBlock: String = "latest",
                      blockHash: Word = null) {
-  @varargs def address(address: Address*):LogFilter = copy(address = address.toList)
+  @varargs def address(address: Address*): LogFilter = copy(address = address.toList)
 
   def blocks(fromBlock: String, toBlock: String): LogFilter =
     this.copy(fromBlock = fromBlock, toBlock = toBlock)
@@ -30,6 +30,7 @@ sealed trait TopicFilter {
 
 object TopicFilter {
   implicit def simple(word: Bytes): SimpleTopicFilter = if (word != null) new SimpleTopicFilter(word) else null
+
   @varargs def or(word: Word*): OrTopicFilter = OrTopicFilter(word.toList)
 }
 
@@ -37,6 +38,11 @@ case class SimpleTopicFilter(word: Word) extends TopicFilter {
   def this(bytes: Bytes) {
     this(Word(bytes))
   }
+}
+
+object SimpleTopicFilter {
+  def apply(word: Word): SimpleTopicFilter =
+    if (word != null) new SimpleTopicFilter(word) else null
 }
 
 case class OrTopicFilter(words: List[Word]) extends TopicFilter
