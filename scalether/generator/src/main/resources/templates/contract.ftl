@@ -260,9 +260,6 @@ object ${eventName} {
   def filter(<#list item.indexed as arg>${arg.name}: <@single_scala_type arg.type arg.components/><#if arg?has_next>, </#if></#list>): LogFilter =
     LogFilter(topics = List(simple(id)<#if item.indexed?has_content>, <#list item.indexed as arg><@single_type arg.type/>.encodeForTopic(${arg.name})<#if arg?has_next>, </#if></#list></#if>))
 
-  @annotation.varargs def filter(addresses: Address*): LogFilter =
-    LogFilter(topics = List(SimpleTopicFilter(id)), address = addresses.toList)
-
   def apply(receipt: scalether.domain.response.TransactionReceipt): List[${eventName}] =
     receipt.logs
       .filter(_.topics.head == id)
