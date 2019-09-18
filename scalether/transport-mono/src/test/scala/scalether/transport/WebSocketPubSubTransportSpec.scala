@@ -17,7 +17,8 @@ import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future}
 
 class WebSocketPubSubTransportSpec extends FlatSpec {
-  val ethereum = new MonoEthereum(new WebSocketRpcTransport(new WebSocketReconnectingClient("localhost:8546"), Ethereum.mapper))
+  val url = "localhost:8546"
+  val ethereum = new MonoEthereum(new WebSocketRpcTransport(new WebSocketReconnectingClient(url), Ethereum.mapper))
   val sender = new SigningTransactionSender[Mono](
     ethereum,
     new SimpleNonceProvider[Mono](ethereum),
@@ -26,7 +27,7 @@ class WebSocketPubSubTransportSpec extends FlatSpec {
     BigInteger.valueOf(2000000),
     new ValGasPriceProvider[Mono](BigInteger.ZERO)
   )
-  val pubSub = new EthPubSub(new WebSocketPubSubTransport("localhost:8546"))
+  val pubSub = new EthPubSub(new WebSocketPubSubTransport(url))
 
   "WebSocketPubSubTransport" should "listen to newHeads" in {
 
