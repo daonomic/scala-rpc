@@ -1,8 +1,9 @@
 package scalether.abi
 
-import io.daonomic.rpc.domain.{Binary, Bytes}
+import io.daonomic.rpc.domain.{Binary, Bytes, Word}
 import scalether.abi.array.{FixArrayType, VarArrayType}
 import scalether.abi.tuple.{TupleType, UnitType}
+import scalether.domain.request.SimpleTopicFilter
 
 trait Type[T] {
   def string: String
@@ -14,6 +15,10 @@ trait Type[T] {
   def encode(value: T): Binary
 
   def decode(data: Bytes, offset: Int): Decoded[T]
+
+  //todo implement for types with size > 32
+  def encodeForTopic(value: T): SimpleTopicFilter =
+    SimpleTopicFilter(Word(encode(value)))
 }
 
 object Type {

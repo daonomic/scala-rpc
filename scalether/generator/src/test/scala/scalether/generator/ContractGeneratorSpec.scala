@@ -19,9 +19,17 @@ class ContractGeneratorSpec extends FlatSpec {
     println(generate("Token"))
   }
 
-  def generate(name: String): String = {
+  it should "generate IntegrationTest" taggedAs ManualTag in {
+    println(generate("IntegrationTest"))
+  }
+
+  it should "generate id.IntegrationTest" taggedAs ManualTag in {
+    println(generate("IntegrationTest", "scalether.test.id"))
+  }
+
+  def generate(name: String, packageName: String = "scalether.test"): String = {
     val json = Source.fromResource(s"$name.json").mkString
     val truffle = converter.readValue(json, classOf[TruffleContract])
-    generator.generate(truffle, "org.daomao.contract", Type.SCALA)
+    generator.generate(truffle, packageName, Type.SCALA)
   }
 }

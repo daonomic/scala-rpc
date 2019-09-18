@@ -1,6 +1,6 @@
 package scalether.domain.request
 
-import io.daonomic.rpc.domain.Word
+import io.daonomic.rpc.domain.{Binary, Bytes, Word}
 import scalether.domain.Address
 
 import scala.annotation.varargs
@@ -29,11 +29,15 @@ sealed trait TopicFilter {
 }
 
 object TopicFilter {
-  implicit def simple(word: Word): SimpleTopicFilter = SimpleTopicFilter(word)
+  implicit def simple(word: Bytes): SimpleTopicFilter = if (word != null) new SimpleTopicFilter(word) else null
   @varargs def or(word: Word*): OrTopicFilter = OrTopicFilter(word.toList)
 }
 
-case class SimpleTopicFilter(word: Word) extends TopicFilter
+case class SimpleTopicFilter(word: Word) extends TopicFilter {
+  def this(bytes: Bytes) {
+    this(Word(bytes))
+  }
+}
 
 case class OrTopicFilter(words: List[Word]) extends TopicFilter
 

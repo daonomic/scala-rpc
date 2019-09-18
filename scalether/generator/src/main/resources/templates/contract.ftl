@@ -252,11 +252,13 @@ object ${truffle.name} extends ContractObject {
 case class ${eventName}(log: response.Log<#if item.all?has_content>, <#list item.all as arg>${arg.name}: <@event_arg_type arg/><#if arg?has_next>, </#if></#list></#if>)
 
 object ${eventName} {
+  import TopicFilter.simple
+
   val event = Event("${item.name}", List(<@type_list item.inputs/>), <@type item.indexed/>, <@type item.nonIndexed/>)
   val id: Word = Word.apply("${item.id}")
 
-  @annotation.varargs def filter(fromBlock: String, toBlock: String, addresses: Address*): LogFilter =
-    LogFilter(topics = List(SimpleTopicFilter(id)), address = addresses.toList, fromBlock = fromBlock, toBlock = toBlock)
+  def filter(<#list item.indexed as arg>${arg.name}: <@single_scala_type arg.type arg.components/><#if arg?has_next>, </#if></#list>): LogFilter =
+    LogFilter(topics = List(simple(id)<#if item.indexed?has_content>, <#list item.indexed as arg><@single_type arg.type/>.encodeForTopic(${arg.name})<#if arg?has_next>, </#if></#list></#if>))
 
   @annotation.varargs def filter(addresses: Address*): LogFilter =
     LogFilter(topics = List(SimpleTopicFilter(id)), address = addresses.toList)
