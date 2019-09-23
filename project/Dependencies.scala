@@ -1,7 +1,7 @@
 import sbt._
 
 object Dependencies {
-  val fullScalaVersion = "2.12.7"
+  val fullScalaVersion = "2.12.10"
   val jacksonVersion = "2.9.10"
   val jacksonDatabindVersion = "2.9.10"
 
