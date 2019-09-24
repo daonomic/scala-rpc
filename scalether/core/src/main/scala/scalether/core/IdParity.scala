@@ -6,7 +6,8 @@ import java.util
 import cats.Id
 import io.daonomic.cats.implicits._
 import io.daonomic.rpc.IdRpcTransport
-import scalether.domain.response.parity.Trace
+import scalether.domain.request.Transaction
+import scalether.domain.response.parity.{Trace, TraceResult}
 
 import scala.collection.JavaConverters._
 
@@ -18,6 +19,9 @@ class IdParity(transport: IdRpcTransport)
 
   override def traceBlock(blockNumber: BigInteger): List[Trace] =
     super.traceBlock(blockNumber)
+
+  override def traceCallMany(transactions: List[Transaction], defaultBlockParameter: String): Id[List[TraceResult]] =
+    super.traceCallMany(transactions, defaultBlockParameter)
 
   def traceTransactionJava(txHash: String): util.List[Trace] =
     traceTransaction(txHash).asJava

@@ -41,7 +41,7 @@ class PreparedTransaction[F[_], O](val address: Address,
     new PreparedTransaction[F, O](address, out, data, newSender, value, gas, gasPrice, from, description)
 
   def call(): F[O] = {
-    val tx = Transaction(to = address, data = data, value = value, gas = gas, gasPrice = gasPrice, from = from)
+    val tx = createTransaction()
     sender.call(tx)
       .map { binary =>
         try {
@@ -57,13 +57,16 @@ class PreparedTransaction[F[_], O](val address: Address,
   }
 
   def execute(): F[Word] =
-    sender.sendTransaction(Transaction(to = address, data = data, value = value, gas = gas, gasPrice = gasPrice, from = from))
+    sender.sendTransaction(createTransaction())
 
   def estimate(): F[BigInteger] =
-    sender.estimate(Transaction(to = address, data = data, value = value, gas = gas, gasPrice = gasPrice, from = from))
+    sender.estimate(createTransaction())
 
   def estimateAndExecute(): F[Word] =
     estimate().flatMap(estimated => this.withGas(estimated).execute())
+
+  def createTransaction(): Transaction =
+    Transaction(to = address, data = data, value = value, gas = gas, gasPrice = gasPrice, from = from)
 }
 
 object PreparedTransaction {
