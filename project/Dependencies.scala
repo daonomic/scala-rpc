@@ -2,14 +2,14 @@ import sbt._
 
 object Dependencies {
   val fullScalaVersion = "2.12.10"
-  val jacksonVersion = "2.9.10"
-  val jacksonDatabindVersion = "2.9.10"
+  val jacksonVersion = "2.10.0"
+  val jacksonDatabindVersion = "2.10.0"
 
   val slf4jApi = "org.slf4j" % "slf4j-api" % "1.7.28"
-  val reactor = "io.projectreactor" % "reactor-core" % "3.2.12.RELEASE"
-  val reactorNetty = "io.projectreactor.netty" % "reactor-netty" % "0.8.11.RELEASE"
+  val reactor = "io.projectreactor" % "reactor-core" % "3.3.0.RELEASE"
+  val reactorNetty = "io.projectreactor.netty" % "reactor-netty" % "0.9.0.RELEASE"
   val cats = "org.typelevel" %% "cats-core" % "1.6.1"
-  val springWebFlux = "org.springframework" % "spring-webflux" % "5.1.9.RELEASE"
+  val springWebFlux = "org.springframework" % "spring-webflux" % "5.2.0.RELEASE"
   val scalajHttp = "org.scalaj" %% "scalaj-http" % "2.4.1"
   val sttp = "com.softwaremill.sttp" %% "core" % "1.4.2"
 
