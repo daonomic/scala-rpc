@@ -17,6 +17,6 @@ object StringType extends Type[String] {
 
   def decode(data: domain.Bytes, offset: Int): Decoded[String] = {
     val decoded = BytesType.decode(data, offset)
-    Decoded(new String(decoded.value, StandardCharsets.UTF_8), decoded.offset)
+    Decoded(new String(decoded.value.filter(it => it != 0), StandardCharsets.UTF_8), decoded.offset)
   }
 }
