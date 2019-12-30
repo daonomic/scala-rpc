@@ -23,10 +23,10 @@ import reactor.netty.tcp.TcpClient
 class WebClientTransport(rpcUrl: String, mapper: ObjectMapper with ScalaObjectMapper, requestTimeoutMs: Int = 10000, readWriteTimeoutMs: Int = 10000)
   extends MonoRpcTransport with MonoHttpTransport {
 
-  private val client = buildClient()
+  protected def maxInMemorySize(): Int = 262144
+  protected def headers(): Map[String, String] = Map()
 
-  protected val headers: Map[String, String] = Map()
-  protected val maxInMemorySize: Int = 262144
+  private val client = buildClient()
 
   protected def buildClient() = {
     val tcpClient = TcpClient.create()
@@ -39,7 +39,7 @@ class WebClientTransport(rpcUrl: String, mapper: ObjectMapper with ScalaObjectMa
     val connector = new ReactorClientHttpConnector(HttpClient.from(tcpClient))
     val exchangeStrategies = ExchangeStrategies.builder()
       .codecs { configurer =>
-        configurer.defaultCodecs().maxInMemorySize(maxInMemorySize)
+        configurer.defaultCodecs().maxInMemorySize(maxInMemorySize())
         configurer.defaultCodecs().jackson2JsonDecoder(new Jackson2JsonDecoder(mapper, MediaType.APPLICATION_JSON))
         configurer.defaultCodecs().jackson2JsonEncoder(new Jackson2JsonEncoder(mapper, MediaType.APPLICATION_JSON))
       }
@@ -49,7 +49,7 @@ class WebClientTransport(rpcUrl: String, mapper: ObjectMapper with ScalaObjectMa
       .baseUrl(rpcUrl)
       .clientConnector(connector)
       .exchangeStrategies(exchangeStrategies)
-    headers.foreach {
+    headers().foreach {
       case (k, v) => builder.defaultHeader(k, v)
     }
     builder.build()
@@ -78,7 +78,7 @@ object WebClientTransport {
 
   def createWithBasicAuth(rpcUrl: String, user: String, password: String, requestTimeoutMs: Int = 10000, readTimeoutMs: Int = 10000): WebClientTransport = {
     new WebClientTransport(rpcUrl, JsonConverter.createMapper()) {
-      override protected val headers: Map[String, String] = Map("Authorization" -> s"Basic ${WebClientTransport.getBasicHeaderValue(user, password)}")
+      override protected def headers(): Map[String, String] = Map("Authorization" -> s"Basic ${WebClientTransport.getBasicHeaderValue(user, password)}")
     }
   }
 }
