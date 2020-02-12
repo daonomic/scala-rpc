@@ -1,6 +1,7 @@
 package scalether.abi
 
 import java.math.BigInteger
+import java.util
 
 import io.daonomic.rpc.domain
 import io.daonomic.rpc.domain.Binary
@@ -12,8 +13,8 @@ case class UintType(bits: Short) extends Type[BigInteger] {
 
   def encode(t: BigInteger): Binary = {
     val array = t.toByteArray
-    if (array.length == 33 && array(0) == 0) {
-      Binary.apply(padLeft(array.drop(1), Bytes.ZERO))
+    if (array(0) == 0 && array.length > 1) {
+      Binary.apply(padLeft(util.Arrays.copyOfRange(array, 1, array.length), Bytes.ZERO))
     } else {
       Binary.apply(padLeft(array, Bytes.ZERO))
     }
