@@ -10,11 +10,17 @@ import scalether.util.Padding.padLeft
 case class UintType(bits: Short) extends Type[BigInteger] {
   def string = s"uint$bits"
 
-  def encode(t: BigInteger): Binary =
-    Binary.apply(padLeft(t.toByteArray, Bytes.ZERO))
+  def encode(t: BigInteger): Binary = {
+    val array = t.toByteArray
+    if (array.length == 33 && array(0) == 0) {
+      Binary.apply(padLeft(array.drop(1), Bytes.ZERO))
+    } else {
+      Binary.apply(padLeft(array, Bytes.ZERO))
+    }
+  }
 
   def decode(data: domain.Bytes, offset: Int): Decoded[BigInteger] = {
-    Decoded(new BigInteger(data.slice(offset, offset + 32).bytes), offset + 32)
+    Decoded(new BigInteger(1, data.slice(offset, offset + 32).bytes), offset + 32)
   }
 }
 
