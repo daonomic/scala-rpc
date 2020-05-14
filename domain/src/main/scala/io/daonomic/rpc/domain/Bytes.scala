@@ -1,6 +1,7 @@
 package io.daonomic.rpc.domain
 
 import java.math.BigInteger
+import java.util
 
 import scalether.util.{Hex, Padding}
 
@@ -45,7 +46,7 @@ trait Bytes {
     if (!obj.isInstanceOf[Bytes]) {
       false
     } else {
-      obj.asInstanceOf[Bytes].bytes.deep == bytes.deep
+      util.Arrays.equals(obj.asInstanceOf[Bytes].bytes, bytes)
     }
   }
 

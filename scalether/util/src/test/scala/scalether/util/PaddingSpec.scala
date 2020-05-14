@@ -3,9 +3,9 @@ package scalether.util
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatest.FlatSpec
-import org.scalatest.prop.PropertyChecks
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
-class PaddingSpec extends FlatSpec with PropertyChecks {
+class PaddingSpec extends FlatSpec with ScalaCheckPropertyChecks {
   private def bytesAndFill(size: Int): Gen[(Byte, Array[Byte])] = {
     val bytes = Gen.listOfN(size, arbitrary[Byte]).map(_.toArray)
     for (fill <- arbitrary[Byte]; bytes <- bytes) yield (fill, bytes)

@@ -16,7 +16,7 @@ object Dependencies {
   val jackson = "com.fasterxml.jackson.core" % "jackson-databind" % jacksonDatabindVersion
   val jacksonScala = "com.fasterxml.jackson.module" %% "jackson-module-scala" % jacksonVersion
 
-  val scalaTest = "org.scalatest" %% "scalatest" % "3.1.2"
+  val scalaTest = "org.scalatest" %% "scalatest" % "3.0.8"
   val scalaCheck = "org.scalacheck" %% "scalacheck" % "1.14.3"
   val mockito = "org.mockito" % "mockito-all" % "1.10.19"
   val logbackClassic = "ch.qos.logback" % "logback-classic" % "1.2.3"

@@ -10,5 +10,5 @@ object UnitType extends TupleType[Unit] {
 
   def encode(t: Unit):Binary = Binary()
 
-  def decode(data: Bytes, offset: Int) = Decoded(Unit, offset)
+  def decode(data: Bytes, offset: Int) = Decoded((), offset)
 }
