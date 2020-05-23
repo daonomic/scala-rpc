@@ -204,13 +204,15 @@ class ${truffle.name}<@monad_param/>(address: Address, sender: <@sender/>)<@impl
   </#list>
 }
 
-object ${truffle.name} extends ContractObject {
+object ${truffle.name} extends <#if truffle.abstract>ContractObject<#else>NonAbstractContractObject[Type[<@tuple_type constructor_args/>]]</#if> {
   val name = "${truffle.name}"
   val abi = ${abi}
   val bin = "${truffle.bin}"
   <#if !truffle.abstract>
 
   val constructor = <@type constructor_args/>
+
+  def checkConstructorTx(txInput: Binary) = Constructor.checkConstructorTx(txInput, this)
 
   def encodeArgs<@args constructor_args/>: Binary =
     constructor.encode(<@args_values constructor_args/>)
