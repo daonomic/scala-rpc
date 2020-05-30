@@ -36,7 +36,7 @@ Library is modular and provides different layers:
 ```xml
 <dependency>
     <groupId>io.daonomic.scalether</groupId>
-    <artifactId>contract_2.12</artifactId>
+    <artifactId>contract_2.13</artifactId>
     <version>${scalether.version}</version>
 </dependency>
 
