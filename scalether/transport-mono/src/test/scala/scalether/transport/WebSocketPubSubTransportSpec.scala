@@ -1,6 +1,7 @@
 package scalether.transport
 
 import java.math.BigInteger
+import java.util.function.Consumer
 
 import io.daonomic.cats.mono.implicits._
 import io.daonomic.rpc.mono.{WebSocketReconnectingClient, WebSocketRpcTransport}
@@ -17,7 +18,7 @@ import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future}
 
 class WebSocketPubSubTransportSpec extends FlatSpec {
-  val url = "localhost:8546"
+  val url = "wss://mainnet.infura.io/ws/v3/8f1d84243d204c15a371933816eef71b"
   val ethereum = new MonoEthereum(new WebSocketRpcTransport(new WebSocketReconnectingClient(url), Ethereum.mapper))
   val sender = new SigningTransactionSender[Mono](
     ethereum,
@@ -31,16 +32,10 @@ class WebSocketPubSubTransportSpec extends FlatSpec {
 
   "WebSocketPubSubTransport" should "listen to newHeads" in {
 
-    val future = Future {
-      pubSub.newHeads()
-        .take(1)
-        .blockLast()
-    }
+    pubSub.newHeads()
+      .doOnNext({ it => println(it) })
+      .subscribe()
 
-    val hash = sender.sendTransaction(Transaction(to = sender.from, value = BigInteger.ONE)).block()
-    val receipt = ethereum.ethGetTransactionReceipt(hash).block().get
-
-    val result = Await.result(future, Duration.Inf)
-    assert(receipt.blockHash == result.hash)
+    Thread.sleep(1000000)
   }
 }

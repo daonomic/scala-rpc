@@ -1,15 +1,15 @@
 import sbt._
 
 object Dependencies {
-  val fullScalaVersion = "2.13.2"
-  val jacksonVersion = "2.11.0"
-  val jacksonDatabindVersion = "2.11.0"
+  val fullScalaVersion = "2.13.3"
+  val jacksonVersion = "2.11.2"
+  val jacksonDatabindVersion = "2.11.2"
 
   val slf4jApi = "org.slf4j" % "slf4j-api" % "1.7.28"
-  val reactor = "io.projectreactor" % "reactor-core" % "3.3.5.RELEASE"
-  val reactorNetty = "io.projectreactor.netty" % "reactor-netty" % "0.9.7.RELEASE"
+  val reactor = "io.projectreactor" % "reactor-core" % "3.3.10.RELEASE"
+  val reactorNetty = "io.projectreactor.netty" % "reactor-netty" % "0.9.12.RELEASE"
   val cats = "org.typelevel" %% "cats-core" % "2.1.1"
-  val springWebFlux = "org.springframework" % "spring-webflux" % "5.2.6.RELEASE"
+  val springWebFlux = "org.springframework" % "spring-webflux" % "5.2.9.RELEASE"
   val scalajHttp = "org.scalaj" %% "scalaj-http" % "2.4.2"
   val sttp = "com.softwaremill.sttp" %% "core" % "1.7.2"
 
