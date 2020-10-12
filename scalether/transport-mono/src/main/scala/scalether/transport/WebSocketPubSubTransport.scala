@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.JsonNode
 import io.daonomic.rpc.domain.Request
 import io.daonomic.rpc.mono.SimpleWebSocketClient
 import org.slf4j.{Logger, LoggerFactory}
-import org.springframework.web.reactive.socket.adapter.NettyWebSocketSessionSupport
 import reactor.core.publisher.Flux
 import scalether.core.{Ethereum, PubSubTransport}
 
