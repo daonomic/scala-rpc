@@ -13,8 +13,6 @@ import org.bouncycastle.math.ec.ECPoint;
 import org.bouncycastle.math.ec.FixedPointCombMultiplier;
 import org.bouncycastle.math.ec.custom.sec.SecP256K1Curve;
 import org.web3j.utils.Numeric;
-import scalether.util.Bytes;
-import scalether.util.Padding;
 
 import java.math.BigInteger;
 import java.security.SignatureException;
@@ -37,8 +35,10 @@ public class Sign {
     private static final BigInteger HALF_CURVE_ORDER = CURVE_PARAMS.getN().shiftRight(1);
 
     public static SignatureData signMessage(byte[] message, BigInteger publicKey, BigInteger privateKey) {
-        byte[] messageHash = Hash.sha3(message);
+        return signMessageHash(Hash.sha3(message), publicKey, privateKey);
+    }
 
+    public static SignatureData signMessageHash(byte[] messageHash, BigInteger publicKey, BigInteger privateKey) {
         ECDSASignature sig = sign(messageHash, privateKey);
         // Now we have to work backwards to figure out the recId needed to recover the signature.
         int recId = -1;
@@ -51,7 +51,7 @@ public class Sign {
         }
         if (recId == -1) {
             throw new RuntimeException(
-                    "Could not construct a recoverable key. This should never happen.");
+                "Could not construct a recoverable key. This should never happen.");
         }
 
         int headerByte = recId + 27;
@@ -64,12 +64,12 @@ public class Sign {
         return new SignatureData(v, r, s);
     }
 
-    private static ECDSASignature sign(byte[] transactionHash, BigInteger privateKey) {
+    public static ECDSASignature sign(byte[] hash, BigInteger privateKey) {
         ECDSASigner signer = new ECDSASigner(new HMacDSAKCalculator(new SHA256Digest()));
 
         ECPrivateKeyParameters privKey = new ECPrivateKeyParameters(privateKey, CURVE);
         signer.init(true, privKey);
-        BigInteger[] components = signer.generateSignature(transactionHash);
+        BigInteger[] components = signer.generateSignature(hash);
 
         return new ECDSASignature(components[0], components[1]).toCanonicalised();
     }
