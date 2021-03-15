@@ -176,6 +176,23 @@ public class Sign {
     public static BigInteger signedMessageToKey(
             byte[] message, SignatureData signatureData) throws SignatureException {
 
+        return signedMessageHashToKey(Hash.sha3(message), signatureData);
+    }
+
+    /**
+     * Given an arbitrary piece of text and an Ethereum message signature encoded in bytes,
+     * returns the public key that was used to sign it. This can then be compared to the expected
+     * public key to determine if the signature was correct.
+     *
+     * @param messageHash keccak256 of the message
+     * @param signatureData The message signature components
+     * @return the public key used to sign the message
+     * @throws SignatureException If the public key could not be recovered or if there was a
+     *     signature format error.
+     */
+    public static BigInteger signedMessageHashToKey(
+        byte[] messageHash, SignatureData signatureData) throws SignatureException {
+
         byte[] r = signatureData.getR();
         byte[] s = signatureData.getS();
         verifyPrecondition(r != null && r.length == 32, "r must be 32 bytes");
@@ -189,10 +206,9 @@ public class Sign {
         }
 
         ECDSASignature sig = new ECDSASignature(
-                new BigInteger(1, signatureData.getR()),
-                new BigInteger(1, signatureData.getS()));
+            new BigInteger(1, signatureData.getR()),
+            new BigInteger(1, signatureData.getS()));
 
-        byte[] messageHash = Hash.sha3(message);
         int recId = header - 27;
         BigInteger key = recoverFromSignature(recId, sig, messageHash);
         if (key == null) {
