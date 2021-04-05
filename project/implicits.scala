@@ -42,7 +42,7 @@ object implicits {
       organization := "io.daonomic.rpc",
       bintrayPackage := s"scala-rpc-${name.value}",
       licenses += ("MIT", url("http://opensource.org/licenses/MIT")),
-      version := "1.0-SNAPSHOT",
+      version := "1.1-SNAPSHOT",
       scalaVersion := Dependencies.fullScalaVersion
     )
 
