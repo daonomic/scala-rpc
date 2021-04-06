@@ -22,8 +22,8 @@ public class SimpleWebSocketClient {
     public static Flux<String> reconnect(URI uri, int maxFramePayloadLength, Flux<String> send) {
         return Flux.create(sink -> Mono.defer(() -> {
             HttpClient httpClient = HttpClient.create(ConnectionProvider.create("webSocket", 1));
-            final WebsocketClientSpec.Builder b = WebsocketClientSpec.builder().maxFramePayloadLength(maxFramePayloadLength);
-            ReactorNettyWebSocketClient client = new ReactorNettyWebSocketClient(httpClient, b);
+            ReactorNettyWebSocketClient client = new ReactorNettyWebSocketClient(httpClient);
+            client.setMaxFramePayloadLength(maxFramePayloadLength);
             return connect(client, uri, send)
                 .doOnNext(sink::next)
                 .<Void>then(Mono.error(new IllegalStateException("disconnected")));
@@ -34,8 +34,8 @@ public class SimpleWebSocketClient {
 
     public static Flux<String> connect(URI uri, int maxFramePayloadLength, Flux<String> send) {
         HttpClient httpClient = HttpClient.create(ConnectionProvider.create("webSocket", 1));
-        final WebsocketClientSpec.Builder b = WebsocketClientSpec.builder().maxFramePayloadLength(maxFramePayloadLength);
-        ReactorNettyWebSocketClient client = new ReactorNettyWebSocketClient(httpClient, b);
+        ReactorNettyWebSocketClient client = new ReactorNettyWebSocketClient(httpClient);
+        client.setMaxFramePayloadLength(maxFramePayloadLength);
         return connect(client, uri, send);
     }
 
