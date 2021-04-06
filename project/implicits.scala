@@ -31,7 +31,7 @@ object implicits {
       },
       publishTo := {
         if (isSnapshot.value) {
-          Some(("snapshots": RepositoryName) at "http://10.7.3.6:8081/nexus/content/repositories/snapshots/")
+          Some((("snapshots": RepositoryName) at "http://10.7.3.6:8081/nexus/content/repositories/snapshots/").withAllowInsecureProtocol(true))
         } else {
           Some(("releases": RepositoryName) at s"https://api.bintray.com/maven/${bintrayUser.value}/${bintrayRepository.value}/${bintrayPackage.value}/;publish=1")
         }
