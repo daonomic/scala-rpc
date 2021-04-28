@@ -18,7 +18,7 @@ object implicits {
       licenses += ("MIT", url("http://opensource.org/licenses/MIT")),
       version := "0.1.2",
       scalaVersion := Dependencies.fullScalaVersion,
-      githubOwner := "daonomic",
+      githubOwner := "evgenynacu",
       githubRepository := "scala-rpc",
       githubTokenSource := TokenSource.GitConfig("github.token")
     )
