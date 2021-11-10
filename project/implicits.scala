@@ -1,8 +1,7 @@
 import Dependencies.{logbackClassic, mockito, scalaCheck, scalaTest}
 import sbt.Keys._
-import sbt.{Project, url}
-import sbtghpackages.GitHubPackagesKeys._
-import sbtghpackages.TokenSource
+import sbt.librarymanagement.DependencyBuilders.RepositoryName
+import sbt.{Credentials, Project, url}
 
 object implicits {
 
@@ -13,14 +12,16 @@ object implicits {
       .settings(libraryDependencies += mockito % scope)
       .settings(libraryDependencies += logbackClassic % scope)
 
-    def common: Project = project.settings(
+    def publish: Project = project.settings(
+      credentials += Credentials("", "nexus-ext.rarible.int", sys.env.get("USERNAME").getOrElse(""), sys.env.get("PASSWORD").getOrElse("")),
+      publishTo := Some(("releases": RepositoryName) at "http://nexus-ext.rarible.int/repository/maven-releases/" withAllowInsecureProtocol true)
+    )
+
+    def common: Project = publish.settings(
       organization := "io.daonomic.rpc",
       licenses += ("MIT", url("http://opensource.org/licenses/MIT")),
-      version := "0.1.2",
-      scalaVersion := Dependencies.fullScalaVersion,
-      githubOwner := "evgenynacu",
-      githubRepository := "scala-rpc",
-      githubTokenSource := TokenSource.GitConfig("github.token")
+      version := "0.1.3",
+      scalaVersion := Dependencies.fullScalaVersion
     )
 
     def transport: Project = common
