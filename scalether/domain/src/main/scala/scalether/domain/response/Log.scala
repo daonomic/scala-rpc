@@ -12,5 +12,6 @@ case class Log(logIndex: BigInteger,
                blockNumber: BigInteger,
                address: Address,
                data: Binary,
+               removed: Boolean,
                topics: List[Word],
                `type`: String)
