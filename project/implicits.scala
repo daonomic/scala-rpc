@@ -20,7 +20,7 @@ object implicits {
     def common: Project = publish.settings(
       organization := "io.daonomic.rpc",
       licenses += ("MIT", url("http://opensource.org/licenses/MIT")),
-      version := "0.1.3",
+      version := "0.1.4",
       scalaVersion := Dependencies.fullScalaVersion
     )
 
