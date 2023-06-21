@@ -47,4 +47,23 @@ public class Strings {
     public static String repeat(char value, int n) {
         return new String(new char[n]).replace("\0", String.valueOf(value));
     }
+
+    /**
+     * Returns true if the string is empty, otherwise false.
+     *
+     * @param s String value
+     * @return is given string is Empty or not
+     */
+    public static boolean isEmpty(String s) {
+        return s == null || s.isEmpty();
+    }
+
+    /**
+     * Returns true if the string is empty or contains only white space codepoints, otherwise false.
+     *
+     * @param s String value
+     * @return is given string is Blank or not
+     */
+    public static boolean isBlank(String s) {
+        return s == null || s.trim().isEmpty();
 }
